@@ -1,32 +1,16 @@
-# Prerequisites
-*.d
+# IDEs
+.idea
+.vscode
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
+# Linked files
+# But keep allegro for convenience
 *.dll
+!allegro_monolith-5.2.dll
+build
+cmake-build-debug
 
-# Fortran module files
-*.mod
-*.smod
+# MacOS
+.DS_Store
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Others
+log.txt
