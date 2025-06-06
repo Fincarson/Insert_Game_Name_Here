@@ -92,6 +92,7 @@ namespace Engine {
         if (fonts.count(idx) != 0)
             return fonts[idx];
         std::string fontPath = fontPathPrefix + name;
+
         ALLEGRO_FONT *font = al_load_font(fontPath.c_str(), fontSize, 0);
         if (!font)
             throw Allegro5Exception(("failed to load font: " + fontPath).c_str());

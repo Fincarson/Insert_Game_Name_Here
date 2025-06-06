@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Engine/Point.hpp"
-#include "UI/Component/Image.hpp"
+#include "UI/Image.hpp"
 
 namespace Engine {
     /// <summary>
