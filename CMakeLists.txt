@@ -42,7 +42,7 @@ add_executable(Insert_Game_Name_Here
 
         main.cpp
         main.cpp
-        Scenes/MenuScene.h
+        Scenes/MenuScene.hpp
         Scenes/MenuScene.cpp
 
         UI/Image.cpp
@@ -54,6 +54,10 @@ add_executable(Insert_Game_Name_Here
         UI/Slider.hpp
         UI/Textbox.cpp
         UI/Textbox.hpp
+        UI/TextButton.cpp
+        UI/TextButton.hpp
+        Scenes/PlayScene.cpp
+        Scenes/PlayScene.hpp
 )
 
 

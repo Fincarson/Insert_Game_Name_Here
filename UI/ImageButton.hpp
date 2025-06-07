@@ -16,6 +16,8 @@ namespace Engine {
     protected:
         // Determines whether mouse is in the button.
         bool mouseIn = false;
+        bool selected = false;
+
         // The smart pointer that points to bitmap for mouse-out display.
         std::shared_ptr<ALLEGRO_BITMAP> imgOut;
         // The smart pointer that points to bitmap for mouse-in display.
@@ -50,12 +52,15 @@ namespace Engine {
         /// <param name="mx">Mouse x coordinate in window space.</param>
         /// <param name="my">Mouse y coordinate in window space.</param>
         void OnMouseDown(int button, int mx, int my) override;
+        void OnMouseUp(int button, int mx, int my) override;
         /// <summary>
         /// Delegated from scene when mouse move.
         /// </summary>
         /// <param name="mx">Mouse x coordinate in window space.</param>
         /// <param name="my">Mouse y coordinate in window space.</param>
         void OnMouseMove(int mx, int my) override;
+
+        void Update(float deltaTime) override;
     };
 }
 #endif   // IMAGEBUTTON_HPP

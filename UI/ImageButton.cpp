@@ -21,12 +21,23 @@ namespace Engine {
     }
     void ImageButton::OnMouseDown(int button, int mx, int my) {
         if ((button & 1) && mouseIn && Enabled) {
+            selected = true;
+        }
+    }
+
+    void ImageButton::OnMouseUp(int button, int mx, int my) {
+        if (selected && mouseIn && Enabled) {
             if (OnClickCallback)
                 OnClickCallback();
         }
+        selected = false;
     }
+
     void ImageButton::OnMouseMove(int mx, int my) {
         mouseIn = Collider::IsPointInBitmap(Point((mx - Position.x) * GetBitmapWidth() / Size.x + Anchor.x * GetBitmapWidth(), (my - Position.y) * GetBitmapHeight() / Size.y + Anchor.y * GetBitmapHeight()), bmp);
+    }
+
+    void ImageButton::Update(float deltaTime) {
         if (!mouseIn || !Enabled) bmp = imgOut;
         else bmp = imgIn;
     }
