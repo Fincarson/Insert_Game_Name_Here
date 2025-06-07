@@ -14,6 +14,7 @@ namespace Engine {
     public:
         // Rotation angle in radians.
         float Rotation;
+        bool Flip = false;
         // Pixel in seconds.
         Point Velocity;
         // Color tint.

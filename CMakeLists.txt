@@ -58,6 +58,10 @@ add_executable(Insert_Game_Name_Here
         UI/TextButton.hpp
         Scenes/PlayScene.cpp
         Scenes/PlayScene.hpp
+        Engine/AnimSprite.cpp
+        Engine/AnimSprite.hpp
+        Sprites/Player.cpp
+        Sprites/Player.hpp
 )
 
 

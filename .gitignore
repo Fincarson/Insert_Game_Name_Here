@@ -34,3 +34,6 @@ cmake-build-debug
 *.exe
 *.out
 *.app
+
+!allegro_monolith-5.2.dll
+

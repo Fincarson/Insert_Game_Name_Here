@@ -1,0 +1,55 @@
+//
+// Created by Patrick on 7 Jun 2025.
+//
+
+#include "AnimSprite.hpp"
+
+#include <stdexcept>
+#include <allegro5/bitmap_draw.h>
+
+namespace Engine {
+    AnimSprite::AnimSprite(std::string img, std::map<std::string, AnimInfo> animations, std::string initAnim, int sw, int sh,
+        float x, float y, float w, float h, float anchorX, float anchorY,
+        float rotation, float vx, float vy,
+        unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+
+        : Sprite(img, x, y, 0, 0, anchorX, anchorY, rotation, vx, vy, r, g, b, a),
+          animations(animations), sw(sw), sh(sh) {
+
+        Position = Point(x, y);
+        Size = Point(w, h);
+        SetAnimation(initAnim);
+    }
+
+    void AnimSprite::Draw() const {
+        auto& curAnim = itCurAnim->second;
+
+        al_draw_tinted_scaled_rotated_bitmap_region(
+            bmp.get(),
+            curFrame * sw, curAnim.yOffset * sh, sw, sh,  // Source pos
+            Tint,
+            Anchor.x * sw, Anchor.y * sh,
+            Position.x - Anchor.x * Size.x, Position.y - Anchor.y * Size.y,  // Destination pos
+            Size.x / sw, Size.y / sh, Rotation, Flip);
+    }
+
+    void AnimSprite::Update(float deltaTime) {
+        Sprite::Update(deltaTime);
+
+        curFrameTimer--;
+        if (curFrameTimer <= 0) {
+            auto& curAnim = itCurAnim->second;
+
+            curFrameTimer = curAnim.frameDuration;
+            curFrame = (curFrame + 1) % curAnim.nFrames;
+        }
+    }
+
+    void AnimSprite::SetAnimation(std::string anim) {
+        auto& curAnim = animations.at(anim);
+        auto itCurAnim = animations.find(anim);
+        curFrameTimer = curAnim.frameDuration;
+
+        this->itCurAnim = itCurAnim;
+    }
+} // Engine
