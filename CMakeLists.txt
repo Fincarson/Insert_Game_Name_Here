@@ -62,6 +62,7 @@ add_executable(Insert_Game_Name_Here
         Engine/AnimSprite.hpp
         Sprites/Player.cpp
         Sprites/Player.hpp
+        UI/Video.cpp
 )
 
 
