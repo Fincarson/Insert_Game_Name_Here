@@ -12,10 +12,13 @@ protected:
     static int SOURCE_TILE_SIZE;
     static std::string MAP_ASSETS_PATH;
 
-    void generateMapOffset() override;
+    Engine::Point getFloorOffset(int i, int j);
+    Engine::Point getWallOffset(int i, int j);
+    Engine::Point getHoleOffset(int i, int j);
 
 public:
     DungeonMap(int row, int col, const std::vector<std::vector<Tile>> &mapVec);
+    void generateMapOffset() override;
 };
 
 
