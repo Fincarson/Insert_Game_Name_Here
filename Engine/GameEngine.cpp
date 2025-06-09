@@ -184,15 +184,20 @@ namespace Engine {
             delete pair.second;
     }
     void GameEngine::changeScene(const std::string &name) {
+        std::cout << "[GE] ChangeScene called for '" << name << "'\n";
         if (scenes.count(name) == 0)
             throw std::invalid_argument("Cannot change to a unknown scene.");
         // Terminate the old scene.
+        std::cout << "[GE] About to terminate currentScene @ " << activeScene << "\n";
         activeScene->Terminate();
+        std::cout << "[GE] Terminated currentScene\n";
         activeScene = scenes[name];
+        std::cout << "[GE] Switched activeScene to '" << name << "' @ " << activeScene << "\n";
         // Release unused resources.
         if (freeMemoryOnSceneChanged)
             Resources::GetInstance().ReleaseUnused();
         // Initialize the new scene.
+        std::cout << "[GE] Initializing new scene\n";
         activeScene->Initialize();
         LOG(INFO) << "Changed to " << name << " scene";
     }

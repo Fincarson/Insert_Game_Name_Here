@@ -59,12 +59,14 @@ private:
 
     float rainPosX = 1050, rainPosY = 225;
 
+    std::string _nextScene;
 
 public:
     void Initialize() override;
     void Draw() const override;
     void Update(float deltaTime) override;
     void PlayOnClick(int stage);
+    void Terminate() override;      // Remember that every scene needs to have Init & Terminate since THE GAME ENGINE AUTOMATICALLY CALLS IT!!
 };
 
 #endif /* menu_scene_h */

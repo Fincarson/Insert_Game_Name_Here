@@ -89,4 +89,6 @@ void TextButton::SetBevelLabelPosition(float x) {
     bevelLabel.SetPosition(x);
 }
 
-
+void TextButton::SetOnClickCallback(std::function<void()> cb) {
+    ImageButton::SetOnClickCallback(cb);
+}

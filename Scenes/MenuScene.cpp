@@ -3,6 +3,8 @@
 
 #include <allegro5/allegro_primitives.h>
 #include <cstddef>
+#include <iostream>
+
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Resources.hpp"
@@ -86,7 +88,10 @@ void MenuScene::Initialize() {
     playButton->SetPosition(OFFSCREEN_X);
     playButton->SetLabelPosition(OFFSCREEN_X);
     playButton->SetBevelLabelPosition(OFFSCREEN_X);
-    // playButton->SetOnClickCallback(std::bind(&MenuScene::PlayOnClick, this));    // Fix TextButton first
+    playButton->SetOnClickCallback([this](){
+        std::cout << "[DEBUG] Entering PlayOnClick\n";
+        this->PlayOnClick(1);
+    });
     AddNewControlObject(playButton);
 
     ++idx; y += spacing;
@@ -244,5 +249,10 @@ void MenuScene::Update(float deltaTime) {
 }
 
 void MenuScene::PlayOnClick(int stage) {
-    Engine::GameEngine::GetInstance().ChangeScene("play");
+    std::cout << "Changing Scene...\n";
+    Engine::GameEngine::GetInstance().ChangeScene("play");      // NEED TERMINATE FUNCTION
+}
+
+void MenuScene::Terminate() {
+    // Feel free to fill in with anything but IScene::Terminate(); because I can assure you IT WILL CRASH
 }

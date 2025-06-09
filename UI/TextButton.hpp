@@ -31,6 +31,7 @@ namespace Engine {
         void SetPosition(float x) {Position.x = x;}
         void SetLabelPosition(float x);
         void SetBevelLabelPosition(float x);
+        void SetOnClickCallback(std::function<void()> cb);
 
     private:
         // Original label positions (for reset)
