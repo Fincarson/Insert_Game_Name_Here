@@ -64,7 +64,7 @@ public:
     void Initialize() override;
     void Draw() const override;
     void Update(float deltaTime) override;
-    static void PlayButtonClick();
+    void PlayOnClick(int stage);
 };
 
 #endif /* menu_scene_h */

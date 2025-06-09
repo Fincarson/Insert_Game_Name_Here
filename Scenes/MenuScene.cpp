@@ -3,12 +3,15 @@
 
 #include <allegro5/allegro_primitives.h>
 #include <cstddef>
+#include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Resources.hpp"
+#include "UI/ImageButton.hpp"
 #include "UI/Label.hpp"
 #include "UI/TextButton.hpp"
 #include "UI/Video.hpp"
-#include "Scenes/RainEffect.hpp"
+#include "RainEffect.hpp"
+#include "PlayScene.hpp"
 #include "Sprites/Player.hpp"
 using Engine::TextButton;
 
@@ -61,8 +64,8 @@ void MenuScene::Initialize() {
     AddNewObject(background2);
     bg2HomeX = 1920 + 405;
     bg2HomeY = 0;
-    playerHomeX = halfW + 500;
-    playerHomeY = halfH + 300;
+    playerHomeX = halfW + 275;
+    playerHomeY = halfH + 75;
     player = new Player(playerHomeX, playerHomeY, 250, 200);
     AddNewObject(player);
 
@@ -83,6 +86,7 @@ void MenuScene::Initialize() {
     playButton->SetPosition(OFFSCREEN_X);
     playButton->SetLabelPosition(OFFSCREEN_X);
     playButton->SetBevelLabelPosition(OFFSCREEN_X);
+    // playButton->SetOnClickCallback(std::bind(&MenuScene::PlayOnClick, this));    // Fix TextButton first
     AddNewControlObject(playButton);
 
     ++idx; y += spacing;
@@ -239,6 +243,6 @@ void MenuScene::Update(float deltaTime) {
     }
 }
 
-void MenuScene::PlayButtonClick() {
+void MenuScene::PlayOnClick(int stage) {
     Engine::GameEngine::GetInstance().ChangeScene("play");
 }

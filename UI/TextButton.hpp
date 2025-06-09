@@ -5,6 +5,7 @@
 
 #include "ImageButton.hpp"
 #include "Label.hpp"
+#include "Engine/IControl.hpp"
 #include <string>
 
 namespace Engine {

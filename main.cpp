@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     game.AddNewScene("menu", new MenuScene());
     game.AddNewScene("play", new PlayScene());
 
-    game.Start("intro", 60, 1600, 832);
+    game.Start("menu", 60, 1600, 832);  // Change to "intro" later
     return 0;
 }
 

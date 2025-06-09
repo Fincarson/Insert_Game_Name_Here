@@ -11,7 +11,7 @@ Player::Player(float x, float y, float w, float h)
         {"idle", Engine::AnimInfo(0, 4, 20, true)},
         {"walk", Engine::AnimInfo(1, 6, 5, true)},
         {"death", Engine::AnimInfo(2, 6, 20, false)},
-        }, "idle", 256, 256, x, y, w, h) {
+        }, "idle", 256, 256, x, y, w, h, 0, 0) {    // NEVER FORGET ANCHOR (ESPECIALLY YOU VINCENT)
 }
 
 void Player::Update(float deltaTime) {
