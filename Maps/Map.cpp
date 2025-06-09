@@ -10,16 +10,13 @@
 #include "utility.hpp"
 #include "Engine/Resources.hpp"
 
-int Map::SOURCE_TILE_SIZE = 32;
-std::string Map::MAP_ASSETS_PATH = "map_packets.png";
-
 #define DRAW_HITBOX
 
-Map::Map(int row, int col, std::vector<std::vector<Tile>> mapVec)
-    : row(row), col(col), mapVec(mapVec), assets(Engine::Resources::GetInstance().GetBitmap(MAP_ASSETS_PATH)),
-      assetOffsets(row, std::vector<Engine::Point>(col)){
+Map::Map(std::string mapAssetsPath, int sourceTileSize, int row, int col, std::vector<std::vector<Tile>> mapVec)
+    : assets(Engine::Resources::GetInstance().GetBitmap(mapAssetsPath)), SOURCE_TILE_SIZE(sourceTileSize),
+      row(row), col(col), mapVec(mapVec),
+      assetOffsets(row, std::vector<Engine::Point>(col, Engine::Point(0, 0))){
 
-    getMapOffset();
 }
 
 void Map::Draw() const {
@@ -50,11 +47,23 @@ void Map::Draw() const {
     }
 }
 
-void Map::getMapOffset() {
-    for(int i = 0; i < row; i++) {
-        for(int j = 0; j < col; j++) {
-            // TODO replace with the i2p 1 stuff
-            assetOffsets[i][j] = Engine::Point(j, i);
-        }
-    }
+Tile Map::GetTile(int x, int y) const { return mapVec[y][x]; }
+
+bool Map::isWall(int i, int j) const {
+    if(i < 0 || j < 0 || i >= row || j >= col) return false;
+    if(mapVec[i][j] == WALL) return true;
+    return false;
 }
+
+bool Map::isFloor(int i, int j) const {
+    if(i < 0 || j < 0 || i >= row || j >= col) return false;
+    if(mapVec[i][j] == FLOOR) return true;
+    return false;
+}
+
+bool Map::isNothing(int i, int j) const {
+    if(i < 0 || j < 0 || i >= row || j >= col) return true;
+    if(mapVec[i][j] == NOTHING || mapVec[i][j] == HOLE) return true;
+    return false;
+}
+

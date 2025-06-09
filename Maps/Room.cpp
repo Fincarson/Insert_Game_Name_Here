@@ -6,6 +6,8 @@
 
 #include <fstream>
 
+#include "DungeonMap.hpp"
+
 void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
     std::ifstream file(filename);
@@ -47,7 +49,8 @@ void Room::loadRoom(std::string filename) {
         }
     }
 
-    AddNewObject(map = new Map(row, col, mapVec));
+    AddNewObject(map = new DungeonMap(row, col, mapVec));
+    map->generateMapOffset();
 }
 
 Room::Room(std::string filename) {

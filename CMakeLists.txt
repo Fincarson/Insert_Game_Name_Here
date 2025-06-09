@@ -69,6 +69,8 @@ add_executable(Insert_Game_Name_Here
         Maps/Room.hpp
         utility.cpp
         utility.hpp
+        Maps/DungeonMap.cpp
+        Maps/DungeonMap.hpp
 )
 
 

@@ -16,5 +16,6 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     AddNewObject(new Room("1-1.txt"));
+
     AddNewObject(new Player(halfW, halfH, 100, 100));
 }

@@ -13,6 +13,7 @@
 
 
 enum Tile {
+    NOTHING,
     FLOOR,
     WALL,
     HOLE,
@@ -20,27 +21,29 @@ enum Tile {
 
 
 class Map : public Engine::IObject {
-private:
+protected:
     int row;
     int col;
     std::vector<std::vector<Tile>> mapVec;
 
     std::shared_ptr<ALLEGRO_BITMAP> assets;
     std::vector<std::vector<Engine::Point>> assetOffsets;
-
-protected:
-    static int SOURCE_TILE_SIZE;
-    static std::string MAP_ASSETS_PATH;
-
-    void getMapOffset();
+    const int SOURCE_TILE_SIZE;
 
 public:
-    Map(): row(0), col(0) {}
-    explicit Map(int row, int col, std::vector<std::vector<Tile>> mapVec);
+    Map(): row(0), col(0), SOURCE_TILE_SIZE(0) {}
 
-    Tile GetTile(int x, int y) const { return mapVec[y][x]; }
+    Map(std::string assetsPath, int sourceTileSize,
+        int row, int col, std::vector<std::vector<Tile>> mapVec);
 
     void Draw() const override;
+
+    virtual void generateMapOffset() = 0;  // Abstract method to load the spritesheet offset of each tile.
+
+    Tile GetTile(int x, int y) const;
+    bool isWall(int i, int j) const;
+    bool isFloor(int i, int j) const;
+    bool isNothing(int i, int j) const;
 };
 
 
