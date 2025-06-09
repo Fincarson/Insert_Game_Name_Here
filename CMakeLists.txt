@@ -63,6 +63,10 @@ add_executable(Insert_Game_Name_Here
         Sprites/Player.cpp
         Sprites/Player.hpp
         UI/Video.cpp
+        Scenes/SettingsScene.cpp
+        Scenes/SettingsScene.hpp
+        Scenes/ScoreboardScene.cpp
+        Scenes/ScoreboardScene.hpp
 )
 
 
