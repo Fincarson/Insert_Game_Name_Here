@@ -4,6 +4,7 @@
 
 #include "PlayScene.hpp"
 
+#include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Maps/Room.hpp"
@@ -16,6 +17,5 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     AddNewObject(new Room("1-1.txt"));
-
-    AddNewObject(new Player(halfW, halfH, 100, 100));
+    AddNewControlObject(new Player(halfW, halfH, TILE_SIZE, TILE_SIZE));
 }

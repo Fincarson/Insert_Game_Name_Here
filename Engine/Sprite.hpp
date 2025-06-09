@@ -12,15 +12,11 @@ namespace Engine {
     /// </summary>
     class Sprite : public Image {
     public:
-        // Rotation angle in radians.
-        float Rotation;
-        bool Flip = false;
-        // Pixel in seconds.
-        Point Velocity;
-        // Color tint.
-        ALLEGRO_COLOR Tint;
-        // Assume a circle is a good approximation of the sprite's boundary.
-        float CollisionRadius = 0;
+        float Rotation;  // Rotation angle in radians.
+        bool Flip = false;  // Flip the sprite or not.
+        Point Velocity;  // Pixels per second.
+        ALLEGRO_COLOR Tint;  // Color tint.
+        float CollisionRadius = 0;  // Assume a circle is a good approximation of the sprite's boundary.
         /// <summary>
         /// Construct a sprite object.
         /// </summary>

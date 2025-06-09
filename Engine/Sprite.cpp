@@ -11,7 +11,7 @@ namespace Engine {
     }
     void Sprite::Draw() const {
         al_draw_tinted_scaled_rotated_bitmap(bmp.get(), Tint, Anchor.x * GetBitmapWidth(), Anchor.y * GetBitmapHeight(),
-                                             Position.x, Position.y, Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, 0);
+                                             Position.x, Position.y, Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, Flip);
     }
     void Sprite::Update(float deltaTime) {
         Position.x += Velocity.x * deltaTime;
