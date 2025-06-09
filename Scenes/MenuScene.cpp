@@ -1,159 +1,124 @@
-#include "MenuScene.hpp"
-#include <cmath>
-
-#include <allegro5/allegro_primitives.h>
-#include <cstddef>
-#include <iostream>
-
+#include "Engine/Resources.hpp"
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
-#include "Engine/Resources.hpp"
+#include "Scenes/PlayScene.hpp"
+#include "Scenes/MenuScene.hpp"
+#include "Sprites/Player.hpp"
 #include "UI/ImageButton.hpp"
-#include "UI/Label.hpp"
 #include "UI/TextButton.hpp"
 #include "UI/Video.hpp"
-#include "RainEffect.hpp"
-#include "PlayScene.hpp"
-#include "Sprites/Player.hpp"
-using Engine::TextButton;
-
+#include <cstddef>
+#include <cmath>
 ALLEGRO_VERTEX_DECL* MenuScene::fade_decl = nullptr;
 
-// === SLIDE-IN BUTTON DATA ===
-struct SlideButton {
-    TextButton* btn;
-    float targetX, y;
-    float animX;
-    float delay;  // Delay for each button to start moving
-};
-
-SlideButton menuButtons[5]; // PLAY, SETTINGS, LEADERBOARD, CREDITS, QUIT
-RainEffect* rainEffect;
-namespace {
-    // 1) Define BlackSpacer before any use:
-    struct BlackSpacer : public Engine::IObject {
-        void Draw() const override {
-            // draw a solid black 810×1080 rect at x=1920
-            al_draw_filled_rectangle(1920, 0, 1920 + 810, 1080, al_map_rgb(0,0,0));
-        }
-    };
-} // anonymous namespace
-
-const float OFFSCREEN_X = -400.0f;
-const float SLIDE_SPEED = 24.0f; // pixels per frame
-float menuTime = 0.0f;
-
 void MenuScene::Initialize() {
-    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
-    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-    int halfW = w / 2;
-    int halfH = h / 2;
-    screenW = w;
-    screenH = h;
-    panelWidth = screenW / 3;
-    panelX = -panelWidth;
+    // SCREEN
+    screenW = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    screenH = Engine::GameEngine::GetInstance().GetScreenSize().y;
 
+    // BACKGROUND
     rainEffect = new RainEffect(rainPosX, rainPosY, 370, 300);
+    background = new Engine::Video("menu_background.png", 0, 0, 1920, 1080, 0,    0, screenW, screenH, 12);
+    background1 = new Engine::Video("menu_background_1.png", 0, 0, 1920, 1080, 2325, 0, screenW, screenH, 12);
     AddNewObject(rainEffect);
-
-    background = new Engine::Video("menu_background.png", 0, 0, 1920, 1080, 0, 0, w, h, 12);
     AddNewObject(background);
-    bg1HomeX = 0;
-    bg1HomeY = 0;
-    //AddNewObject(new class : public Engine::IObject {public: void Draw() const override {al_draw_filled_rectangle(1920, 0, 1920 + 810, 1080, al_map_rgb(0,0,0));}});
+    AddNewObject(background1);
 
-    background2 = new Engine::Video("menu_background_1.png", /* source */ 0, 0, 1920, 1080, /* dest   */ 1920 + 405, 0, w, h, /* z-order*/ 12);
-    AddNewObject(background2);
-    bg2HomeX = 1920 + 405;
-    bg2HomeY = 0;
-    playerHomeX = halfW + 275;
-    playerHomeY = halfH + 75;
+    // PLAYER
+    playerHomeX = (screenW/2) + 275;
+    playerHomeY = (screenH/2) + 75;
     player = new Player(playerHomeX, playerHomeY, 250, 200);
     AddNewObject(player);
 
-    const float btnW = 350.0f;
-    const float btnH = 100.f;
-    startX = panelWidth * 0.1f;
-    float y = 200.f;
-    const float spacing = 110.f;
+    // BUTTONS
+    startX = (screenW / 3) * 0.1f + 150.0f;
+    PlayButtonX        = startX; PlayButtonY        = 200.0f;
+    settingsButtonX    = startX; settingsButtonY    = 310.0f;
+    leaderboardButtonX = startX; leaderboardButtonY = 420.0f;
+    creditsButtonX     = startX; creditsButtonY     = 530.0f;
+    quitButtonX        = startX; quitButtonY        = 640.0f;
+    backButtonX        = 20.0f;  backButtonY        = 20.0f;
+    Engine::TextButton* playButton        = new Engine::TextButton("Play",        PlayButtonX,        PlayButtonY,        150, 100, 0.0f, 0.0f);
+    Engine::TextButton* settingsButton    = new Engine::TextButton("Settings",    settingsButtonX,    settingsButtonY,    220, 100, 0.0f, 0.0f);
+    Engine::TextButton* leaderboardButton = new Engine::TextButton("Leaderboard", leaderboardButtonX, leaderboardButtonY, 320, 100, 0.0f, 0.0f);
+    Engine::TextButton* creditsButton     = new Engine::TextButton("Credits",     creditsButtonX,     creditsButtonY,     200, 100, 0.0f, 0.0f);
+    Engine::TextButton* quitButton        = new Engine::TextButton("Quit",        quitButtonX,        quitButtonY,        150, 100, 0.0f, 0.0f);
+    Engine::TextButton* backButton        = new Engine::TextButton("Back",        backButtonX,        backButtonY,        150, 100, 0.0f, 0.0F);
 
-    int idx = 0;
-
-    // PLAY BUTTON
-    menuButtons[idx].btn = playButton = new TextButton("Play", startX + 150, y, btnW - 200, btnH, 0.0f, 0.0f);
-    menuButtons[idx].targetX = startX + 150;
-    menuButtons[idx].y = y;
-    menuButtons[idx].animX = OFFSCREEN_X;
-    menuButtons[idx].delay = 2.0f; // Play button starts after 2 seconds
+    menuButtons[BTN_PLAY].btn     = playButton;
+    menuButtons[BTN_PLAY].targetX = PlayButtonX;
+    menuButtons[BTN_PLAY].y       = PlayButtonY;
+    menuButtons[BTN_PLAY].animX   = OFFSCREEN_X;
+    menuButtons[BTN_PLAY].delay   = 2.0f;
     playButton->SetPosition(OFFSCREEN_X);
     playButton->SetLabelPosition(OFFSCREEN_X);
     playButton->SetBevelLabelPosition(OFFSCREEN_X);
-    playButton->SetOnClickCallback([this](){
-        std::cout << "[DEBUG] Entering PlayOnClick\n";
-        this->PlayOnClick(1);
-    });
-    AddNewControlObject(playButton);
 
-    ++idx; y += spacing;
-    // SETTINGS BUTTON
-    menuButtons[idx].btn = settingsButton = new TextButton("Settings", startX + 150, y, btnW - 130, btnH, 0.0f, 0.0f);
-    menuButtons[idx].targetX = startX + 150;
-    menuButtons[idx].y = y;
-    menuButtons[idx].animX = OFFSCREEN_X;
-    menuButtons[idx].delay = 2.15f; // Settings starts after 0.15 seconds after Play starts
+    menuButtons[BTN_SETTINGS].btn     = settingsButton;
+    menuButtons[BTN_SETTINGS].targetX = settingsButtonX;
+    menuButtons[BTN_SETTINGS].y       = settingsButtonY;
+    menuButtons[BTN_SETTINGS].animX   = OFFSCREEN_X;
+    menuButtons[BTN_SETTINGS].delay   = 2.15f;
     settingsButton->SetPosition(OFFSCREEN_X);
     settingsButton->SetLabelPosition(OFFSCREEN_X);
     settingsButton->SetBevelLabelPosition(OFFSCREEN_X);
-    AddNewControlObject(settingsButton);
-    // settingsButton->SetOnClickCallback([this](){isScrolling = true;});
-    settingsButton->SetOnClickCallback([this](){
-        std::cout << "[DEBUG] Entering SettingsOnClick\n";
-        this->SettingsOnClick(1);
-    });
 
-    ++idx; y += spacing;
-    // LEADERBOARD BUTTON
-    menuButtons[idx].btn = leaderboardButton = new TextButton("Leaderboard", startX + 150, y, btnW-30, btnH, 0.0f, 0.0f);
-    menuButtons[idx].targetX = startX + 150;
-    menuButtons[idx].y = y;
-    menuButtons[idx].animX = OFFSCREEN_X;
-    menuButtons[idx].delay = 2.30f; // Leaderboard starts after 0.15 seconds after Settings starts
+    menuButtons[BTN_LEADERBOARD].btn     = leaderboardButton;
+    menuButtons[BTN_LEADERBOARD].targetX = leaderboardButtonX;
+    menuButtons[BTN_LEADERBOARD].y       = leaderboardButtonY;
+    menuButtons[BTN_LEADERBOARD].animX   = OFFSCREEN_X;
+    menuButtons[BTN_LEADERBOARD].delay   = 2.30f;
     leaderboardButton->SetPosition(OFFSCREEN_X);
     leaderboardButton->SetLabelPosition(OFFSCREEN_X);
     leaderboardButton->SetBevelLabelPosition(OFFSCREEN_X);
-    AddNewControlObject(leaderboardButton);
 
-    ++idx; y += spacing;
-    // CREDITS BUTTON
-    menuButtons[idx].btn = creditsButton = new TextButton("Credits", startX + 150, y, btnW - 150, btnH, 0.0f, 0.0f);
-    menuButtons[idx].targetX = startX + 150;
-    menuButtons[idx].y = y;
-    menuButtons[idx].animX = OFFSCREEN_X;
-    menuButtons[idx].delay = 2.45f; // Credits starts after 0.15 seconds after Leaderboard starts
+    menuButtons[BTN_CREDITS].btn     = creditsButton;
+    menuButtons[BTN_CREDITS].targetX = creditsButtonX;
+    menuButtons[BTN_CREDITS].y       = creditsButtonY;
+    menuButtons[BTN_CREDITS].animX   = OFFSCREEN_X;
+    menuButtons[BTN_CREDITS].delay   = 2.45f;
     creditsButton->SetPosition(OFFSCREEN_X);
     creditsButton->SetLabelPosition(OFFSCREEN_X);
     creditsButton->SetBevelLabelPosition(OFFSCREEN_X);
-    AddNewControlObject(creditsButton);
 
-    ++idx; y += spacing;
-    // QUIT BUTTON
-    menuButtons[idx].btn = quitButton = new TextButton("Quit", startX + 150, y, btnW - 200, btnH, 0.0f, 0.0f);
-    menuButtons[idx].targetX = startX + 150;
-    menuButtons[idx].y = y;
-    menuButtons[idx].animX = OFFSCREEN_X;
-    menuButtons[idx].delay = 2.60f; // Quit starts after 0.15 seconds after Credits starts
+    menuButtons[BTN_QUIT].btn     = quitButton;
+    menuButtons[BTN_QUIT].targetX = quitButtonX;
+    menuButtons[BTN_QUIT].y       = quitButtonY;
+    menuButtons[BTN_QUIT].animX   = OFFSCREEN_X;
+    menuButtons[BTN_QUIT].delay   = 2.60f;
     quitButton->SetPosition(OFFSCREEN_X);
     quitButton->SetLabelPosition(OFFSCREEN_X);
     quitButton->SetBevelLabelPosition(OFFSCREEN_X);
+
+    menuButtons[BTN_BACK].btn     = backButton;
+    menuButtons[BTN_BACK].targetX = backButtonX;
+    menuButtons[BTN_BACK].y       = backButtonY;
+    menuButtons[BTN_BACK].animX   = OFFSCREEN_X;
+    menuButtons[BTN_BACK].delay   = 3.0f;
+    backButton->SetPosition(OFFSCREEN_X);
+    backButton->SetLabelPosition(OFFSCREEN_X);
+    backButton->SetBevelLabelPosition(OFFSCREEN_X);
+
+    AddNewControlObject(playButton);
+    AddNewControlObject(settingsButton);
+    AddNewControlObject(leaderboardButton);
+    AddNewControlObject(creditsButton);
     AddNewControlObject(quitButton);
-    AddNewObject(new BlackSpacer());
+    AddNewControlObject(backButton);
+
+    playButton->SetOnClickCallback([this](){Engine::GameEngine::GetInstance().ChangeScene("play");});
+    settingsButton->SetOnClickCallback([this](){
+        isScrolling = true;
+        for (int i = 0; i < BTN_BACK; ++i) {
+            menuButtons[i].btn->SetPosition(OFFSCREEN_X);
+            menuButtons[i].btn->SetLabelPosition(OFFSCREEN_X);
+            menuButtons[i].btn->SetBevelLabelPosition(OFFSCREEN_X);
+        }
+    });
+    backButton->SetOnClickCallback([this](){isScrolling = false; menuTime = 0.0f;});
 
     if (!fade_decl) {
-        static const ALLEGRO_VERTEX_ELEMENT elems[] = {
-            { ALLEGRO_PRIM_POSITION,    0,                                 ALLEGRO_PRIM_FLOAT_2 },
-            { ALLEGRO_PRIM_COLOR_ATTR,  offsetof(ALLEGRO_VERTEX, color),   ALLEGRO_PRIM_UBYTE_4 },
-            { 0 }
-        };
+        static constexpr ALLEGRO_VERTEX_ELEMENT elems[] = {{ALLEGRO_PRIM_POSITION, 0, ALLEGRO_PRIM_FLOAT_2 }, {ALLEGRO_PRIM_COLOR_ATTR, offsetof(ALLEGRO_VERTEX, color), ALLEGRO_PRIM_UBYTE_4 }, {0}};
         fade_decl = al_create_vertex_decl(elems, 0);
     }
 }
@@ -164,36 +129,21 @@ void MenuScene::Draw() const {
 
     if (fadeTimer < fadeDuration) {
         float alpha = 1.0f - (fadeTimer / fadeDuration);
-        int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
-        int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
-
-        al_draw_filled_rectangle(
-            0, 0, w, h,
-            al_map_rgba_f(0, 0, 0, alpha)
-        );
+        al_draw_filled_rectangle(0, 0, screenW, screenH, al_map_rgba_f(0, 0, 0, alpha));
     }
 
     ALLEGRO_DISPLAY* disp = al_get_current_display();
     int W = al_get_display_width(disp);
     int H = al_get_display_height(disp);
 
-    const float freqX = 0.25f, freqY = 0.45f;
-    const float ampX  = 30.f,  ampY  = 20.f;
+    constexpr float freqX = 0.25f;
+    constexpr float ampX  = 30.f;
     float ox = std::cos(wobbleTime * freqX) * ampX;
-    // float oy = std::sin(wobbleTime * freqY) * ampY; // not needed for bar
-
-    // Where the black bar starts:
     float barX = bg2HomeX + scrollOffset + ox - 725.0f;
+    al_draw_filled_rectangle(barX, 0, barX + 725.0f, (float)screenH, al_map_rgb(0,0,0));
 
-    // Draw the bar, which is 810px wide, full screen height
-    al_draw_filled_rectangle(
-        barX, 0,
-        barX + 725.0f, (float)screenH,
-        al_map_rgb(0,0,0)
-    );
-
-    const int fadeWidth   = 125;
-    const int stripeWidth = 20;
+    constexpr int fadeWidth   = 125;
+    constexpr int stripeWidth = 20;
     for (int i = 0; i < fadeWidth; i += stripeWidth) {
         float alpha = 1.0f - float(i) / float(fadeWidth);
         ALLEGRO_COLOR col = al_map_rgba_f(0, 0, 0, alpha);
@@ -210,52 +160,46 @@ void MenuScene::Update(float deltaTime) {
         scrollOffset -= scrollSpeed * deltaTime;
         if (scrollOffset < scrollTarget)
             scrollOffset = scrollTarget;
-
-        for (int i = 0; i < 5; ++i) {
-            if (menuTime > menuButtons[i].delay) {
-                if (menuButtons[i].animX > menuButtons[i].targetX) {
-                    menuButtons[i].animX -= SLIDE_SPEED;
-                    if (menuButtons[i].animX < menuButtons[i].targetX)
-                        menuButtons[i].animX = menuButtons[i].targetX;
-
-                    // Sync button and label positions (Y position must be updated)
-                    menuButtons[i].btn->SetPosition(menuButtons[i].animX);
-                    menuButtons[i].btn->SetLabelPosition(menuButtons[i].animX);  // Label Y is now synced
-                    menuButtons[i].btn->SetBevelLabelPosition(menuButtons[i].animX); // Same for shadow label
-                }
-            }
-        }
     }
     wobbleTime += deltaTime;
     menuTime += deltaTime;
 
-    if (!isScrolling) {
-        // Slide in all buttons after fade, based on their delay
-        for (int i = 0; i < 5; ++i) {
-            if (menuTime > menuButtons[i].delay) {
-                if (menuButtons[i].animX < menuButtons[i].targetX) {
-                    menuButtons[i].animX += SLIDE_SPEED;
-                    if (menuButtons[i].animX > menuButtons[i].targetX)
-                        menuButtons[i].animX = menuButtons[i].targetX;
+    for (int i = 0; i < 5; ++i) {
+        auto &sb = menuButtons[i];
 
-                    // Sync button and label positions (Y position must be updated)
-                    menuButtons[i].btn->SetPosition(menuButtons[i].animX);
-                    menuButtons[i].btn->SetLabelPosition(menuButtons[i].animX);  // Label Y is now synced
-                    menuButtons[i].btn->SetBevelLabelPosition(menuButtons[i].animX); // Same for shadow label
+        // Only allow slide-in after its delay:
+        bool canSlideIn = (menuTime > sb.delay);
+
+        // If we’re in “scrolling” mode, always move *toward* OFFSCREEN_X
+        float destX = isScrolling
+            ? OFFSCREEN_X
+            : (canSlideIn ? sb.targetX : sb.animX);
+
+        if (sb.animX != destX) {
+            // step by SLIDE_SPEED in the correct direction
+            float dir = (destX > sb.animX) ? +1.0f : -1.0f;
+            sb.animX += dir * SLIDE_SPEED * deltaTime;
+            // clamp overshoot
+            if ((dir > 0 && sb.animX > destX) ||
+                (dir < 0 && sb.animX < destX)) {
+                sb.animX = destX;
                 }
-            }
+            sb.btn->SetPosition(sb.animX);
+            sb.btn->SetLabelPosition(sb.animX);
+            sb.btn->SetBevelLabelPosition(sb.animX);
         }
     }
 
+
     // Background wobble
-    const float freqX = 0.25f, freqY = 0.45f;
-    const float ampX  = 30.f,  ampY  = 20.f;
+    constexpr float freqX = 0.25f, freqY = 0.45f;
+    constexpr float ampX  = 30.f,  ampY  = 20.f;
 
     float ox = std::cos(wobbleTime * freqX) * ampX;
     float oy = std::sin(wobbleTime * freqY) * ampY;
 
     background ->SetPosition(bg1HomeX + scrollOffset + ox,bg1HomeY + oy);
-    background2->SetPosition(bg2HomeX + scrollOffset + ox, bg2HomeY +  oy);
+    background1->SetPosition(bg2HomeX + scrollOffset + ox, bg2HomeY +  oy);
     rainEffect->SetPosition(rainPosX + ox, rainPosY + oy);
     float spacerX = (1920.0f + scrollOffset);
     al_draw_filled_rectangle(spacerX, 0, spacerX + 810.0f, 1080, al_map_rgb(0,0,0));
@@ -269,19 +213,11 @@ void MenuScene::Update(float deltaTime) {
     }
 }
 
-void MenuScene::PlayOnClick(int stage) {
-    std::cout << "Changing Scene...\n";
-    Engine::GameEngine::GetInstance().ChangeScene("play");      // NEED TERMINATE FUNCTION
-}
+void MenuScene::PlayOnClick(int stage) {Engine::GameEngine::GetInstance().ChangeScene("play");}
 
 void MenuScene::SettingsOnClick(float deltaTime) {
-    std::cout << "Settings Scene...\n";
     isScrolling = true;
-    for (int i = 0; i < 5; ++i) {
-        menuButtons[i].targetX = OFFSCREEN_X;
-    }
+    for (int i = 0; i < 5; ++i) menuButtons[i].targetX = OFFSCREEN_X;
 }
 
-void MenuScene::Terminate() {
-    // Feel free to fill in with anything but IScene::Terminate(); because I can assure you IT WILL CRASH
-}
+void MenuScene::Terminate() { }
