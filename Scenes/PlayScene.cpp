@@ -20,6 +20,9 @@ void PlayScene::Initialize() {
 
     AddNewObject(curRoom = new Room("1-1.txt"));
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+    player->SetCollisionMap(curRoom->getMap());
+
 }
 
 void PlayScene::UpdateCamera() {
@@ -28,7 +31,10 @@ void PlayScene::UpdateCamera() {
     int halfW = w / 2;
     int halfH = h / 2;
 
+    // Calculate camera position.
     camera = player->Position + player->Size / 2 - Engine::Point(halfW, halfH);
+
+    // Limit the camera to the map's boundaries.
     camera.x = std::clamp<float>(camera.x, 0, curRoom->GetCols() * TILE_SIZE - w);
     camera.y = std::clamp<float>(camera.y, 0, curRoom->GetRows() * TILE_SIZE - h);
 }

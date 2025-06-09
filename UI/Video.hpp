@@ -32,12 +32,16 @@ namespace Engine {
         /// <summary>
         /// Draw the loaded video.
         /// </summary>
-        void Draw(const Point & camera) const;
+        void Draw() const;
+        void SetPosition(float dx, float dy);
 
     private:
         float sx, sy, sw, sh, dx, dy, dw, dh;
         float cur_sx;
+        float cur_sy;
         int frames, tick;
+        float elapsedTime   = 0.0f;    // accumulates deltaTime
+        float frameDuration = 0.5f;    // seconds per frame (0.2 = 5 fps)
     };
 }
 #endif

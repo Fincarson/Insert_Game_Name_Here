@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <allegro5/allegro_primitives.h>
 #include <allegro5/bitmap_draw.h>
 
 namespace Engine {
@@ -33,6 +34,8 @@ namespace Engine {
             Anchor.x * sw, Anchor.y * sh,
             Position.x - camera.x, Position.y - camera.y,  // Destination pos
             Size.x / sw, Size.y / sh, Rotation, Flip);
+
+        // al_draw_filled_circle(Position.x, Position.y, 10, al_map_rgb(255, 0, 0));    // Un-comment for debugging player's position
     }
 
     void AnimSprite::Update(float deltaTime) {

@@ -14,6 +14,7 @@
 class Room : public Engine::Group {
 private:
     Map* map = nullptr;
+    Engine::Point spawn;
 
     void loadRoom(std::string filename);
 
@@ -23,6 +24,8 @@ public:
 
     int GetRows() { return map->row; }
     int GetCols() { return map->col; };
+    Map* getMap() const { return map; }
+    [[nodiscard]] Engine::Point getSpawn() const { return spawn; }
 };
 
 

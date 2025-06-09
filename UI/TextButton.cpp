@@ -3,40 +3,92 @@
 //
 
 #include "TextButton.hpp"
-
-#include <allegro5/allegro_font.h>
-
-#include "Label.hpp"
 #include "Engine/Resources.hpp"
+#include <allegro5/allegro_primitives.h>
 
-TextButton::TextButton(std::string text, float x, float y, float w, float h, float anchorX, float anchorY,
-    std::string font)
+using namespace Engine;
 
-    : ImageButton("UI_Button.png", "UI_Button_hovered.png", x, y, w, h, anchorX, anchorY),
-      label(text, font, h / 3, x - Anchor.x * Size.x + Size.x / 2, y - Anchor.y * Size.y + Size.y / 2 - 3, 255, 255, 255, 255, 0.5, 0.5),
-      bevelLabel(text, font, h / 3, x - Anchor.x * Size.x + Size.x / 2, y - Anchor.y * Size.y + Size.y / 2, 66, 76, 110, 255, 0.5, 0.5),
-      imgPressed(Engine::Resources::GetInstance().GetBitmap("UI_Button_pressed.png")) {
-
-    labelOriginalPos = label.Position.y;
-}
-
-void TextButton::Draw(const Engine::Point & camera) const {
-    ImageButton::Draw(camera);
-    bevelLabel.Draw(camera);
-    label.Draw(camera);
+TextButton::TextButton(std::string text,
+                       float x, float y,
+                       float w, float h,
+                       float anchorX, float anchorY,
+                       std::string fontName /*= "Minecraft.ttf"*/)
+  : ImageButton("UI_Button.png",
+                "UI_Button_hovered.png",
+                x, y, w, h,
+                anchorX, anchorY)
+  , _fontName(fontName)
+  , _normalFontSize(static_cast<int>(h / 3.0f))
+  , _hoverFontSize (static_cast<int>(h / 2.5f))
+  , _hoverOffsetX (50.0f)
+  , label(
+        text,
+        _fontName,
+        _normalFontSize,
+        x - anchorX * w + 8.0f,
+        y - anchorY * h + (h / 2.0f) - 3.0f,
+        255, 255, 255, 255,
+        /*anchorX=*/0.0f, /*anchorY=*/0.5f
+    )
+  , bevelLabel(
+        text,
+        _fontName,
+        _normalFontSize,
+        x - anchorX * w + 8.0f,
+        y - anchorY * h + (h / 2.0f),
+        66,  76, 110, 255,
+        /*anchorX=*/0.0f, /*anchorY=*/0.5f
+    )
+{
+    // stash the original positions
+    _labelOrigX = label.Position.x;
+    _labelOrigY = label.Position.y;
 }
 
 void TextButton::Update(float deltaTime) {
     ImageButton::Update(deltaTime);
 
-    if (selected && mouseIn) {
-        bmp = imgPressed;
-        label.Position.y = labelOriginalPos + Size.y * 0.10185;
-        bevelLabel.Position.y = labelOriginalPos + 3 + Size.y * 0.10185;
-    } else {
-        label.Position.y = labelOriginalPos;
-        bevelLabel.Position.y = labelOriginalPos + 3;
+    if (mouseIn) {
+        // on hover: slide right, enlarge, turn yellow
+        //label.Position.x      = _labelOrigX + _hoverOffsetX;
+        //bevelLabel.Position.x = _labelOrigX + _hoverOffsetX;
+
+        label.SetFont(Resources::GetInstance().GetFont(_fontName, _hoverFontSize));
+        bevelLabel.SetFont(Resources::GetInstance().GetFont(_fontName, _hoverFontSize));
+        bevelLabel.SetFont(Resources::GetInstance().GetFont(_fontName, _hoverFontSize));
+
+        label.Color      = al_map_rgb(255, 255,   0);
+        bevelLabel.Color = al_map_rgb(128, 128,   0);
+    }
+    else {
+        // reset to normal
+        //label.Position.x      = _labelOrigX;
+        //bevelLabel.Position.x = _labelOrigX;
+
+        label.SetFont(Resources::GetInstance().GetFont(_fontName, _normalFontSize));
+        bevelLabel.SetFont(Resources::GetInstance().GetFont(_fontName, _normalFontSize));
+
+        label.Color      = al_map_rgba(255, 255, 255, 255);
+        bevelLabel.Color = al_map_rgba( 66,  76, 110, 255);
     }
 }
 
+void TextButton::Draw() const {
+    al_draw_filled_rectangle(Position.x, Position.y, Position.x + Size.x, Position.y + Size.y, al_map_rgba(0, 0, 0, 0));
+    //al_draw_filled_rectangle(Position.x, Position.y, Position.x + Size.x, Position.y + Size.y, al_map_rgb(0, 0, 255)); // blue
 
+    bevelLabel.Draw();
+    label.Draw();
+}
+
+void TextButton::SetLabelPosition(float x) {
+    label.SetPosition(x);
+}
+
+void TextButton::SetBevelLabelPosition(float x) {
+    bevelLabel.SetPosition(x);
+}
+
+void TextButton::SetOnClickCallback(std::function<void()> cb) {
+    ImageButton::SetOnClickCallback(cb);
+}

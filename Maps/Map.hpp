@@ -46,6 +46,8 @@ public:
     bool isWall(int i, int j) const;
     bool isFloor(int i, int j) const;
     bool isNothing(int i, int j) const;
+    [[nodiscard]] int getRow() const { return row; }
+    [[nodiscard]] int getCol() const { return col; }
 };
 
 

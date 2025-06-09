@@ -42,8 +42,15 @@ add_executable(Insert_Game_Name_Here
 
         main.cpp
         main.cpp
+        Scenes/IntroScene.cpp
+        Scenes/IntroScene.hpp
         Scenes/MenuScene.hpp
         Scenes/MenuScene.cpp
+        Scenes/RainEffect.hpp
+        Scenes/SettingsScene.cpp
+        Scenes/SettingsScene.hpp
+        Scenes/ScoreboardScene.cpp
+        Scenes/ScoreboardScene.hpp
 
         UI/Image.cpp
         UI/ImageButton.cpp
@@ -58,25 +65,35 @@ add_executable(Insert_Game_Name_Here
         UI/TextButton.hpp
         Scenes/PlayScene.cpp
         Scenes/PlayScene.hpp
-        Scenes/SettingsScene.cpp
-        Scenes/SettingsScene.hpp
-        Scenes/ScoreboardScene.cpp
-        Scenes/ScoreboardScene.hpp
-
         Engine/AnimSprite.cpp
         Engine/AnimSprite.hpp
         Sprites/Player.cpp
         Sprites/Player.hpp
         UI/Video.cpp
+        UI/Video.hpp
         Maps/Map.cpp
         Maps/Map.hpp
         Maps/Room.cpp
         Maps/Room.hpp
         Maps/DungeonMap.cpp
         Maps/DungeonMap.hpp
-        
+
         utility.cpp
         utility.hpp
+        Engine/Collision.cpp
+        Engine/Collision.hpp
+        Scenes/RainEffect.hpp
+        Engine/FadeBorder.hpp
+        Scenes/IntroScene.cpp
+        Scenes/IntroScene.hpp
+        Engine/MouseState.cpp
+        Engine/MouseState.hpp
+        Engine/Angle.cpp
+        Engine/Angle.hpp
+        Weapons/Weapon.cpp
+        Weapons/Weapon.hpp
+        Bullet/Bullet.cpp
+        Bullet/Bullet.hpp
 )
 
 
