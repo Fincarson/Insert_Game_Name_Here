@@ -19,13 +19,11 @@ Map::Map(std::string mapAssetsPath, int sourceTileSize, int row, int col, std::v
 
 }
 
-void Map::Draw() const {
-    Engine::Point cam(0, 0);  // TODO make camera asap
-
+void Map::Draw(const Engine::Point & camera) const {
     for (int i = 0; i < row; i++){
         for (int j = 0; j < col; j++){
-            int dy = i * TILE_SIZE - cam.y; // destiny y axis
-            int dx = j * TILE_SIZE - cam.x; // destiny x axis
+            int dy = i * TILE_SIZE - camera.y; // destiny y axis
+            int dx = j * TILE_SIZE - camera.x; // destiny x axis
 
             Engine::Point curOffset = assetOffsets[i][j];
 

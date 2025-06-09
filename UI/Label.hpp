@@ -39,7 +39,7 @@ namespace Engine {
         /// <summary>
         /// Draw text with loaded font.
         /// </summary>
-        void Draw() const override;
+        void Draw(const Point & camera) const override;
         void SetFont(std::shared_ptr<ALLEGRO_FONT> f) { font = f; }
         /// <summary>
         /// Return text width.

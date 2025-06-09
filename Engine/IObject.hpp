@@ -9,6 +9,9 @@ namespace Engine {
     /// <summary>
     /// The base interface class for objects that needs to be drawn or rendered.
     /// </summary>
+
+    inline Point defaultCamera(0, 0);
+
     class IObject {
         friend class Group;
 
@@ -63,7 +66,7 @@ namespace Engine {
         /// Draw to window display.
         /// This is called when the game should redraw the window.
         /// </summary>
-        virtual void Draw() const;
+        virtual void Draw(const Point & camera = defaultCamera) const;
         /// <summary>
         /// Run game logic such as updating the world, checking for collision, and so on.
         /// This is called when the game should update its logic, usually 'fps' times per second.

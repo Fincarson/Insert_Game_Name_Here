@@ -28,7 +28,7 @@ namespace Engine {
         /// <summary>
         /// Draw the loaded image.
         /// </summary>
-        void Draw() const override;
+        void Draw(const Point & camera) const override;
         /// <summary>
         /// Return bitmap width.
         /// </summary>

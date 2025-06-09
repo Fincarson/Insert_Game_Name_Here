@@ -38,10 +38,10 @@ namespace Engine {
                 preIt->second->Update(deltaTime);
         }
     }
-    void Group::Draw() const {
+    void Group::Draw(const Point & camera) const {
         for (auto &it : objects) {
             if (it.second->Visible)
-                it.second->Draw();
+                it.second->Draw(camera);
         }
     }
     void Group::OnKeyDown(int keyCode) {

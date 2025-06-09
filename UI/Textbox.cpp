@@ -18,9 +18,9 @@ std::string Textbox::GetText() const {
     return std::string(textData.begin(), textData.end());
 }
 
-void Textbox::Draw() const {
-    ImageButton::Draw();
-    textLabel->Draw();
+void Textbox::Draw(const Engine::Point & camera) const {
+    ImageButton::Draw(camera);
+    textLabel->Draw(camera);
 }
 
 void Textbox::OnMouseDown(int button, int mx, int my) {
