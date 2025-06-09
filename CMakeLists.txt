@@ -58,6 +58,11 @@ add_executable(Insert_Game_Name_Here
         UI/TextButton.hpp
         Scenes/PlayScene.cpp
         Scenes/PlayScene.hpp
+        Scenes/SettingsScene.cpp
+        Scenes/SettingsScene.hpp
+        Scenes/ScoreboardScene.cpp
+        Scenes/ScoreboardScene.hpp
+
         Engine/AnimSprite.cpp
         Engine/AnimSprite.hpp
         Sprites/Player.cpp
@@ -67,10 +72,11 @@ add_executable(Insert_Game_Name_Here
         Maps/Map.hpp
         Maps/Room.cpp
         Maps/Room.hpp
-        utility.cpp
-        utility.hpp
         Maps/DungeonMap.cpp
         Maps/DungeonMap.hpp
+        
+        utility.cpp
+        utility.hpp
 )
 
 
