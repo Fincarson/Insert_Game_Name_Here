@@ -90,6 +90,8 @@ add_executable(Insert_Game_Name_Here
         Engine/MouseState.hpp
         Engine/Angle.cpp
         Engine/Angle.hpp
+        Weapons/Weapon.cpp
+        Weapons/Weapon.hpp
 )
 
 
