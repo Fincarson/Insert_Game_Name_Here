@@ -47,6 +47,10 @@ add_executable(Insert_Game_Name_Here
         Scenes/MenuScene.hpp
         Scenes/MenuScene.cpp
         Scenes/RainEffect.hpp
+        Scenes/SettingsScene.cpp
+        Scenes/SettingsScene.hpp
+        Scenes/ScoreboardScene.cpp
+        Scenes/ScoreboardScene.hpp
 
         UI/Image.cpp
         UI/ImageButton.cpp
@@ -66,6 +70,18 @@ add_executable(Insert_Game_Name_Here
         Sprites/Player.cpp
         Sprites/Player.hpp
         UI/Video.cpp
+        UI/Video.hpp
+        Maps/Map.cpp
+        Maps/Map.hpp
+        Maps/Room.cpp
+        Maps/Room.hpp
+        Maps/DungeonMap.cpp
+        Maps/DungeonMap.hpp
+
+        utility.cpp
+        utility.hpp
+        Engine/Collision.cpp
+        Engine/Collision.hpp
         Scenes/RainEffect.hpp
         Engine/FadeBorder.hpp
         Scenes/IntroScene.cpp
