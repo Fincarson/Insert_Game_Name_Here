@@ -1,5 +1,7 @@
 // Player.cpp
 #include "Player.hpp"
+
+#include <allegro5/allegro_primitives.h>
 #include <allegro5/keyboard.h>
 
 #include <allegro5/keycodes.h>
@@ -12,12 +14,36 @@ Player::Player(float x, float y, float w, float h)
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
-        x, y, w, h) {
+        x, y, w, h
+        , 0.0f, 0.0f) {
 }
 
 void Player::Update(float deltaTime) {
-    AnimSprite::Update(deltaTime);
+    // 1) figure out your desired Velocity
     Movement();
+
+    // 2) prune any axis that would hit a wall
+    if (collisionMap) {
+        // ← pull current position out of AnimSprite…
+        //    replace these with however AnimSprite exposes its pos
+        float currX = Position.x;
+        float currY = Position.y;
+
+        // 2a) test horizontal only
+        float nextX = currX + Velocity.x * deltaTime;
+        if (collider.isCollision(int(nextX), int(currY), *collisionMap)) {
+            Velocity.x = 0;
+        }
+
+        // 2b) test vertical only
+        float nextY = currY + Velocity.y * deltaTime;
+        if (collider.isCollision(int(currX), int(nextY), *collisionMap)) {
+            Velocity.y = 0;
+        }
+    }
+
+    // 3) now let AnimSprite actually apply Velocity → position & advance frame
+    AnimSprite::Update(deltaTime);
 }
 
 void Player::Movement() {
@@ -64,30 +90,4 @@ void Player::OnKeyDown(int keyCode) {
 void Player::OnKeyUp(int keyCode) {
     keyDown[keyCode] = false;
 
-}
-
-void Player::Update(float deltaTime) {
-    // 1) Read keyboard
-    ALLEGRO_KEYBOARD_STATE ks;
-    al_get_keyboard_state(&ks);
-
-    // 2) Zero out velocity
-    Velocity.x = 0;
-    Velocity.y = 0;
-
-    // 3) Set velocity based on arrows (or WASD)
-    if (al_key_down(&ks, ALLEGRO_KEY_LEFT)  || al_key_down(&ks, ALLEGRO_KEY_A)) Velocity.x = -speed;
-    if (al_key_down(&ks, ALLEGRO_KEY_RIGHT) || al_key_down(&ks, ALLEGRO_KEY_D)) Velocity.x =  speed;
-    if (al_key_down(&ks, ALLEGRO_KEY_UP)    || al_key_down(&ks, ALLEGRO_KEY_W)) Velocity.y = -speed;
-    if (al_key_down(&ks, ALLEGRO_KEY_DOWN)  || al_key_down(&ks, ALLEGRO_KEY_S)) Velocity.y =  speed;
-
-    // 4) Switch animation
-    if (Velocity.x != 0 || Velocity.y != 0) {
-        SetAnimation("walk");
-    } else {
-        SetAnimation("idle");
-    }
-
-    // 5) Let AnimSprite handle frame‐timing and movement
-    AnimSprite::Update(deltaTime);
 }

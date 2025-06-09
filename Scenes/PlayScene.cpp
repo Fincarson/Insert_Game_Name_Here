@@ -16,10 +16,23 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
-    camera = Engine::Point(0, 0);
+    // 1) Load room & add it
+    auto room = new Room("1-1.txt");
+    AddNewObject(room);
 
-    AddNewObject(new Room("1-1.txt"));
-    AddNewControlObject(new Player(halfW, halfH, TILE_SIZE, TILE_SIZE));
+    // 2) Convert spawn tile → world pixels
+    Engine::Point spawnTile = room->getSpawn();
+    float spawnX = spawnTile.x * TILE_SIZE;
+    float spawnY = spawnTile.y * TILE_SIZE;
+
+    // 3) Center camera on player
+    camera.x = spawnX - halfW;
+    camera.y = spawnY - halfH;
+
+    // 4) Create player at spawn & hook up collisions
+    auto player = new Player(spawnX, spawnY, TILE_SIZE, TILE_SIZE);
+    player->SetCollisionMap(room->getMap());
+    AddNewControlObject(player);
 }
 
 std::shared_ptr<Engine::Point> PlayScene::GetCamera() {
