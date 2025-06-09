@@ -37,13 +37,12 @@ class MenuScene final : public Engine::IScene {
     float leaderboardButtonX = 0.0f,  leaderboardButtonY = 0.0f;
     float creditsButtonX     = 0.0f,  creditsButtonY     = 0.0f;
     float quitButtonX        = 0.0f,  quitButtonY        = 0.0f;
-    float backButtonX        = 20.0f, backButtonY        = 0.0f;
+    float backButtonX        = 0.0f, backButtonY        = 0.0f;
     const float OFFSCREEN_X = -400.0f;
     const float SLIDE_SPEED = 600.0f;
-
     enum ButtonID {BTN_PLAY = 0, BTN_SETTINGS = 1, BTN_LEADERBOARD = 2, BTN_CREDITS = 3, BTN_QUIT = 4, BTN_BACK = 5, BTN_COUNT = 6};
-    struct SlideButton {Engine::TextButton* btn; float targetX, y, animX, delay;};
-    SlideButton menuButtons[BTN_COUNT] = {nullptr, 0, 0, 0, 0, nullptr};
+    struct SlideButton {Engine::TextButton* btn; float originalPosX, originalPosY, targetX, animX, delay;};
+    SlideButton menuButtons[BTN_COUNT] = {nullptr, 0, 0, 0, 0, 0, nullptr};
 
     // BACKGROUND
     Engine::Video* background  = nullptr;
@@ -64,11 +63,13 @@ class MenuScene final : public Engine::IScene {
     const float buttonTimer = 0.0f;
     const float scrollSpeed = 1100.0f;
     const float scrollTarget = -(1920.0f + 405.0f);
+    float scrollTargetOffset = 0.0f;
     float fadeTimer = 0.0f;
     float scrollOffset = 0.0f;
     float menuTime = 0.0f;
     bool buttonsMoving = false;
-    bool isScrolling = false;
+    bool showMenu = true;
+    bool backEnabled = false;
 
 
 public:

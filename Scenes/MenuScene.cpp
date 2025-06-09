@@ -37,64 +37,70 @@ void MenuScene::Initialize() {
     leaderboardButtonX = startX; leaderboardButtonY = 420.0f;
     creditsButtonX     = startX; creditsButtonY     = 530.0f;
     quitButtonX        = startX; quitButtonY        = 640.0f;
-    backButtonX        = 20.0f;  backButtonY        = 20.0f;
-    Engine::TextButton* playButton        = new Engine::TextButton("Play",        PlayButtonX,        PlayButtonY,        150, 100, 0.0f, 0.0f);
-    Engine::TextButton* settingsButton    = new Engine::TextButton("Settings",    settingsButtonX,    settingsButtonY,    220, 100, 0.0f, 0.0f);
-    Engine::TextButton* leaderboardButton = new Engine::TextButton("Leaderboard", leaderboardButtonX, leaderboardButtonY, 320, 100, 0.0f, 0.0f);
-    Engine::TextButton* creditsButton     = new Engine::TextButton("Credits",     creditsButtonX,     creditsButtonY,     200, 100, 0.0f, 0.0f);
-    Engine::TextButton* quitButton        = new Engine::TextButton("Quit",        quitButtonX,        quitButtonY,        150, 100, 0.0f, 0.0f);
-    Engine::TextButton* backButton        = new Engine::TextButton("Back",        backButtonX,        backButtonY,        150, 100, 0.0f, 0.0F);
+    backButtonX        = 120.0f;  backButtonY        = 120.0f;
+    playButton        = new Engine::TextButton("Play",        PlayButtonX,        PlayButtonY,        150, 100, 0.0f, 0.0f);
+    settingsButton    = new Engine::TextButton("Settings",    settingsButtonX,    settingsButtonY,    220, 100, 0.0f, 0.0f);
+    leaderboardButton = new Engine::TextButton("Leaderboard", leaderboardButtonX, leaderboardButtonY, 320, 100, 0.0f, 0.0f);
+    creditsButton     = new Engine::TextButton("Credits",     creditsButtonX,     creditsButtonY,     200, 100, 0.0f, 0.0f);
+    quitButton        = new Engine::TextButton("Quit",        quitButtonX,        quitButtonY,        150, 100, 0.0f, 0.0f);
+    backButton        = new Engine::TextButton("Back",        backButtonX,        backButtonY,        150, 100, 0.0f, 0.0F);
 
-    menuButtons[BTN_PLAY].btn     = playButton;
-    menuButtons[BTN_PLAY].targetX = PlayButtonX;
-    menuButtons[BTN_PLAY].y       = PlayButtonY;
-    menuButtons[BTN_PLAY].animX   = OFFSCREEN_X;
-    menuButtons[BTN_PLAY].delay   = 2.0f;
+    menuButtons[BTN_PLAY].btn          = playButton;
+    menuButtons[BTN_PLAY].originalPosX = PlayButtonX;
+    menuButtons[BTN_PLAY].originalPosY = PlayButtonY;
+    menuButtons[BTN_PLAY].targetX      = PlayButtonX;
+    menuButtons[BTN_PLAY].animX        = OFFSCREEN_X;
+    menuButtons[BTN_PLAY].delay        = 2.0f;
     playButton->SetPosition(OFFSCREEN_X);
     playButton->SetLabelPosition(OFFSCREEN_X);
     playButton->SetBevelLabelPosition(OFFSCREEN_X);
 
-    menuButtons[BTN_SETTINGS].btn     = settingsButton;
-    menuButtons[BTN_SETTINGS].targetX = settingsButtonX;
-    menuButtons[BTN_SETTINGS].y       = settingsButtonY;
-    menuButtons[BTN_SETTINGS].animX   = OFFSCREEN_X;
-    menuButtons[BTN_SETTINGS].delay   = 2.15f;
+    menuButtons[BTN_SETTINGS].btn          = settingsButton;
+    menuButtons[BTN_SETTINGS].originalPosX = settingsButtonX;
+    menuButtons[BTN_SETTINGS].originalPosY = settingsButtonY;
+    menuButtons[BTN_SETTINGS].targetX      = settingsButtonX;
+    menuButtons[BTN_SETTINGS].animX        = OFFSCREEN_X;
+    menuButtons[BTN_SETTINGS].delay        = 2.15f;
     settingsButton->SetPosition(OFFSCREEN_X);
     settingsButton->SetLabelPosition(OFFSCREEN_X);
     settingsButton->SetBevelLabelPosition(OFFSCREEN_X);
 
-    menuButtons[BTN_LEADERBOARD].btn     = leaderboardButton;
-    menuButtons[BTN_LEADERBOARD].targetX = leaderboardButtonX;
-    menuButtons[BTN_LEADERBOARD].y       = leaderboardButtonY;
-    menuButtons[BTN_LEADERBOARD].animX   = OFFSCREEN_X;
-    menuButtons[BTN_LEADERBOARD].delay   = 2.30f;
+    menuButtons[BTN_LEADERBOARD].btn          = leaderboardButton;
+    menuButtons[BTN_LEADERBOARD].originalPosX = leaderboardButtonX;
+    menuButtons[BTN_LEADERBOARD].originalPosY = leaderboardButtonY;
+    menuButtons[BTN_LEADERBOARD].targetX      = leaderboardButtonX;
+    menuButtons[BTN_LEADERBOARD].animX        = OFFSCREEN_X;
+    menuButtons[BTN_LEADERBOARD].delay        = 2.30f;
     leaderboardButton->SetPosition(OFFSCREEN_X);
     leaderboardButton->SetLabelPosition(OFFSCREEN_X);
     leaderboardButton->SetBevelLabelPosition(OFFSCREEN_X);
 
-    menuButtons[BTN_CREDITS].btn     = creditsButton;
-    menuButtons[BTN_CREDITS].targetX = creditsButtonX;
-    menuButtons[BTN_CREDITS].y       = creditsButtonY;
-    menuButtons[BTN_CREDITS].animX   = OFFSCREEN_X;
-    menuButtons[BTN_CREDITS].delay   = 2.45f;
+    menuButtons[BTN_CREDITS].btn          = creditsButton;
+    menuButtons[BTN_CREDITS].originalPosX = creditsButtonX;
+    menuButtons[BTN_CREDITS].originalPosY = creditsButtonY;
+    menuButtons[BTN_CREDITS].targetX      = creditsButtonX;
+    menuButtons[BTN_CREDITS].animX        = OFFSCREEN_X;
+    menuButtons[BTN_CREDITS].delay        = 2.45f;
     creditsButton->SetPosition(OFFSCREEN_X);
     creditsButton->SetLabelPosition(OFFSCREEN_X);
     creditsButton->SetBevelLabelPosition(OFFSCREEN_X);
 
-    menuButtons[BTN_QUIT].btn     = quitButton;
-    menuButtons[BTN_QUIT].targetX = quitButtonX;
-    menuButtons[BTN_QUIT].y       = quitButtonY;
-    menuButtons[BTN_QUIT].animX   = OFFSCREEN_X;
-    menuButtons[BTN_QUIT].delay   = 2.60f;
+    menuButtons[BTN_QUIT].btn          = quitButton;
+    menuButtons[BTN_QUIT].originalPosX = quitButtonX;
+    menuButtons[BTN_QUIT].originalPosY = quitButtonY;
+    menuButtons[BTN_QUIT].targetX      = quitButtonX;
+    menuButtons[BTN_QUIT].animX        = OFFSCREEN_X;
+    menuButtons[BTN_QUIT].delay        = 2.60f;
     quitButton->SetPosition(OFFSCREEN_X);
     quitButton->SetLabelPosition(OFFSCREEN_X);
     quitButton->SetBevelLabelPosition(OFFSCREEN_X);
 
-    menuButtons[BTN_BACK].btn     = backButton;
-    menuButtons[BTN_BACK].targetX = backButtonX;
-    menuButtons[BTN_BACK].y       = backButtonY;
-    menuButtons[BTN_BACK].animX   = OFFSCREEN_X;
-    menuButtons[BTN_BACK].delay   = 3.0f;
+    menuButtons[BTN_BACK].btn          = backButton;
+    menuButtons[BTN_BACK].originalPosX = backButtonX;
+    menuButtons[BTN_BACK].originalPosY = backButtonY;
+    menuButtons[BTN_BACK].targetX      = backButtonX;
+    menuButtons[BTN_BACK].animX        = OFFSCREEN_X;
+    menuButtons[BTN_BACK].delay        = 1.7f;
     backButton->SetPosition(OFFSCREEN_X);
     backButton->SetLabelPosition(OFFSCREEN_X);
     backButton->SetBevelLabelPosition(OFFSCREEN_X);
@@ -108,14 +114,18 @@ void MenuScene::Initialize() {
 
     playButton->SetOnClickCallback([this](){Engine::GameEngine::GetInstance().ChangeScene("play");});
     settingsButton->SetOnClickCallback([this](){
-        isScrolling = true;
-        for (int i = 0; i < BTN_BACK; ++i) {
-            menuButtons[i].btn->SetPosition(OFFSCREEN_X);
-            menuButtons[i].btn->SetLabelPosition(OFFSCREEN_X);
-            menuButtons[i].btn->SetBevelLabelPosition(OFFSCREEN_X);
-        }
+        for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = OFFSCREEN_X;
+        menuButtons[BTN_BACK].targetX = backButtonX;
+        scrollTargetOffset = scrollTarget;
+        backEnabled = true;
+        menuTime = 0.0f;
     });
-    backButton->SetOnClickCallback([this](){isScrolling = false; menuTime = 0.0f;});
+    backButton->SetOnClickCallback([this]() {
+        for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
+        scrollTargetOffset = 0.0f;
+        backEnabled = false;
+        menuTime = 0.0f;
+    });
 
     if (!fade_decl) {
         static constexpr ALLEGRO_VERTEX_ELEMENT elems[] = {{ALLEGRO_PRIM_POSITION, 0, ALLEGRO_PRIM_FLOAT_2 }, {ALLEGRO_PRIM_COLOR_ATTR, offsetof(ALLEGRO_VERTEX, color), ALLEGRO_PRIM_UBYTE_4 }, {0}};
@@ -148,7 +158,7 @@ void MenuScene::Draw() const {
         float alpha = 1.0f - float(i) / float(fadeWidth);
         ALLEGRO_COLOR col = al_map_rgba_f(0, 0, 0, alpha);
 
-        al_draw_filled_rectangle(i, 0, i + stripeWidth, H, col);
+        al_draw_filled_rectangle((float)i, 0, i + stripeWidth, H, col);
         al_draw_filled_rectangle(W - i - stripeWidth, 0, W - i, H, col);
         al_draw_filled_rectangle(0, i, W, i + stripeWidth, col);
         al_draw_filled_rectangle(0, H - i - stripeWidth, W, H - i, col);
@@ -156,39 +166,47 @@ void MenuScene::Draw() const {
 }
 
 void MenuScene::Update(float deltaTime) {
-    if (isScrolling && scrollOffset > scrollTarget) {
-        scrollOffset -= scrollSpeed * deltaTime;
-        if (scrollOffset < scrollTarget)
-            scrollOffset = scrollTarget;
-    }
+    float delta = scrollTargetOffset - scrollOffset;
+    if (fabs(delta) > deltaTime * scrollSpeed) scrollOffset += copysign(scrollSpeed * deltaTime, delta);
+    else scrollOffset = scrollTargetOffset;
+
+    background ->SetPosition(bg1HomeX + scrollOffset, bg1HomeY);
+    background1->SetPosition(bg2HomeX + scrollOffset, bg2HomeY);
+    rainEffect->SetPosition(rainPosX + scrollOffset, rainPosY);
+    player->SetPosition(playerHomeX + scrollOffset, playerHomeY);
+
+    // 2) UI timers
     wobbleTime += deltaTime;
-    menuTime += deltaTime;
+    if (showMenu) menuTime += deltaTime;
 
-    for (int i = 0; i < 5; ++i) {
+    // 3) slide the five main buttons (as before)
+    for (int i = 0; i < BTN_BACK; ++i) {
         auto &sb = menuButtons[i];
-
-        // Only allow slide-in after its delay:
-        bool canSlideIn = (menuTime > sb.delay);
-
-        // If we’re in “scrolling” mode, always move *toward* OFFSCREEN_X
-        float destX = isScrolling
-            ? OFFSCREEN_X
-            : (canSlideIn ? sb.targetX : sb.animX);
-
+        float destX = (showMenu && menuTime >= sb.delay) ? sb.targetX : OFFSCREEN_X;
         if (sb.animX != destX) {
-            // step by SLIDE_SPEED in the correct direction
-            float dir = (destX > sb.animX) ? +1.0f : -1.0f;
+            float dir = (destX > sb.animX) ? +1.f : -1.f;
             sb.animX += dir * SLIDE_SPEED * deltaTime;
-            // clamp overshoot
-            if ((dir > 0 && sb.animX > destX) ||
-                (dir < 0 && sb.animX < destX)) {
+            if ((dir>0 && sb.animX>destX) || (dir<0 && sb.animX<destX))
                 sb.animX = destX;
-                }
             sb.btn->SetPosition(sb.animX);
             sb.btn->SetLabelPosition(sb.animX);
             sb.btn->SetBevelLabelPosition(sb.animX);
         }
     }
+    
+    // ─── Back button ────────────────────────────
+    if (backEnabled) {
+        auto &b = menuButtons[BTN_BACK];
+        if (menuTime >= b.delay && b.animX < b.targetX) {
+            b.animX += SLIDE_SPEED * deltaTime;
+            if (b.animX > b.targetX) b.animX = b.targetX;
+        }
+    } else menuButtons[BTN_BACK].animX = OFFSCREEN_X;
+    auto &b = menuButtons[BTN_BACK];
+    b.btn->SetPosition(b.animX);
+    b.btn->SetLabelPosition(b.animX);
+    b.btn->SetBevelLabelPosition(b.animX);
+
 
 
     // Background wobble
@@ -213,11 +231,6 @@ void MenuScene::Update(float deltaTime) {
     }
 }
 
-void MenuScene::PlayOnClick(int stage) {Engine::GameEngine::GetInstance().ChangeScene("play");}
-
-void MenuScene::SettingsOnClick(float deltaTime) {
-    isScrolling = true;
-    for (int i = 0; i < 5; ++i) menuButtons[i].targetX = OFFSCREEN_X;
-}
-
-void MenuScene::Terminate() { }
+void MenuScene::PlayOnClick(int stage) {}
+void MenuScene::SettingsOnClick(float deltaTime) {}
+void MenuScene::Terminate() {}
