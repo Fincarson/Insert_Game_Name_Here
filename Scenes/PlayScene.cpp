@@ -16,6 +16,12 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
+    camera = Engine::Point(0, 0);
+
     AddNewObject(new Room("1-1.txt"));
     AddNewControlObject(new Player(halfW, halfH, TILE_SIZE, TILE_SIZE));
+}
+
+std::shared_ptr<Engine::Point> PlayScene::GetCamera() {
+    return std::shared_ptr<Engine::Point>(&camera);
 }

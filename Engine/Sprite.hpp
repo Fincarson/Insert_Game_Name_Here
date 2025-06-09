@@ -3,7 +3,9 @@
 #include <allegro5/color.h>
 #include <string>
 
+#include "GameEngine.hpp"
 #include "Engine/Point.hpp"
+#include "Scenes/PlayScene.hpp"
 #include "UI/Image.hpp"
 
 namespace Engine {
@@ -11,12 +13,17 @@ namespace Engine {
     /// Image that supports rotation, velocity, tint, and collision radius.
     /// </summary>
     class Sprite : public Image {
+    protected:
+        std::shared_ptr<Point> camera;
+        static PlayScene * getPlayScene();
+
     public:
         float Rotation;  // Rotation angle in radians.
         bool Flip = false;  // Flip the sprite or not.
         Point Velocity;  // Pixels per second.
         ALLEGRO_COLOR Tint;  // Color tint.
         float CollisionRadius = 0;  // Assume a circle is a good approximation of the sprite's boundary.
+
         /// <summary>
         /// Construct a sprite object.
         /// </summary>
@@ -47,6 +54,7 @@ namespace Engine {
         /// </summary>
         /// <param name="deltaTime">Time elapsed since last update, can be used to calculate value changes.</param>
         void Update(float deltaTime) override;
+
     };
 }
 #endif   // SPRITE_HPP

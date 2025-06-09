@@ -12,7 +12,6 @@ Player::Player(float x, float y, float w, float h)
         {"walk", Engine::AnimInfo(1, 6, 5, true)},
         {"death", Engine::AnimInfo(2, 6, 20, false)},
         }, "idle", 32, 32, x, y, w, h, 0.5, 0.5) {
-
 }
 
 void Player::Update(float deltaTime) {
