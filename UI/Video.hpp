@@ -32,7 +32,7 @@ namespace Engine {
         /// <summary>
         /// Draw the loaded video.
         /// </summary>
-        void Draw() const;
+        void Draw(const Point & camera) const override;
         void SetPosition(float dx, float dy);
 
     private:

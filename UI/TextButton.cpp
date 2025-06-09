@@ -73,12 +73,12 @@ void TextButton::Update(float deltaTime) {
     }
 }
 
-void TextButton::Draw() const {
+void TextButton::Draw(const Point & camera) const {
     al_draw_filled_rectangle(Position.x, Position.y, Position.x + Size.x, Position.y + Size.y, al_map_rgba(0, 0, 0, 0));
     //al_draw_filled_rectangle(Position.x, Position.y, Position.x + Size.x, Position.y + Size.y, al_map_rgb(0, 0, 255)); // blue
 
-    bevelLabel.Draw();
-    label.Draw();
+    bevelLabel.Draw(camera);
+    label.Draw(camera);
 }
 
 void TextButton::SetLabelPosition(float x) {

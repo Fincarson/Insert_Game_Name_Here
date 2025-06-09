@@ -73,7 +73,7 @@ class MenuScene final : public Engine::IScene {
 
 public:
     void Initialize() override;
-    void Draw() const override;
+    void Draw(const Engine::Point & camera) const override;
     void Update(float deltaTime) override;
 
     void PlayOnClick(int stage);

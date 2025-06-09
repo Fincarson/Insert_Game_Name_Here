@@ -67,7 +67,7 @@ public:
         }
     }
 
-    void Draw() const override {
+    void Draw(const Engine::Point & camera) const override {
         // save old clipping rectangle
         int oldX, oldY, oldW, oldH;
         al_get_clipping_rectangle(&oldX, &oldY, &oldW, &oldH);

@@ -44,7 +44,7 @@ namespace Engine {
         }
     }
 
-    void Video::Draw() const {
+    void Video::Draw(const Point & camera) const {
         al_draw_scaled_bitmap(
             bmp.get(),
             cur_sx,            // updated per‐frame offset X
