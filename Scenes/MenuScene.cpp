@@ -73,7 +73,7 @@ void MenuScene::Initialize() {
 
     const float btnW = 350.0f;
     const float btnH = 100.f;
-    const float startX = panelWidth * 0.1f;
+    startX = panelWidth * 0.1f;
     float y = 200.f;
     const float spacing = 110.f;
 
@@ -105,7 +105,11 @@ void MenuScene::Initialize() {
     settingsButton->SetLabelPosition(OFFSCREEN_X);
     settingsButton->SetBevelLabelPosition(OFFSCREEN_X);
     AddNewControlObject(settingsButton);
-    settingsButton->SetOnClickCallback([this](){isScrolling = true;});
+    // settingsButton->SetOnClickCallback([this](){isScrolling = true;});
+    settingsButton->SetOnClickCallback([this](){
+        std::cout << "[DEBUG] Entering SettingsOnClick\n";
+        this->SettingsOnClick(1);
+    });
 
     ++idx; y += spacing;
     // LEADERBOARD BUTTON
@@ -206,22 +210,39 @@ void MenuScene::Update(float deltaTime) {
         scrollOffset -= scrollSpeed * deltaTime;
         if (scrollOffset < scrollTarget)
             scrollOffset = scrollTarget;
+
+        for (int i = 0; i < 5; ++i) {
+            if (menuTime > menuButtons[i].delay) {
+                if (menuButtons[i].animX > menuButtons[i].targetX) {
+                    menuButtons[i].animX -= SLIDE_SPEED;
+                    if (menuButtons[i].animX < menuButtons[i].targetX)
+                        menuButtons[i].animX = menuButtons[i].targetX;
+
+                    // Sync button and label positions (Y position must be updated)
+                    menuButtons[i].btn->SetPosition(menuButtons[i].animX);
+                    menuButtons[i].btn->SetLabelPosition(menuButtons[i].animX);  // Label Y is now synced
+                    menuButtons[i].btn->SetBevelLabelPosition(menuButtons[i].animX); // Same for shadow label
+                }
+            }
+        }
     }
     wobbleTime += deltaTime;
     menuTime += deltaTime;
 
-    // Slide in all buttons after fade, based on their delay
-    for (int i = 0; i < 5; ++i) {
-        if (menuTime > menuButtons[i].delay) {
-            if (menuButtons[i].animX < menuButtons[i].targetX) {
-                menuButtons[i].animX += SLIDE_SPEED;
-                if (menuButtons[i].animX > menuButtons[i].targetX)
-                    menuButtons[i].animX = menuButtons[i].targetX;
+    if (!isScrolling) {
+        // Slide in all buttons after fade, based on their delay
+        for (int i = 0; i < 5; ++i) {
+            if (menuTime > menuButtons[i].delay) {
+                if (menuButtons[i].animX < menuButtons[i].targetX) {
+                    menuButtons[i].animX += SLIDE_SPEED;
+                    if (menuButtons[i].animX > menuButtons[i].targetX)
+                        menuButtons[i].animX = menuButtons[i].targetX;
 
-                // Sync button and label positions (Y position must be updated)
-                menuButtons[i].btn->SetPosition(menuButtons[i].animX);
-                menuButtons[i].btn->SetLabelPosition(menuButtons[i].animX);  // Label Y is now synced
-                menuButtons[i].btn->SetBevelLabelPosition(menuButtons[i].animX); // Same for shadow label
+                    // Sync button and label positions (Y position must be updated)
+                    menuButtons[i].btn->SetPosition(menuButtons[i].animX);
+                    menuButtons[i].btn->SetLabelPosition(menuButtons[i].animX);  // Label Y is now synced
+                    menuButtons[i].btn->SetBevelLabelPosition(menuButtons[i].animX); // Same for shadow label
+                }
             }
         }
     }
@@ -251,6 +272,14 @@ void MenuScene::Update(float deltaTime) {
 void MenuScene::PlayOnClick(int stage) {
     std::cout << "Changing Scene...\n";
     Engine::GameEngine::GetInstance().ChangeScene("play");      // NEED TERMINATE FUNCTION
+}
+
+void MenuScene::SettingsOnClick(float deltaTime) {
+    std::cout << "Settings Scene...\n";
+    isScrolling = true;
+    for (int i = 0; i < 5; ++i) {
+        menuButtons[i].targetX = OFFSCREEN_X;
+    }
 }
 
 void MenuScene::Terminate() {
