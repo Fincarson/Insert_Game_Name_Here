@@ -3,11 +3,11 @@
 
 #include "Engine/Point.hpp"
 #include "Sprite.hpp"
+
+#include "GameEngine.hpp"
 #include "UI/Image.hpp"
 
 namespace Engine {
-    Point defaultCamera(0, 0);
-
     Sprite::Sprite(std::string img, float x, float y, float w, float h, float anchorX, float anchorY,
                    float rotation, float vx, float vy, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 
@@ -19,9 +19,9 @@ namespace Engine {
         //     camera = playScene->GetCamera();
         // }
     }
-    void Sprite::Draw() const {
+    void Sprite::Draw(const Point & camera) const {
         al_draw_tinted_scaled_rotated_bitmap(bmp.get(), Tint, Anchor.x * GetBitmapWidth(), Anchor.y * GetBitmapHeight(),
-                                             Position.x, Position.y, Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, Flip);
+                                             Position.x - camera.x, Position.y - camera.y, Size.x / GetBitmapWidth(), Size.y / GetBitmapHeight(), Rotation, Flip);
     }
     void Sprite::Update(float deltaTime) {
         Position.x += Velocity.x * deltaTime;

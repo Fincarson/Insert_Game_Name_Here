@@ -14,13 +14,15 @@
 class Room : public Engine::Group {
 private:
     Map* map = nullptr;
-    Engine::Point spawn;
 
     void loadRoom(std::string filename);
 
 public:
     Room(std::string filename);
+    Engine::Point Spawn;
 
+    int GetRows() { return map->row; }
+    int GetCols() { return map->col; };
 };
 
 

@@ -18,7 +18,7 @@ namespace Engine {
         cur_sx = sx + sw*tick;
     }
 
-    void Video::Draw() const {
+    void Video::Draw(const Point & camera) const {
         al_draw_scaled_bitmap(bmp.get(), cur_sx, sy, sw, sh, dx, dy, dw, dh, 0);
     }
 }

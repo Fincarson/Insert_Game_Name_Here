@@ -3,7 +3,6 @@
 #include <allegro5/color.h>
 #include <string>
 
-#include "GameEngine.hpp"
 #include "Engine/Point.hpp"
 #include "Scenes/PlayScene.hpp"
 #include "UI/Image.hpp"
@@ -14,7 +13,6 @@ namespace Engine {
     /// </summary>
     class Sprite : public Image {
     protected:
-        // std::shared_ptr<Point> camera;
         static PlayScene * getPlayScene();
 
     public:
@@ -47,7 +45,7 @@ namespace Engine {
         /// Draw to window display.
         /// This is called when the game should redraw the window.
         /// </summary>
-        void Draw() const override;
+        void Draw(const Point & camera) const override;
         /// <summary>
         /// Run game logic such as updating the world, checking for collision, and so on.
         /// This is called when the game should update its logic, usually 'fps' times per second.

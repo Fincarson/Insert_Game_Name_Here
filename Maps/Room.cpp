@@ -39,7 +39,7 @@ void Room::loadRoom(std::string filename) {
 
                 case 'P': // Spawn Point
                     mapVec[i][j] = FLOOR;
-                spawn = Engine::Point(j, i);
+                Spawn = Engine::Point(j, i);
                 break;
 
                 default:

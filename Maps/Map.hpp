@@ -21,6 +21,8 @@ enum Tile {
 
 
 class Map : public Engine::IObject {
+    friend class Room;
+
 protected:
     int row;
     int col;
@@ -36,7 +38,7 @@ public:
     Map(std::string assetsPath, int sourceTileSize,
         int row, int col, std::vector<std::vector<Tile>> mapVec);
 
-    void Draw() const override;
+    void Draw(const Engine::Point & camera) const override;
 
     virtual void generateMapOffset() = 0;  // Abstract method to load the spritesheet offset of each tile.
 

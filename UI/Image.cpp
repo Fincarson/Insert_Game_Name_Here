@@ -24,9 +24,9 @@ namespace Engine {
             bmp = Resources::GetInstance().GetBitmap(img, Size.x, Size.y);
         }
     }
-    void Image::Draw() const {
+    void Image::Draw(const Point & camera) const {
         al_draw_scaled_bitmap(bmp.get(), 0, 0, GetBitmapWidth(), GetBitmapHeight(),
-                              Position.x - Anchor.x * Size.x, Position.y - Anchor.y * Size.y,
+                              Position.x - Anchor.x * Size.x - camera.x, Position.y - Anchor.y * Size.y - camera.y,
                               Size.x, Size.y, 0);
     }
     int Image::GetBitmapWidth() const {

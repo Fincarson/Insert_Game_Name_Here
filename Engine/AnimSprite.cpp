@@ -23,17 +23,15 @@ namespace Engine {
         SetAnimation(initAnim);
     }
 
-    void AnimSprite::Draw() const {
+    void AnimSprite::Draw(const Point & camera) const {
         auto& curAnim = itCurAnim->second;
-
-        std::cout << Position.x << ", " << Position.y << "\n";
 
         al_draw_tinted_scaled_rotated_bitmap_region(
             bmp.get(),
             curFrame * sw, curAnim.yOffset * sh, sw, sh,  // Source pos
             Tint,
             Anchor.x * sw, Anchor.y * sh,
-            Position.x, Position.y,  // Destination pos
+            Position.x - camera.x, Position.y - camera.y,  // Destination pos
             Size.x / sw, Size.y / sh, Rotation, Flip);
     }
 

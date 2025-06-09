@@ -24,7 +24,7 @@ public:
     TextButton(std::string text, float x, float y, float w, float h, float anchorX, float anchorY,
         std::string font = "Minecraft.ttf");
 
-    void Draw() const override;
+    void Draw(const Engine::Point & camera) const override;
     void Update(float deltaTime) override;
 };
 

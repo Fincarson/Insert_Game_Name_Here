@@ -20,10 +20,10 @@ TextButton::TextButton(std::string text, float x, float y, float w, float h, flo
     labelOriginalPos = label.Position.y;
 }
 
-void TextButton::Draw() const {
-    ImageButton::Draw();
-    bevelLabel.Draw();
-    label.Draw();
+void TextButton::Draw(const Engine::Point & camera) const {
+    ImageButton::Draw(camera);
+    bevelLabel.Draw(camera);
+    label.Draw(camera);
 }
 
 void TextButton::Update(float deltaTime) {

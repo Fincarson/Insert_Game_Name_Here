@@ -14,11 +14,11 @@ Slider::Slider(float x, float y, float w, float h)
     Position.y += h / 2;
     Anchor = Engine::Point(0.5, 0.5);
 }
-void Slider::Draw() const {
-    Bar.Draw();
-    End1.Draw();
-    End2.Draw();
-    ImageButton::Draw();
+void Slider::Draw(const Engine::Point & camera) const {
+    Bar.Draw(camera);
+    End1.Draw(camera);
+    End2.Draw(camera);
+    ImageButton::Draw(camera);
 }
 void Slider::SetOnValueChangedCallback(std::function<void(float value)> onValueChangedCallback) {
     OnValueChangedCallback = onValueChangedCallback;

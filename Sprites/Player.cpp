@@ -12,7 +12,7 @@ Player::Player(float x, float y, float w, float h)
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
-        x, y, w, h, 0.5, 0.5) {
+        x, y, w, h, 0, 0) {
 }
 
 void Player::Update(float deltaTime) {

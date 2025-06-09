@@ -4,6 +4,8 @@
 
 #include "PlayScene.hpp"
 
+#include <algorithm>
+
 #include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
@@ -16,12 +18,27 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
-    camera = Engine::Point(0, 0);
-
-    AddNewObject(new Room("1-1.txt"));
-    AddNewControlObject(new Player(halfW, halfH, TILE_SIZE, TILE_SIZE));
+    AddNewObject(curRoom = new Room("1-1.txt"));
+    AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 }
 
-std::shared_ptr<Engine::Point> PlayScene::GetCamera() {
-    return std::shared_ptr<Engine::Point>(&camera);
+void PlayScene::UpdateCamera() {
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
+
+    camera = player->Position + player->Size / 2 - Engine::Point(halfW, halfH);
+    camera.x = std::clamp<float>(camera.x, 0, curRoom->GetCols() * TILE_SIZE - w);
+    camera.y = std::clamp<float>(camera.y, 0, curRoom->GetRows() * TILE_SIZE - h);
+}
+
+void PlayScene::Update(float deltaTime) {
+    IScene::Update(deltaTime);
+    UpdateCamera();
+}
+
+void PlayScene::Draw(const Engine::Point & _unused) const {
+    al_clear_to_color(al_map_rgb(24, 20, 37));
+    Group::Draw(camera);
 }

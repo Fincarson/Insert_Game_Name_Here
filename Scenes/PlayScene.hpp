@@ -9,14 +9,22 @@
 #include "Engine/IScene.hpp"
 
 
+class Room;
+class Player;
+
 class PlayScene final : public Engine::IScene {
 private:
-    Engine::Point camera;
+    Engine::Point camera = Engine::Point(0, 0);
+
+    Room * curRoom = nullptr;
+    Player * player = nullptr;
 
 public:
     void Initialize() override;
 
-    std::shared_ptr<Engine::Point> GetCamera();
+    void UpdateCamera();
+    void Update(float deltaTime) override;
+    void Draw(const Engine::Point & _unused) const override;
 };
 
 
