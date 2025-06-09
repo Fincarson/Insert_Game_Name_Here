@@ -63,6 +63,12 @@ add_executable(Insert_Game_Name_Here
         Sprites/Player.cpp
         Sprites/Player.hpp
         UI/Video.cpp
+        Maps/Map.cpp
+        Maps/Map.hpp
+        Maps/Room.cpp
+        Maps/Room.hpp
+        utility.cpp
+        utility.hpp
 )
 
 

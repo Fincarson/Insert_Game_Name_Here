@@ -6,6 +6,7 @@
 
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
+#include "Maps/Room.hpp"
 #include "Sprites/Player.hpp"
 
 void PlayScene::Initialize() {
@@ -14,5 +15,6 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
+    AddNewObject(new Room("1-1.txt"));
     AddNewObject(new Player(halfW, halfH, 100, 100));
 }
