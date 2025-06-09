@@ -86,6 +86,10 @@ add_executable(Insert_Game_Name_Here
         Engine/FadeBorder.hpp
         Scenes/IntroScene.cpp
         Scenes/IntroScene.hpp
+        Engine/MouseState.cpp
+        Engine/MouseState.hpp
+        Engine/Angle.cpp
+        Engine/Angle.hpp
 )
 
 
