@@ -17,6 +17,7 @@
 #include "LOG.hpp"
 #include "Point.hpp"
 #include "Resources.hpp"
+#include "FadeBorder.hpp"
 
 namespace Engine {
     void GameEngine::initAllegro5() {
@@ -25,12 +26,14 @@ namespace Engine {
         // Initialize add-ons.
         if (!al_init_primitives_addon()) throw Allegro5Exception("failed to initialize primitives add-on");
         al_init_font_addon();
+        al_init_primitives_addon();
+        al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
         // Use the code below if you're using a newer version or Allegro5, the code above is for compatibility.
         // if (!al_init_font_addon()) throw Allegro5Exception("failed to initialize font add-on");
         if (!al_init_ttf_addon()) throw Allegro5Exception("failed to initialize ttf add-on");
         if (!al_init_image_addon()) throw Allegro5Exception("failed to initialize image add-on");
-        // If uncommented then the images will be blurry.
-        // al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
+        // Enable antialias by linear interpolation.
+        al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
         if (!al_install_audio()) throw Allegro5Exception("failed to initialize audio add-on");
         if (!al_init_acodec_addon()) throw Allegro5Exception("failed to initialize audio codec add-on");
         if (!al_reserve_samples(reserveSamples)) throw Allegro5Exception("failed to reserve samples");
@@ -168,6 +171,7 @@ namespace Engine {
     }
     void GameEngine::draw() const {
         activeScene->Draw();
+        draw_fading_border(display, 120);
         al_flip_display();
     }
     void GameEngine::destroy() {

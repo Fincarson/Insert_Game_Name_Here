@@ -7,15 +7,11 @@
 #include <allegro5/keycodes.h>
 
 Player::Player(float x, float y, float w, float h)
-    : AnimSprite("Gurl.png", {
-        {"idle", Engine::AnimInfo(0, 4, 15, true)},
+    : AnimSprite("Gurl_1.png", {
+        {"idle", Engine::AnimInfo(0, 4, 20, true)},
         {"walk", Engine::AnimInfo(1, 6, 5, true)},
         {"death", Engine::AnimInfo(2, 6, 20, false)},
-        },
-        "idle",  // Starting animation
-        32, 32,  // Animation frame size
-        x, y, w, h
-        , 0.0f, 0.0f) {
+        }, "idle", 256, 256, x, y, w, h) {
 }
 
 void Player::Update(float deltaTime) {

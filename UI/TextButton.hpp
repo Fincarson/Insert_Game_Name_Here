@@ -1,33 +1,53 @@
-//
-// Created by Patrick on 6 Jun 2025.
-//
+// UI/TextButton.hpp
 
 #ifndef TEXTBUTTON_HPP
 #define TEXTBUTTON_HPP
+
 #include "ImageButton.hpp"
 #include "Label.hpp"
+#include <string>
+
+namespace Engine {
+
+    class TextButton : public ImageButton {
+    public:
+        /**
+         * @param text       The text to display
+         * @param x, y       Button center position
+         * @param w, h       Button width & height
+         * @param anchorX    Horizontal anchor (0=left, 0.5=center, 1=right)
+         * @param anchorY    Vertical anchor (0=top, 0.5=center, 1=bottom)
+         * @param fontName   TTF font filename (in Resources)
+         */
+        TextButton(std::string text,
+                   float x, float y,
+                   float w, float h,
+                   float anchorX, float anchorY,
+                   std::string fontName = "Minecraft.ttf");
+
+        void Update(float deltaTime) override;
+        void Draw() const override;
+        void SetPosition(float x) {Position.x = x;}
+        void SetLabelPosition(float x);
+        void SetBevelLabelPosition(float x);
+
+    private:
+        // Original label positions (for reset)
+        float _labelOrigX;
+        float _labelOrigY;
+
+        // Hover behavior settings
+        float _hoverOffsetX;
+        std::string _fontName;
+        int _normalFontSize;
+        int _hoverFontSize;
+
+        // Main text and its bevel for drop-shadow effect
+        Label label;
+        Label bevelLabel;
+    };
+
+} // namespace Engine
 
 
-class TextButton : public Engine::ImageButton {
-    /*
-     * A not-very-customizable but simple-to-use button class.
-     */
-
-private:
-    Engine::Label label;
-    Engine::Label bevelLabel;
-    std::shared_ptr<ALLEGRO_BITMAP> imgPressed;
-
-    float labelOriginalPos;
-
-public:
-    TextButton(std::string text, float x, float y, float w, float h, float anchorX, float anchorY,
-        std::string font = "Minecraft.ttf");
-
-    void Draw() const override;
-    void Update(float deltaTime) override;
-};
-
-
-
-#endif //TEXTBUTTON_HPP
+#endif // TEXTBUTTON_HPP

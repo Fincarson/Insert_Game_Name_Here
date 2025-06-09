@@ -30,6 +30,9 @@ public:
     void OnKeyDown(int keyCode) override;
     void OnKeyUp(int keyCode) override;
     void SetCollisionMap(const Map* m) { collisionMap = m; }
+    void SetPosition(float x, float y) { Position.x = x; Position.y = y; }
+    float GetX() const { return Position.x; }
+    float GetY() const { return Position.y; }
 };
 
 

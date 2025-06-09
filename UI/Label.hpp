@@ -40,6 +40,7 @@ namespace Engine {
         /// Draw text with loaded font.
         /// </summary>
         void Draw() const override;
+        void SetFont(std::shared_ptr<ALLEGRO_FONT> f) { font = f; }
         /// <summary>
         /// Return text width.
         /// </summary>
@@ -50,6 +51,7 @@ namespace Engine {
         /// </summary>
         /// <returns>Height of the text.</returns>
         int GetTextHeight() const;
+        void SetPosition(float x) {Position.x = x;}
     };
 }
 
