@@ -19,7 +19,7 @@ public:
     Textbox(float x, float y, float w = 0, float h = 0, float anchorX = 0, float anchorY = 0);
     std::string GetText() const;
 
-    void Draw() const override;
+    void Draw(const Engine::Point & camera) const override;
 
     void OnMouseDown(int button, int mx, int my) override;
     void OnMouseMove(int mx, int my) override;

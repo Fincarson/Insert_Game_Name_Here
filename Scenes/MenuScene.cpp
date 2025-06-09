@@ -133,7 +133,7 @@ void MenuScene::Initialize() {
     }
 }
 
-void MenuScene::Draw() const {
+void MenuScene::Draw(const Engine::Point & camera) const {
     IScene::Draw();
     al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
 

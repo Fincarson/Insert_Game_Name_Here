@@ -27,7 +27,7 @@ namespace Engine {
                    std::string fontName = "Minecraft.ttf");
 
         void Update(float deltaTime) override;
-        void Draw() const override;
+        void Draw(const Point & camera) const override;
         void SetPosition(float x) {Position.x = x;}
         void SetLabelPosition(float x);
         void SetBevelLabelPosition(float x);

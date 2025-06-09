@@ -75,7 +75,7 @@ namespace Engine {
         /// This is called when the game should redraw the window.
         /// Delegate the draw event to all visible objects.
         /// </summary>
-        void Draw() const override;
+        void Draw(const Point & camera) const override;
         /// <summary>
         /// Delegate the key down event to all controls.
         /// </summary>

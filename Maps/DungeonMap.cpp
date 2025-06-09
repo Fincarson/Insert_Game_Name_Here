@@ -163,7 +163,7 @@ Point DungeonMap::getHoleOffset(int i, int j){
     bool U_Floor = isFloor(i-1, j);
 
     if(up){
-        return Point(0, 0);
+        return Point(13, 9);
     }
     if(U_Floor){
         bool UL = isFloor(i-1, j-1);
@@ -173,7 +173,7 @@ Point DungeonMap::getHoleOffset(int i, int j){
         if(UR) return Point(12, 11);
         return Point(10, 12);
     }
-    return Point(0, 0);
+    return Point(13, 9);
 }
 
 

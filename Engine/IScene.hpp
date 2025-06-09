@@ -9,6 +9,7 @@ namespace Engine {
     /// Responsible for delegating draw, update, events to the objects and controls in scene.
     /// Acts like a prototype, so all initialize and terminate shouldn't be put in constructor or destructor.
     /// </summary>
+
     class IScene : public Group {
     protected:
         /// <summary>
@@ -42,7 +43,7 @@ namespace Engine {
         /// This is called when the game should redraw the window.
         /// Delegate the draw event to all visible objects.
         /// </summary>
-        void Draw() const override;
+        void Draw(const Point & camera = defaultCamera) const override;
     };
 }
 #endif   // ISCENE_HPP

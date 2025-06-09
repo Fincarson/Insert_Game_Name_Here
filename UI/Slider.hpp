@@ -18,7 +18,7 @@ public:
     const float Max = 1;
     bool Down = false;
     Slider(float x, float y, float w, float h);
-    void Draw() const override;
+    void Draw(const Engine::Point & camera) const override;
     void SetOnValueChangedCallback(std::function<void(float value)> onValueChangedCallback);
     void SetValue(float value);
     void OnMouseDown(int button, int mx, int my) override;

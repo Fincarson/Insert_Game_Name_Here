@@ -16,7 +16,7 @@ public:
     IntroScene();
     void Initialize() override;
     void Update(float dt) override;
-    void Draw() const override;    // for the fade‐rectangle overlay
+    void Draw(const Engine::Point & camera) const override;    // for the fade‐rectangle overlay
 
 private:
     Engine::Label* titleLabel;

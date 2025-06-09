@@ -4,6 +4,7 @@
 
 #include "AnimSprite.hpp"
 
+#include <iostream>
 #include <stdexcept>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/bitmap_draw.h>
@@ -14,15 +15,16 @@ namespace Engine {
         float rotation, float vx, float vy,
         unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 
-        : Sprite(img, x, y, 0, 0, anchorX, anchorY, rotation, vx, vy, r, g, b, a),
+        : Sprite(img, x, y, 0, 0, 0, 0, rotation, vx, vy, r, g, b, a),
           animations(animations), sw(sw), sh(sh) {
 
         Position = Point(x, y);
         Size = Point(w, h);
+        Anchor = Point(anchorX, anchorY);
         SetAnimation(initAnim);
     }
 
-    void AnimSprite::Draw() const {
+    void AnimSprite::Draw(const Point & camera) const {
         auto& curAnim = itCurAnim->second;
 
         al_draw_tinted_scaled_rotated_bitmap_region(
@@ -30,7 +32,7 @@ namespace Engine {
             curFrame * sw, curAnim.yOffset * sh, sw, sh,  // Source pos
             Tint,
             Anchor.x * sw, Anchor.y * sh,
-            Position.x - Anchor.x * Size.x, Position.y - Anchor.y * Size.y,  // Destination pos
+            Position.x - camera.x, Position.y - camera.y,  // Destination pos
             Size.x / sw, Size.y / sh, Rotation, Flip);
 
         // al_draw_filled_circle(Position.x, Position.y, 10, al_map_rgb(255, 0, 0));    // Un-comment for debugging player's position

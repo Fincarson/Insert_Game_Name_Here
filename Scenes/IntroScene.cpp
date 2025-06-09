@@ -66,7 +66,7 @@ void IntroScene::Update(float dt) {
     }
 }
 
-void IntroScene::Draw() const {
+void IntroScene::Draw(const Engine::Point & camera) const {
     // draw the label (on a black background, engine clears to black by default)
     IScene::Draw();
 

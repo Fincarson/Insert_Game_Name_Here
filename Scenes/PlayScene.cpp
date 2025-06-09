@@ -4,6 +4,8 @@
 
 #include "PlayScene.hpp"
 
+#include <algorithm>
+
 #include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
@@ -16,25 +18,33 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
-    // 1) Load room & add it
-    auto room = new Room("1-1.txt");
-    AddNewObject(room);
+    AddNewObject(curRoom = new Room("1-1.txt"));
+    AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
-    // 2) Convert spawn tile → world pixels
-    Engine::Point spawnTile = room->getSpawn();
-    float spawnX = spawnTile.x * TILE_SIZE;
-    float spawnY = spawnTile.y * TILE_SIZE;
+    player->SetCollisionMap(curRoom->getMap());
 
-    // 3) Center camera on player
-    camera.x = spawnX - halfW;
-    camera.y = spawnY - halfH;
-
-    // 4) Create player at spawn & hook up collisions
-    auto player = new Player(spawnX, spawnY, TILE_SIZE, TILE_SIZE);
-    player->SetCollisionMap(room->getMap());
-    AddNewControlObject(player);
 }
 
-std::shared_ptr<Engine::Point> PlayScene::GetCamera() {
-    return std::shared_ptr<Engine::Point>(&camera);
+void PlayScene::UpdateCamera() {
+    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+    int halfW = w / 2;
+    int halfH = h / 2;
+
+    // Calculate camera position.
+    camera = player->Position + player->Size / 2 - Engine::Point(halfW, halfH);
+
+    // Limit the camera to the map's boundaries.
+    camera.x = std::clamp<float>(camera.x, 0, curRoom->GetCols() * TILE_SIZE - w);
+    camera.y = std::clamp<float>(camera.y, 0, curRoom->GetRows() * TILE_SIZE - h);
+}
+
+void PlayScene::Update(float deltaTime) {
+    IScene::Update(deltaTime);
+    UpdateCamera();
+}
+
+void PlayScene::Draw(const Engine::Point & _unused) const {
+    al_clear_to_color(al_map_rgb(24, 20, 37));
+    Group::Draw(camera);
 }
