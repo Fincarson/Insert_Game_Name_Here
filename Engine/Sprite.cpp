@@ -12,7 +12,7 @@ namespace Engine {
                    float rotation, float vx, float vy, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 
         : Image(img, x, y, w, h, anchorX, anchorY), Rotation(rotation), Velocity(Point(vx, vy)),
-          Tint(al_map_rgba(r, g, b, a)), camera(&defaultCamera) {
+          Tint(al_map_rgba(r, g, b, a)) {
 
         // PlayScene* playScene = getPlayScene();
         // if (playScene) {

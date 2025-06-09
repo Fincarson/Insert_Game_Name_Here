@@ -4,6 +4,7 @@
 
 #include "AnimSprite.hpp"
 
+#include <iostream>
 #include <stdexcept>
 #include <allegro5/bitmap_draw.h>
 
@@ -13,23 +14,26 @@ namespace Engine {
         float rotation, float vx, float vy,
         unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 
-        : Sprite(img, x, y, 0, 0, anchorX, anchorY, rotation, vx, vy, r, g, b, a),
+        : Sprite(img, x, y, 0, 0, 0, 0, rotation, vx, vy, r, g, b, a),
           animations(animations), sw(sw), sh(sh) {
 
         Position = Point(x, y);
         Size = Point(w, h);
+        Anchor = Point(anchorX, anchorY);
         SetAnimation(initAnim);
     }
 
     void AnimSprite::Draw() const {
         auto& curAnim = itCurAnim->second;
 
+        std::cout << Position.x << ", " << Position.y << "\n";
+
         al_draw_tinted_scaled_rotated_bitmap_region(
             bmp.get(),
             curFrame * sw, curAnim.yOffset * sh, sw, sh,  // Source pos
             Tint,
             Anchor.x * sw, Anchor.y * sh,
-            Position.x - Anchor.x * Size.x, Position.y - Anchor.y * Size.y,  // Destination pos
+            Position.x, Position.y,  // Destination pos
             Size.x / sw, Size.y / sh, Rotation, Flip);
     }
 

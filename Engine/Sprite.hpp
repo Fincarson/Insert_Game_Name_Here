@@ -14,7 +14,7 @@ namespace Engine {
     /// </summary>
     class Sprite : public Image {
     protected:
-        std::shared_ptr<Point> camera;
+        // std::shared_ptr<Point> camera;
         static PlayScene * getPlayScene();
 
     public:
