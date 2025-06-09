@@ -4,6 +4,7 @@
 
 #include "PlayScene.hpp"
 
+#include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Maps/Room.hpp"
@@ -15,7 +16,12 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
-    AddNewObject(new Room("1-1.txt"));
+    camera = Engine::Point(0, 0);
 
-    AddNewObject(new Player(halfW, halfH, 100, 100));
+    AddNewObject(new Room("1-1.txt"));
+    AddNewControlObject(new Player(halfW, halfH, TILE_SIZE, TILE_SIZE));
+}
+
+std::shared_ptr<Engine::Point> PlayScene::GetCamera() {
+    return std::shared_ptr<Engine::Point>(&camera);
 }

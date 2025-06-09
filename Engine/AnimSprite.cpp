@@ -46,10 +46,11 @@ namespace Engine {
     }
 
     void AnimSprite::SetAnimation(std::string anim) {
-        auto& curAnim = animations.at(anim);
-        auto itCurAnim = animations.find(anim);
-        curFrameTimer = curAnim.frameDuration;
+        auto itNextAnim = animations.find(anim);
+        auto& nextAnim = itNextAnim->second;
+        curFrame = 0;
+        curFrameTimer = nextAnim.frameDuration;
 
-        this->itCurAnim = itCurAnim;
+        itCurAnim = itNextAnim;
     }
 } // Engine

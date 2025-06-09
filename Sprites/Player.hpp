@@ -1,19 +1,33 @@
+//
+// Created by Patrick on 7 Jun 2025.
+//
+
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
-
 #include "Engine/AnimSprite.hpp"
-#include <allegro5/keyboard.h>
+#include "Engine/IControl.hpp"
 
-class Player : public Engine::AnimSprite {
+
+class Player : public Engine::AnimSprite, public Engine::IControl {
+private:
+    std::map<int, bool> keyDown;
+
+    bool moving = false;
+    float accel = 150.0f;
+    float decelFac = 0.5f;
+    float maxSpeed = 500.0f;
+
 public:
     Player(float x, float y, float w, float h);
 
-    // override to handle input & movement
     void Update(float deltaTime) override;
 
-private:
-    // movement speed in pixels/sec
-    float speed = 200.0f;
+    void Movement();
+
+    void OnKeyDown(int keyCode) override;
+    void OnKeyUp(int keyCode) override;
 };
 
-#endif // PLAYER_HPP
+
+
+#endif //PLAYER_HPP
