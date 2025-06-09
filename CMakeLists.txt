@@ -92,6 +92,8 @@ add_executable(Insert_Game_Name_Here
         Engine/Angle.hpp
         Weapons/Weapon.cpp
         Weapons/Weapon.hpp
+        Bullet/Bullet.cpp
+        Bullet/Bullet.hpp
 )
 
 
