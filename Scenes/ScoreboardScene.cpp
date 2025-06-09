@@ -7,9 +7,9 @@
 #include "Engine/AudioHelper.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Point.hpp"
-#include "UI/Component/ImageButton.hpp"
-#include "UI/Component/Label.hpp"
-#include "UI/Component/Screen.hpp"
+#include "UI/ImageButton.hpp"
+#include "UI/Label.hpp"
+#include "UI/Screen.hpp"
 
 static bool bgmStarted = false;
 
