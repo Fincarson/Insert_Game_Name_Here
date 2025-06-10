@@ -10,6 +10,8 @@
 #include "Engine/IObject.hpp"
 #include "Engine/MouseState.hpp"
 
+class PlayScene;
+
 /// Base class for all weapons. Handles aiming, cooldown, and firing logic.
 class Weapon : public Engine::IObject {
 public:
@@ -38,10 +40,11 @@ protected:
     float bulletSpeed;
     int damage;
     double lastShotTime;
-    Bullet* bullet;
     Engine::Point position;
     float angle;
     int flips;
+
+    PlayScene *getPlayScene();
 };
 
 #endif //WEAPON_HPP

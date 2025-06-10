@@ -10,6 +10,7 @@
 #include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
+#include "Engine/Group.hpp"
 #include "Maps/Room.hpp"
 #include "Sprites/Player.hpp"
 
@@ -22,8 +23,8 @@ void PlayScene::Initialize() {
     AddNewObject(curRoom = new Room("1-1.txt"));
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
-    weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 10, 10);
-    AddNewObject(weapon);
+    AddNewObject(BulletGroup = new Group());
+    AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 100, 10));
 
     player->SetCollisionMap(curRoom->getMap());
 
@@ -48,10 +49,21 @@ void PlayScene::Update(float deltaTime) {
 
     weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
     UpdateCamera();
+    for (auto& obj : BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
+        Bullet* bullet = dynamic_cast<Bullet*>(obj);
+        if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
+    }
+
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {
     al_clear_to_color(al_map_rgb(24, 20, 37));
     Group::Draw(camera);
     weapon->Draw();
+    for (auto obj : BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
+        Bullet* bullet = dynamic_cast<Bullet*>(obj);
+        if (bullet && bullet->IsAlive()) {
+            bullet->Draw();
+        }
+    }
 }

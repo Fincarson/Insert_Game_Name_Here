@@ -26,6 +26,11 @@ public:
     void UpdateCamera();
     void Update(float deltaTime) override;
     void Draw(const Engine::Point & _unused) const override;
+    Group *BulletGroup;
+
+    Engine::Point GetCamera() const {
+        return camera;
+    }
 };
 
 
