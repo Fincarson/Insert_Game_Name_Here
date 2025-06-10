@@ -24,7 +24,7 @@ namespace Engine {
                    float x, float y,
                    float w, float h,
                    float anchorX, float anchorY,
-                   std::string fontName = "Minecraft.ttf");
+                   std::string fontName = "BebasNeue.ttf");
 
         void Update(float deltaTime) override;
         void Draw(const Point & camera) const override;

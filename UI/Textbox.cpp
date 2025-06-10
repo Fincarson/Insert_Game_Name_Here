@@ -10,7 +10,7 @@ Textbox::Textbox(float x, float y, float w, float h, float anchorX, float anchor
         : ImageButton("stage-select/dirt.png", "stage-select/floor.png", x, y, w, h, anchorX, anchorY) {
 
     selected = false;
-    textLabel = new Engine::Label("", "Minecraft.ttf",
+    textLabel = new Engine::Label("", "BebasNeue.ttf",
         36, x + w/2, y + h/2, 0, 0, 0, 255, 0.5, 0.5);
 }
 

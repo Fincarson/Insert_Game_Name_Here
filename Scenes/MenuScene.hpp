@@ -46,7 +46,7 @@ class MenuScene final : public Engine::IScene {
     float quitButtonX        = 0.0f,  quitButtonY        = 0.0f;
     float backButtonX        = 0.0f, backButtonY        = 0.0f;
     const float OFFSCREEN_X = -400.0f;
-    const float OFFSCREEN_X2 = 1600 + 400.0f;
+    const float OFFSCREEN_X2 = 2000.0f;
     const float SLIDE_SPEED = 600.0f;
     enum ButtonID {BTN_PLAY = 0, BTN_SETTINGS = 1, BTN_LEADERBOARD = 2, BTN_CREDITS = 3, BTN_QUIT = 4, BTN_BACK = 5, BTN_COUNT = 6};
     struct SlideButton {Engine::TextButton* btn; float originalPosX, originalPosY, targetX, animX, delay;};
