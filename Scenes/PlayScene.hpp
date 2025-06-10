@@ -9,7 +9,6 @@
 #include "Engine/IScene.hpp"
 #include "Weapons/Weapon.hpp"
 
-
 class Room;
 class Player;
 
@@ -19,7 +18,6 @@ private:
 
     Room * curRoom = nullptr;
     Player * player = nullptr;
-    Group * UIGroup = nullptr;
     Weapon * weapon = nullptr;
 
 public:

@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 #include <allegro5/allegro_primitives.h>
-
 #include "utility.hpp"
 
 Weapon::Weapon(const std::string& weaponImagePath,
@@ -12,7 +11,7 @@ Weapon::Weapon(const std::string& weaponImagePath,
                float bulletSpeed,
                int damage)
     : weaponBitmap(nullptr)
-    , bulletBitmap(nullptr)
+    , bulletPath(bulletImagePath)
     , cooldownTime(cooldown)
     , bulletSpeed(bulletSpeed)
     , damage(damage)
@@ -22,14 +21,16 @@ Weapon::Weapon(const std::string& weaponImagePath,
     , flips(0)
 {
     weaponBitmap = al_load_bitmap(weaponImagePath.c_str());
-    bulletBitmap = al_load_bitmap(bulletImagePath.c_str());
     if (weaponBitmap) std::cout << "weaponBitmap loaded\n";
-    if (bulletBitmap) std::cout << "bulletBitmap loaded\n";
 }
 
 Weapon::~Weapon() {
     if (weaponBitmap) al_destroy_bitmap(weaponBitmap);
-    if (bulletBitmap) al_destroy_bitmap(bulletBitmap);
+}
+
+void Weapon::SpawnBullet(Engine::Point point, float angle) {
+    bullet = new Bullet(bulletPath, point, angle, bulletSpeed, damage, 0);
+    std::cout << "SHOOT!!\n";
 }
 
 void Weapon::Update(const Engine::Point& newPosition) {
@@ -38,7 +39,7 @@ void Weapon::Update(const Engine::Point& newPosition) {
     // update aiming angle
     Engine::Point mousePos = MouseState::GetPosition();
     angle = Angle::Get(position, mousePos);
-    std::cout << angle << "\n";
+    // std::cout << angle << "\n";
     if (angle < M_PI_2 && angle >= -M_PI_2) flips = 0;
     else flips = 2;
 
@@ -47,7 +48,7 @@ void Weapon::Update(const Engine::Point& newPosition) {
     ALLEGRO_MOUSE_STATE mstate;
     al_get_mouse_state(&mstate);
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
-        // SpawnBullet(position, angle);
+        SpawnBullet(position, angle);
         lastShotTime = now;
     }
 }

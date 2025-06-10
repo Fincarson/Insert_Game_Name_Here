@@ -22,7 +22,7 @@ void PlayScene::Initialize() {
     AddNewObject(curRoom = new Room("1-1.txt"));
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
-    weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 10, 10, 10);
+    weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 10, 10);
     AddNewObject(weapon);
 
     player->SetCollisionMap(curRoom->getMap());

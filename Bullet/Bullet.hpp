@@ -7,7 +7,7 @@
 #include "Maps/Map.hpp"    // for collision checks
 
 /// Base bullet class: handles movement, map collision, and lifetime.
-class Bullet {
+class Bullet : public Engine::IObject {
 public:
     /// ctor: load texture, set initial position, direction, speed, damage, and owner type
     /// ownerType: e.g. 0=player, 1=enemy
