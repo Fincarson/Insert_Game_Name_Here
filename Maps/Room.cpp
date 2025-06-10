@@ -43,7 +43,6 @@ void Room::loadRoom(std::string filename) {
                 break;
 
                 default:
-                    // throw "blablabla";
                     mapVec[i][j] = FLOOR;
             }
         }

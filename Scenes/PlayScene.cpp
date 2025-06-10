@@ -41,6 +41,7 @@ void PlayScene::UpdateCamera() {
 
 void PlayScene::Update(float deltaTime) {
     IScene::Update(deltaTime);
+    curRoom->getMap()->UpdateDistMap(player->Position);
     UpdateCamera();
 }
 

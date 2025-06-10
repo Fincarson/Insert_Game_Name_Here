@@ -4,18 +4,22 @@
 
 #include "Map.hpp"
 
+#include <cmath>
+#include <queue>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/bitmap_draw.h>
 
 #include "utility.hpp"
 #include "Engine/Resources.hpp"
+#include "UI/Label.hpp"
 
 #define DRAW_HITBOX
 
 Map::Map(std::string mapAssetsPath, int sourceTileSize, int row, int col, std::vector<std::vector<Tile>> mapVec)
     : assets(Engine::Resources::GetInstance().GetBitmap(mapAssetsPath)), SOURCE_TILE_SIZE(sourceTileSize),
       row(row), col(col), mapVec(mapVec),
-      assetOffsets(row, std::vector<Engine::Point>(col, Engine::Point(0, 0))){
+      assetOffsets(row, std::vector(col, Engine::Point(0, 0))),
+      distMap(row, std::vector(col, -1)) {
 
 }
 
@@ -40,7 +44,57 @@ void Map::Draw(const Engine::Point & camera) const {
                 dx, dy, dx + TILE_SIZE, dy + TILE_SIZE,
                 al_map_rgb(0, 255, 0), 1
             );
+
+            // Pathfinding debug thing.
+            Engine::Label label(std::to_string(distMap[i][j]), "Minecraft.ttf", 32,
+                (j + 0.5) * TILE_SIZE, (i + 0.5) * TILE_SIZE, 255, 255, 255, 255, 0.5, 0.5);
+            label.Draw(camera);
+
         #endif
+        }
+    }
+}
+
+void Map::UpdateDistMap(Engine::Point playerPos, bool forceUpdate) {
+    /*
+     * Use BFS to update each tile's distance to the player.
+     */
+    Engine::Point playerTilePos = (playerPos + Engine::Point(TILE_SIZE, TILE_SIZE) / 2) / TILE_SIZE;
+    playerTilePos.x = std::floor(playerTilePos.x);
+    playerTilePos.y = std::floor(playerTilePos.y);
+
+    // Only update when the player tile pos changes or forceUpdate is true.
+    if (!forceUpdate && playerTilePos == lastPlayerTilePos) return;
+    lastPlayerTilePos = playerTilePos;
+
+    // Reset all elements of the distance map to -1.
+    for (auto& curRow : distMap) {
+        curRow.assign(col, -1);
+    }
+
+    std::queue<Engine::Point> posQueue;
+    posQueue.push(playerTilePos);
+    distMap[playerTilePos.y][playerTilePos.x] = 0;
+
+    static const std::vector DIRECTIONS = {
+        Engine::Point(0, 1), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(-1, 0)
+    };
+    static constexpr int MAX_DEPTH = 20;
+
+    while (!posQueue.empty()) {
+        Engine::Point curPos = posQueue.front();
+        posQueue.pop();
+
+        int curDepth = distMap[curPos.y][curPos.x];
+        if (curDepth > MAX_DEPTH) break;
+
+        for (auto& dir : DIRECTIONS) {
+            Engine::Point nextPos = curPos + dir;
+
+            if (isWalkable(nextPos.y, nextPos.x) && distMap[nextPos.y][nextPos.x] == -1) {
+                distMap[nextPos.y][nextPos.x] = curDepth + 1;
+                posQueue.push(nextPos);
+            }
         }
     }
 }
@@ -63,5 +117,10 @@ bool Map::isNothing(int i, int j) const {
     if(i < 0 || j < 0 || i >= row || j >= col) return true;
     if(mapVec[i][j] == NOTHING || mapVec[i][j] == HOLE) return true;
     return false;
+}
+
+bool Map::isWalkable(int i, int j) const {
+    if(i < 0 || j < 0 || i >= row || j >= col) return false;
+    return isFloor(i, j);
 }
 
