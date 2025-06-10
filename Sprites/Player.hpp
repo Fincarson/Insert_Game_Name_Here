@@ -15,6 +15,7 @@ private:
     std::map<int, bool> keyDown;
 
     bool moving = false;
+    bool inMenu = false;
     float accel = 150.0f;
     float decelFac = 0.5f;
     float maxSpeed = 500.0f;
@@ -31,6 +32,7 @@ public:
     void OnKeyUp(int keyCode) override;
     void SetCollisionMap(const Map* m) { collisionMap = m; }
     void SetPosition(float x, float y) { Position.x = x; Position.y = y; }
+    void playerInMenu(bool x) {inMenu = x;}
     float GetX() const { return Position.x; }
     float GetY() const { return Position.y; }
 };

@@ -10,6 +10,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/bitmap_draw.h>
 #include <cstddef>
 #include <cmath>
 #include <iostream>
@@ -41,6 +42,7 @@ void MenuScene::Initialize() {
     playerHomeX = (screenW/2) + 275;
     playerHomeY = (screenH/2) + 75;
     player = new Player(playerHomeX, playerHomeY, 250, 200);
+    player->playerInMenu(true);
     AddNewObject(player);
 
     // BUTTONS
@@ -269,6 +271,7 @@ void MenuScene::SettingsOnClick() {
     for (int i = 0; i < BTN_BACK; ++i)menuButtons[i].targetX = OFFSCREEN_X;
     player->SetAnimation("walk");
     scrollTargetOffset = scrollTarget;
+    player->Flip = false;
     backEnabled = true;
     playerWalk = true;
     backTimer = 0.0f;
@@ -279,6 +282,7 @@ void MenuScene::BackOnClick() {
     for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
     scrollTargetOffset = 0.0f;
     player->SetAnimation("walk");
+    player->Flip = true;
     backEnabled = false;
     playerWalk = true;
     menuTime = 0.0f;

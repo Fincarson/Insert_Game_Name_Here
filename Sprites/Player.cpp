@@ -46,6 +46,7 @@ void Player::Update(float deltaTime) {
 }
 
 void Player::Movement() {
+    if (inMenu) return;
     bool up = keyDown[ALLEGRO_KEY_W] || keyDown[ALLEGRO_KEY_UP];
     bool down = keyDown[ALLEGRO_KEY_S] || keyDown[ALLEGRO_KEY_DOWN];
     bool left = keyDown[ALLEGRO_KEY_A] || keyDown[ALLEGRO_KEY_LEFT];
