@@ -268,7 +268,6 @@ void MenuScene::PlayOnClick(int stage) {
 void MenuScene::SettingsOnClick() {
     for (int i = 0; i < BTN_BACK; ++i)menuButtons[i].targetX = OFFSCREEN_X;
     player->SetAnimation("walk");
-    player->SetFlipped(1);
     scrollTargetOffset = scrollTarget;
     backEnabled = true;
     playerWalk = true;
@@ -280,7 +279,6 @@ void MenuScene::BackOnClick() {
     for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
     scrollTargetOffset = 0.0f;
     player->SetAnimation("walk");
-    player->SetFlipped(-1);
     backEnabled = false;
     playerWalk = true;
     menuTime = 0.0f;
