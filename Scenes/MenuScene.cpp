@@ -278,6 +278,9 @@ void MenuScene::SettingsOnClick() {
     menuTime = 0.0f;
 }
 
+void MenuScene::ScoreboardOnClick() {
+}
+
 void MenuScene::BackOnClick() {
     for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
     scrollTargetOffset = 0.0f;

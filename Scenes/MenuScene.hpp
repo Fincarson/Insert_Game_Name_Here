@@ -88,6 +88,7 @@ public:
 
     void PlayOnClick(int stage);
     void SettingsOnClick();
+    void ScoreboardOnClick();
     void BackOnClick();
     void QuitOnClick();
     void Terminate() override;
