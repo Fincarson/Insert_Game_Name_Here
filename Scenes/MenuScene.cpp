@@ -12,6 +12,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <cstddef>
 #include <cmath>
+#include <iostream>
 ALLEGRO_VERTEX_DECL* MenuScene::fade_decl = nullptr;
 
 void MenuScene::Initialize() {
@@ -49,7 +50,7 @@ void MenuScene::Initialize() {
     leaderboardButtonX = startX; leaderboardButtonY = 420.0f;
     creditsButtonX     = startX; creditsButtonY     = 530.0f;
     quitButtonX        = startX; quitButtonY        = 640.0f;
-    backButtonX        = 120.0f;  backButtonY        = 120.0f;
+    backButtonX        = 1600 - 240.0f;  backButtonY        = 200.0f;
     playButton         = new Engine::TextButton("Play",        PlayButtonX,        PlayButtonY,        150, 100, 0.0f, 0.0f);
     settingsButton     = new Engine::TextButton("Settings",    settingsButtonX,    settingsButtonY,    220, 100, 0.0f, 0.0f);
     leaderboardButton  = new Engine::TextButton("Leaderboard", leaderboardButtonX, leaderboardButtonY, 320, 100, 0.0f, 0.0f);
@@ -111,11 +112,11 @@ void MenuScene::Initialize() {
     menuButtons[BTN_BACK].originalPosX = backButtonX;
     menuButtons[BTN_BACK].originalPosY = backButtonY;
     menuButtons[BTN_BACK].targetX      = backButtonX;
-    menuButtons[BTN_BACK].animX        = OFFSCREEN_X;
-    menuButtons[BTN_BACK].delay        = 1.7f;
-    backButton->SetPosition(OFFSCREEN_X);
-    backButton->SetLabelPosition(OFFSCREEN_X);
-    backButton->SetBevelLabelPosition(OFFSCREEN_X);
+    menuButtons[BTN_BACK].animX        = OFFSCREEN_X2;
+    menuButtons[BTN_BACK].delay        = 1.0f;
+    backButton->SetPosition(OFFSCREEN_X2);
+    backButton->SetLabelPosition(OFFSCREEN_X2);
+    backButton->SetBevelLabelPosition(OFFSCREEN_X2);
 
     AddNewControlObject(playButton);
     AddNewControlObject(settingsButton);
@@ -124,24 +125,21 @@ void MenuScene::Initialize() {
     AddNewControlObject(quitButton);
     AddNewControlObject(backButton);
 
-    playButton->SetOnClickCallback([this](){Engine::GameEngine::GetInstance().ChangeScene("play");});
+    playButton->SetOnClickCallback([this](){
+        std::cout << "[DEBUG] Entering PlayOnClick\n";
+        this->PlayOnClick(1);
+    });
     settingsButton->SetOnClickCallback([this](){
-        for (int i = 0; i < BTN_BACK; ++i)menuButtons[i].targetX = OFFSCREEN_X;
-        player->SetAnimation("walk");
-        scrollTargetOffset = scrollTarget;
-        backEnabled = true;
-        playerWalk = true;
-        backTimer = 0.0f;
-        menuTime = 0.0f;
-
+        std::cout << "[DEBUG] Entering SettingsOnClick\n";
+        this->SettingsOnClick();
     });
     backButton->SetOnClickCallback([this]() {
-        for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
-        scrollTargetOffset = 0.0f;
-        player->SetAnimation("walk");
-        backEnabled = false;
-        playerWalk = true;
-        menuTime = 0.0f;
+        std::cout << "[DEBUG] Entering BackOnClick\n";
+        this->BackOnClick();
+    });
+    quitButton->SetOnClickCallback([this]() {
+        std::cout << "[DEBUG] Entering QuitOnClick\n";
+        this->QuitOnClick();
     });
 
     if (!fade_decl) {
@@ -228,11 +226,11 @@ void MenuScene::Update(float deltaTime) {
             sb.btn->SetBevelLabelPosition(sb.animX);
         }
     }
-    
+
     // ─── Back button ────────────────────────────
     auto &b = menuButtons[BTN_BACK];
     // only slide in after we've armed it AND waited for backTimer
-    float destX = (backEnabled && backTimer >= b.delay) ? b.targetX : OFFSCREEN_X;
+    float destX = (backEnabled && backTimer >= b.delay) ? b.targetX : OFFSCREEN_X2;
     if (b.animX != destX) {
         float dir = (destX > b.animX) ? +1.f : -1.f;
         b.animX += dir * SLIDE_SPEED * deltaTime;
@@ -264,6 +262,31 @@ void MenuScene::Update(float deltaTime) {
     }
 }
 
-void MenuScene::PlayOnClick(int stage) {}
-void MenuScene::SettingsOnClick(float deltaTime) {}
+void MenuScene::PlayOnClick(int stage) {
+    Engine::GameEngine::GetInstance().ChangeScene("play");
+}
+void MenuScene::SettingsOnClick() {
+    for (int i = 0; i < BTN_BACK; ++i)menuButtons[i].targetX = OFFSCREEN_X;
+    player->SetAnimation("walk");
+    scrollTargetOffset = scrollTarget;
+    backEnabled = true;
+    playerWalk = true;
+    backTimer = 0.0f;
+    menuTime = 0.0f;
+}
+
+void MenuScene::BackOnClick() {
+    for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
+    scrollTargetOffset = 0.0f;
+    player->SetAnimation("walk");
+    backEnabled = false;
+    playerWalk = true;
+    menuTime = 0.0f;
+}
+
+void MenuScene::QuitOnClick() {
+    Terminate();
+    exit(1);
+}
+
 void MenuScene::Terminate() {}
