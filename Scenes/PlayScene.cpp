@@ -5,6 +5,7 @@
 #include "PlayScene.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 #include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
@@ -20,6 +21,9 @@ void PlayScene::Initialize() {
 
     AddNewObject(curRoom = new Room("1-1.txt"));
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+    weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 10, 10, 10);
+    AddNewObject(weapon);
 
     player->SetCollisionMap(curRoom->getMap());
 
@@ -41,10 +45,13 @@ void PlayScene::UpdateCamera() {
 
 void PlayScene::Update(float deltaTime) {
     IScene::Update(deltaTime);
+
+    weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
     UpdateCamera();
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {
     al_clear_to_color(al_map_rgb(24, 20, 37));
     Group::Draw(camera);
+    weapon->Draw();
 }

@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "Engine/IScene.hpp"
+#include "Weapons/Weapon.hpp"
 
 
 class Room;
@@ -18,6 +19,8 @@ private:
 
     Room * curRoom = nullptr;
     Player * player = nullptr;
+    Group * UIGroup = nullptr;
+    Weapon * weapon = nullptr;
 
 public:
     void Initialize() override;

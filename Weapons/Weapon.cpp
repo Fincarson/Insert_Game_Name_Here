@@ -1,5 +1,10 @@
 #include "Weapon.hpp"
+
+#include <cmath>
+#include <iostream>
 #include <allegro5/allegro_primitives.h>
+
+#include "utility.hpp"
 
 Weapon::Weapon(const std::string& weaponImagePath,
                const std::string& bulletImagePath,
@@ -14,9 +19,12 @@ Weapon::Weapon(const std::string& weaponImagePath,
     , lastShotTime(0.0)
     , position(0, 0)
     , angle(0.0f)
+    , flips(0)
 {
     weaponBitmap = al_load_bitmap(weaponImagePath.c_str());
     bulletBitmap = al_load_bitmap(bulletImagePath.c_str());
+    if (weaponBitmap) std::cout << "weaponBitmap loaded\n";
+    if (bulletBitmap) std::cout << "bulletBitmap loaded\n";
 }
 
 Weapon::~Weapon() {
@@ -25,31 +33,38 @@ Weapon::~Weapon() {
 }
 
 void Weapon::Update(const Engine::Point& newPosition) {
+    // std::cout << "UPDATING WEAPON\n";
     position = newPosition;
     // update aiming angle
     Engine::Point mousePos = MouseState::GetPosition();
     angle = Angle::Get(position, mousePos);
+    std::cout << angle << "\n";
+    if (angle < M_PI_2 && angle >= -M_PI_2) flips = 0;
+    else flips = 2;
 
     // handle firing
     double now = al_get_time();
     ALLEGRO_MOUSE_STATE mstate;
     al_get_mouse_state(&mstate);
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
-        SpawnBullet(position, angle);
+        // SpawnBullet(position, angle);
         lastShotTime = now;
     }
 }
 
 void Weapon::Draw() const {
     if (!weaponBitmap) return;
+    // std::cout << "DRAWING WEAPON\n";
     // draw rotated around center
     float cx = al_get_bitmap_width(weaponBitmap) * 0.5f;
     float cy = al_get_bitmap_height(weaponBitmap) * 0.5f;
-    al_draw_rotated_bitmap(
+    float scale = TILE_SIZE / 36;
+    al_draw_scaled_rotated_bitmap(
         weaponBitmap,
         cx, cy,
         position.x, position.y,
+        scale, scale,
         angle,
-        0
+        flips
     );
 }
