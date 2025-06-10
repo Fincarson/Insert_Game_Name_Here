@@ -6,7 +6,7 @@
 #define ANIMSPRITE_HPP
 #include <map>
 #include <vector>
-
+#include <allegro5/bitmap_draw.h>
 #include "Sprite.hpp"
 
 namespace Engine {
@@ -31,6 +31,7 @@ private:
     std::map<std::string, AnimInfo>::iterator itCurAnim;
     int curFrame = 0;
     int curFrameTimer = 0;
+    int flipFlag = 0;
 
 public:
     AnimSprite(std::string img, std::map<std::string, AnimInfo> animations, std::string initAnim, int sw, int sh,
@@ -43,6 +44,8 @@ public:
     void Update(float deltaTime) override;
 
     void SetAnimation(std::string anim);
+    inline void SetFlipped(int d) {flipFlag = d < 0? ALLEGRO_FLIP_HORIZONTAL : 0;}
+
 };
 
 } // Engine

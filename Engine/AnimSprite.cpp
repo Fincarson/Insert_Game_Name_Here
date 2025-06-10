@@ -26,28 +26,31 @@ namespace Engine {
 
     void AnimSprite::Draw(const Point & camera) const {
         auto& curAnim = itCurAnim->second;
+        float sx = curFrame * sw, sy = curAnim.yOffset * sh;
 
         al_draw_tinted_scaled_rotated_bitmap_region(
-            bmp.get(),
-            curFrame * sw, curAnim.yOffset * sh, sw, sh,  // Source pos
-            Tint,
-            Anchor.x * sw, Anchor.y * sh,
-            Position.x - camera.x, Position.y - camera.y,  // Destination pos
-            Size.x / sw, Size.y / sh, Rotation, Flip);
+          bmp.get(),
+          sx, sy, sw, sh,              // source
+          Tint,
+          Anchor.x * sw, Anchor.y * sh,// pivot in source
+          Position.x - camera.x,       // pivot on screen
+          Position.y - camera.y,
+          Size.x / sw,                  // always positive scale!
+          Size.y / sh,
+          Rotation,
+          flipFlag                     // Allegro handles the mirror
+        );
 
         // al_draw_filled_circle(Position.x, Position.y, 10, al_map_rgb(255, 0, 0));    // Un-comment for debugging player's position
     }
 
     void AnimSprite::Update(float deltaTime) {
         Sprite::Update(deltaTime);
-
-        curFrameTimer--;
-        if (curFrameTimer <= 0) {
-            auto& curAnim = itCurAnim->second;
-
-            curFrameTimer = curAnim.frameDuration;
-            curFrame = (curFrame + 1) % curAnim.nFrames;
+        if (--curFrameTimer <= 0) {
+            curFrameTimer = itCurAnim->second.frameDuration;
+            curFrame = (curFrame + 1) % itCurAnim->second.nFrames;
         }
+
     }
 
     void AnimSprite::SetAnimation(std::string anim) {
