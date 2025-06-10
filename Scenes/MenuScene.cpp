@@ -7,6 +7,9 @@
 #include "UI/ImageButton.hpp"
 #include "UI/TextButton.hpp"
 #include "UI/Video.hpp"
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include <cstddef>
 #include <cmath>
 ALLEGRO_VERTEX_DECL* MenuScene::fade_decl = nullptr;
@@ -16,8 +19,17 @@ void MenuScene::Initialize() {
     screenW = Engine::GameEngine::GetInstance().GetScreenSize().x;
     screenH = Engine::GameEngine::GetInstance().GetScreenSize().y;
 
+    //AUDIO
+    al_init();
+    al_install_audio();
+    al_init_acodec_addon();
+    al_reserve_samples(1);
+    music = al_load_sample("ThoseWhoRemain.ogg");
+    Music = al_create_sample_instance(music);
+    al_set_sample_instance_playmode(Music, ALLEGRO_PLAYMODE_LOOP);
+
     // BACKGROUND
-    rainEffect = new RainEffect(rainPosX, rainPosY, 370, 300);
+    rainEffect = new RainEffect(rainPosX, rainPosY, 370, 320);
     background = new Engine::Video("menu_background.png", 0, 0, 1920, 1080, 0,    0, screenW, screenH, 12);
     background1 = new Engine::Video("menu_background_1.png", 0, 0, 1920, 1080, 2325, 0, screenW, screenH, 12);
     AddNewObject(rainEffect);
@@ -38,12 +50,12 @@ void MenuScene::Initialize() {
     creditsButtonX     = startX; creditsButtonY     = 530.0f;
     quitButtonX        = startX; quitButtonY        = 640.0f;
     backButtonX        = 120.0f;  backButtonY        = 120.0f;
-    playButton        = new Engine::TextButton("Play",        PlayButtonX,        PlayButtonY,        150, 100, 0.0f, 0.0f);
-    settingsButton    = new Engine::TextButton("Settings",    settingsButtonX,    settingsButtonY,    220, 100, 0.0f, 0.0f);
-    leaderboardButton = new Engine::TextButton("Leaderboard", leaderboardButtonX, leaderboardButtonY, 320, 100, 0.0f, 0.0f);
-    creditsButton     = new Engine::TextButton("Credits",     creditsButtonX,     creditsButtonY,     200, 100, 0.0f, 0.0f);
-    quitButton        = new Engine::TextButton("Quit",        quitButtonX,        quitButtonY,        150, 100, 0.0f, 0.0f);
-    backButton        = new Engine::TextButton("Back",        backButtonX,        backButtonY,        150, 100, 0.0f, 0.0F);
+    playButton         = new Engine::TextButton("Play",        PlayButtonX,        PlayButtonY,        150, 100, 0.0f, 0.0f);
+    settingsButton     = new Engine::TextButton("Settings",    settingsButtonX,    settingsButtonY,    220, 100, 0.0f, 0.0f);
+    leaderboardButton  = new Engine::TextButton("Leaderboard", leaderboardButtonX, leaderboardButtonY, 320, 100, 0.0f, 0.0f);
+    creditsButton      = new Engine::TextButton("Credits",     creditsButtonX,     creditsButtonY,     200, 100, 0.0f, 0.0f);
+    quitButton         = new Engine::TextButton("Quit",        quitButtonX,        quitButtonY,        150, 100, 0.0f, 0.0f);
+    backButton         = new Engine::TextButton("Back",        backButtonX,        backButtonY,        150, 100, 0.0f, 0.0F);
 
     menuButtons[BTN_PLAY].btn          = playButton;
     menuButtons[BTN_PLAY].originalPosX = PlayButtonX;
@@ -114,16 +126,21 @@ void MenuScene::Initialize() {
 
     playButton->SetOnClickCallback([this](){Engine::GameEngine::GetInstance().ChangeScene("play");});
     settingsButton->SetOnClickCallback([this](){
-        for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = OFFSCREEN_X;
-        menuButtons[BTN_BACK].targetX = backButtonX;
+        for (int i = 0; i < BTN_BACK; ++i)menuButtons[i].targetX = OFFSCREEN_X;
+        player->SetAnimation("walk");
         scrollTargetOffset = scrollTarget;
         backEnabled = true;
+        playerWalk = true;
+        backTimer = 0.0f;
         menuTime = 0.0f;
+
     });
     backButton->SetOnClickCallback([this]() {
         for (int i = 0; i < BTN_BACK; ++i) menuButtons[i].targetX = menuButtons->originalPosX;
         scrollTargetOffset = 0.0f;
+        player->SetAnimation("walk");
         backEnabled = false;
+        playerWalk = true;
         menuTime = 0.0f;
     });
 
@@ -149,19 +166,33 @@ void MenuScene::Draw(const Engine::Point & camera) const {
     constexpr float freqX = 0.25f;
     constexpr float ampX  = 30.f;
     float ox = std::cos(wobbleTime * freqX) * ampX;
-    float barX = bg2HomeX + scrollOffset + ox - 725.0f;
-    al_draw_filled_rectangle(barX, 0, barX + 725.0f, (float)screenH, al_map_rgb(0,0,0));
+    float barX = bg2HomeX + scrollOffset + ox - 760.0f;
+    al_draw_filled_rectangle(barX, 0, barX + 790.0f, (float)screenH, al_map_rgb(0,0,0));
 
     constexpr int fadeWidth   = 125;
     constexpr int stripeWidth = 20;
+    // Fade‐stripes that follow the room pan
+    float dx1 = scrollOffset;
+    float dx2 = bg2HomeX + scrollOffset;
     for (int i = 0; i < fadeWidth; i += stripeWidth) {
         float alpha = 1.0f - float(i) / float(fadeWidth);
-        ALLEGRO_COLOR col = al_map_rgba_f(0, 0, 0, alpha);
-
-        al_draw_filled_rectangle((float)i, 0, i + stripeWidth, H, col);
-        al_draw_filled_rectangle(W - i - stripeWidth, 0, W - i, H, col);
-        al_draw_filled_rectangle(0, i, W, i + stripeWidth, col);
-        al_draw_filled_rectangle(0, H - i - stripeWidth, W, H - i, col);
+        ALLEGRO_COLOR col = al_map_rgba_f(0,0,0,alpha);
+        // left‐edge main room
+        al_draw_filled_rectangle(dx1 + i, 0, dx1 + i + stripeWidth, H, col);
+        // left‐edge next room
+        al_draw_filled_rectangle(dx2 + i, 0, dx2 + i + stripeWidth, H, col);
+        // right‐edge main room
+        al_draw_filled_rectangle(dx1 + W - i - stripeWidth, 0, dx1 + W - i, H, col);
+        // right‐edge next room
+        al_draw_filled_rectangle(dx2 + W - i - stripeWidth, 0, dx2 + W - i, H, col);
+        // top‐edge main room
+        al_draw_filled_rectangle(dx1, i, dx1 + W, i + stripeWidth, col);
+        // top‐edge next room
+        al_draw_filled_rectangle(dx2, i, dx2 + W, i + stripeWidth, col);
+        // bottom‐edge main room
+        al_draw_filled_rectangle(dx1, H - i - stripeWidth, dx1 + W, H - i, col);
+        // bottom‐edge next room
+        al_draw_filled_rectangle(dx2, H - i - stripeWidth, dx2 + W, H - i, col);
     }
 }
 
@@ -169,7 +200,11 @@ void MenuScene::Update(float deltaTime) {
     float delta = scrollTargetOffset - scrollOffset;
     if (fabs(delta) > deltaTime * scrollSpeed) scrollOffset += copysign(scrollSpeed * deltaTime, delta);
     else scrollOffset = scrollTargetOffset;
-
+    if (backEnabled) backTimer += deltaTime;
+    if (playerWalk && std::fabs(scrollOffset - scrollTargetOffset) < 1e-1f) {
+        player->SetAnimation("idle");
+        playerWalk = false;
+    }
     background ->SetPosition(bg1HomeX + scrollOffset, bg1HomeY);
     background1->SetPosition(bg2HomeX + scrollOffset, bg2HomeY);
     rainEffect->SetPosition(rainPosX + scrollOffset, rainPosY);
@@ -195,19 +230,17 @@ void MenuScene::Update(float deltaTime) {
     }
     
     // ─── Back button ────────────────────────────
-    if (backEnabled) {
-        auto &b = menuButtons[BTN_BACK];
-        if (menuTime >= b.delay && b.animX < b.targetX) {
-            b.animX += SLIDE_SPEED * deltaTime;
-            if (b.animX > b.targetX) b.animX = b.targetX;
-        }
-    } else menuButtons[BTN_BACK].animX = OFFSCREEN_X;
     auto &b = menuButtons[BTN_BACK];
+    // only slide in after we've armed it AND waited for backTimer
+    float destX = (backEnabled && backTimer >= b.delay) ? b.targetX : OFFSCREEN_X;
+    if (b.animX != destX) {
+        float dir = (destX > b.animX) ? +1.f : -1.f;
+        b.animX += dir * SLIDE_SPEED * deltaTime;
+        if ((dir>0 && b.animX>destX) || (dir<0 && b.animX<destX)) b.animX = destX;
+    }
     b.btn->SetPosition(b.animX);
     b.btn->SetLabelPosition(b.animX);
     b.btn->SetBevelLabelPosition(b.animX);
-
-
 
     // Background wobble
     constexpr float freqX = 0.25f, freqY = 0.45f;
@@ -218,7 +251,7 @@ void MenuScene::Update(float deltaTime) {
 
     background ->SetPosition(bg1HomeX + scrollOffset + ox,bg1HomeY + oy);
     background1->SetPosition(bg2HomeX + scrollOffset + ox, bg2HomeY +  oy);
-    rainEffect->SetPosition(rainPosX + ox, rainPosY + oy);
+    rainEffect->SetPosition(rainPosX + scrollOffset + ox, rainPosY + oy);
     float spacerX = (1920.0f + scrollOffset);
     al_draw_filled_rectangle(spacerX, 0, spacerX + 810.0f, 1080, al_map_rgb(0,0,0));
     player->SetPosition(playerHomeX + ox, playerHomeY + oy);

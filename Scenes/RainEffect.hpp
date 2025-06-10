@@ -33,21 +33,17 @@ public:
     {}
 
     // rain only in [x,y] .. [x+w, y+h]
-    RainEffect(int x, int y, int w, int h, size_t count = 60)
+    RainEffect(int x, int y, int w, int h, size_t count = 90)
       : _clipX(x), _clipY(y), _clipW(w), _clipH(h)
     {
         std::srand(static_cast<unsigned>(std::time(nullptr)));
         drops.reserve(count);
 
-        auto scrf = Engine::GameEngine::GetInstance().GetScreenSize();
-        int scrW = static_cast<int>(scrf.x);
-        int scrH = static_cast<int>(scrf.y);
-
         for (size_t i = 0; i < count; ++i) {
             // spawn within clip region
             float rx = static_cast<float>(_clipX + std::rand() % _clipW);
             float ry = static_cast<float>(_clipY + std::rand() % _clipH);
-            drops.push_back({ rx, ry, 150.f + static_cast<float>(std::rand() % 300) });
+            drops.push_back({ rx, ry, 1000.f + static_cast<float>(std::rand() % 300) });
         }
     }
 
@@ -83,7 +79,7 @@ public:
             al_draw_line(
                 drawX, drawY,
                 drawX + len * slope, drawY + len,
-                al_map_rgb(200, 200, 255), 2.0
+                al_map_rgb(200, 200, 255), 1.0
             );
         }
 

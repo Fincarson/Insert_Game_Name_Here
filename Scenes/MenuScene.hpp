@@ -12,12 +12,19 @@
 #include "UI/ImageButton.hpp"
 #include "UI/TextButton.hpp"
 #include "UI/Video.hpp"
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_primitives.h>
 
 class MenuScene final : public Engine::IScene {
     // SCREEN
     float screenW = Engine::GameEngine::GetInstance().GetScreenSize().x;
     float screenH = Engine::GameEngine::GetInstance().GetScreenSize().y;
+
+    // AUDIO
+    ALLEGRO_SAMPLE* music = nullptr;
+    ALLEGRO_SAMPLE_INSTANCE* Music = nullptr;
 
     // PLAYER
     Player* player = nullptr;
@@ -53,7 +60,7 @@ class MenuScene final : public Engine::IScene {
     float wobbleTime = 0.0f;
 
     // RAIN EFFECT
-    int rainPosX = 1050, rainPosY = 225;
+    int rainPosX = 1050, rainPosY = 210;
     RainEffect* rainEffect = nullptr;
 
     // TRANSITIONS
@@ -67,10 +74,11 @@ class MenuScene final : public Engine::IScene {
     float fadeTimer = 0.0f;
     float scrollOffset = 0.0f;
     float menuTime = 0.0f;
+    float backTimer = 0.0f;
     bool buttonsMoving = false;
     bool showMenu = true;
     bool backEnabled = false;
-
+    bool playerWalk = false;
 
 public:
     void Initialize() override;
