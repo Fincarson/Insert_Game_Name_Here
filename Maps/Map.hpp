@@ -43,9 +43,11 @@ public:
     void Draw(const Engine::Point & camera) const override;
     void UpdateDistMap(Engine::Point playerPos, bool forceUpdate = false);
 
-    virtual void generateMapOffset() = 0;  // Abstract method to load the spritesheet offset of each tile.
+    virtual void generateMapOffset();  // Abstract method to load the spritesheet offset of each tile.
 
     Tile GetTile(int x, int y) const;
+    float GetDist(Engine::Point pos) const;
+
     bool isWall(int i, int j) const;
     bool isFloor(int i, int j) const;
     bool isNothing(int i, int j) const;
