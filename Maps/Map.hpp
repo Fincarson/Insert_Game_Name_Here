@@ -46,7 +46,7 @@ public:
     virtual void generateMapOffset();  // Abstract method to load the spritesheet offset of each tile.
 
     Tile GetTile(int x, int y) const;
-    float GetDist(Engine::Point pos) const;
+    int GetDist(Engine::Point tilePos) const;
 
     bool isWall(int i, int j) const;
     bool isFloor(int i, int j) const;

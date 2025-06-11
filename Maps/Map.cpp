@@ -104,31 +104,10 @@ void Map::generateMapOffset() {
 
 Tile Map::GetTile(int x, int y) const { return mapVec[y][x]; }
 
-float Map::GetDist(Engine::Point pos) const {
-    // float tileX = (pos.x) / TILE_SIZE;
-    // float neighborX = tileX;
-    // if (pos.x - std::floor(pos.x) > 0.5) neighborX = (pos.x + 1) / TILE_SIZE;
-    // if (pos.x - std::floor(pos.x) < 0.5) neighborX = (pos.x - 1) / TILE_SIZE;
-    //
-    // float tileY = (pos.y) / TILE_SIZE;
-    // float neighborY = tileY;
-    // if (pos.y - std::floor(pos.y) > 0.5) neighborY = (pos.y + 1) / TILE_SIZE;
-    // if (pos.y - std::floor(pos.y) < 0.5) neighborY = (pos.y - 1) / TILE_SIZE;
-    //
-    // float blurredX = (distMap[tileX][tileY] + distMap[neighborX][tileY]) / 2;
-    // float blurredY = (distMap[tileX][tileY] + distMap[tileX][neighborY]) / 2;
-    //
-    // return (blurredX + blurredY) / 2;
-    //
-    // int x0 = std::floor(pos.x);
-    // int x1 = x0 + 1;
-
-    Engine::Point tilePos = pos / TILE_SIZE;
-
+int Map::GetDist(Engine::Point tilePos) const {
+    // Engine::Point tilePos = pos / TILE_SIZE;
     if (tilePos.x < 0 || tilePos.x >= row || tilePos.y < 0 || tilePos.y >= col) return -1;
-
     return distMap[tilePos.y][tilePos.x];
-
 }
 
 bool Map::isWall(int i, int j) const {

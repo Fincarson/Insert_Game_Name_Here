@@ -13,15 +13,16 @@ class Enemy : public Engine::AnimSprite {
 
 private:
     Map * map;
-    Engine::Point targetPos;
+    Player * player;
+    std::list<Engine::Point> path;
 
 public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
-        const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, Map * map);
+        const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, Map * map, Player * player);
 
     void Update(float deltaTime) override;
-    void FindNextTarget();
-
+    void Pathfind();
+    void Draw(const Engine::Point &camera) const override;
 };
 
 

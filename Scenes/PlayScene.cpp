@@ -23,7 +23,8 @@ void PlayScene::Initialize() {
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
     player->SetCollisionMap(curRoom->getMap());
-    AddNewObject(new Zombie(300, 1000, TILE_SIZE, TILE_SIZE, curRoom->getMap()));
+    AddNewObject(new Zombie(300, 1000, TILE_SIZE, TILE_SIZE, curRoom->getMap(), player));
+
 }
 
 void PlayScene::UpdateCamera() {
