@@ -5,8 +5,6 @@
 #include "PlayScene.hpp"
 
 #include <algorithm>
-#include <iostream>
-#include <allegro5/allegro_primitives.h>
 
 #include "utility.hpp"
 #include "Enemy/Zombie.hpp"
@@ -23,7 +21,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     AddNewObject(curRoom = new Room("1-1.txt"));
-    AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, 100));
+    AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
     AddNewObject(BulletGroup = new Group());
     AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
@@ -60,21 +58,6 @@ void PlayScene::Update(float deltaTime) {
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
     }
-
-    // WIP
-    /*player->UpdateCooldown(deltaTime);
-    for (auto& obj : EnemyGroup->GetObjects()) {
-        Enemy* enemy = dynamic_cast<Enemy*>(obj);
-        if (enemy && Collider::IsCollision(player, enemy) && player->CanTakeDamage()) {
-            player->ModifyHP(-10); // or any damage value
-            player->ResetDamageCooldown();
-        }
-    }*/
-
-    if (player->GetHP() <= 0) {
-        // Vincent if you wanna animate smth at losing do it here. I also updated video.cpp for slower animation
-        // Engine::GameEngine::GetInstance().ChangeScene("lose");
-    }
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {
@@ -97,7 +80,4 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
                 al_map_rgb(255, 0, 0), 2);
         }
     }
-
-    // Player's position debug
-    // al_draw_filled_circle(player->Position.x, player->Position.y, 2, al_map_rgb(255, 0, 0));
 }

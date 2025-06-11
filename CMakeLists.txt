@@ -99,6 +99,9 @@ add_executable(Insert_Game_Name_Here
         Enemy/Enemy.hpp
         Enemy/Zombie.cpp
         Enemy/Zombie.hpp
+
+        Bullet/Bullet.hpp
+        Bullet/Bullet.cpp
 )
 
 
