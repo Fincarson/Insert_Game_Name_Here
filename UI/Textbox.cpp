@@ -11,7 +11,7 @@ Textbox::Textbox(float x, float y, float w, float h, float anchorX, float anchor
 
     selected = false;
     textLabel = new Engine::Label("", "BebasNeue.ttf",
-        36, x + w/2, y + h/2, 0, 0, 0, 255, 0.5, 0.5);
+        50, x + w/2, y + h/2, 0, 0, 0, 255, 0.5, 0.5);
 }
 
 std::string Textbox::GetText() const {
