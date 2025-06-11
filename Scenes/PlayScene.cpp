@@ -5,6 +5,7 @@
 #include "PlayScene.hpp"
 
 #include <algorithm>
+#include <allegro5/allegro_primitives.h>
 
 #include "utility.hpp"
 #include "Enemy/Zombie.hpp"
@@ -20,15 +21,14 @@ void PlayScene::Initialize() {
     int halfW = w / 2;
     int halfH = h / 2;
 
+    player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
     AddNewObject(curRoom = new Room("1-1.txt"));
-    AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+    AddNewControlObject(player);
+    player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
 
-    AddNewObject(BulletGroup = new Group());
     AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
     player->SetCollisionMap(curRoom->getMap());
-    AddNewObject(new Zombie(300, 1000, TILE_SIZE, TILE_SIZE, curRoom->getMap(), player));
-
 }
 
 void PlayScene::UpdateCamera() {
@@ -54,7 +54,7 @@ void PlayScene::Update(float deltaTime) {
     weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
     curRoom->getMap()->UpdateDistMap(player->Position);
     UpdateCamera();
-    for (auto& obj : BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
+    for (auto& obj : curRoom->BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
     }
@@ -64,10 +64,10 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
     al_clear_to_color(al_map_rgb(24, 20, 37));
     Group::Draw(camera);
     weapon->Draw();
-    for (auto obj : BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
+    for (auto obj : curRoom->BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet && bullet->IsAlive()) {
-            bullet->Draw();
+            bullet->Draw(camera);
         }
     }
     // Wall debug

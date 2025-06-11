@@ -63,8 +63,9 @@ void Map::UpdateDistMap(Engine::Point playerPos, bool forceUpdate) {
     playerTilePos.x = std::floor(playerTilePos.x);
     playerTilePos.y = std::floor(playerTilePos.y);
 
-    // Only update when the player tile pos changes or forceUpdate is true.
-    if (!forceUpdate && playerTilePos == lastPlayerTilePos) return;
+    // Only update when the player tile pos changes or forceUpdate is true and player is inside the boundaries.
+    if (playerTilePos.x < 0 || playerTilePos.x >= col || playerTilePos.y < 0 || playerTilePos.y >= row ||
+       (!forceUpdate && playerTilePos == lastPlayerTilePos)) return;
     lastPlayerTilePos = playerTilePos;
 
     // Reset all elements of the distance map to -1.
@@ -106,7 +107,7 @@ Tile Map::GetTile(int x, int y) const { return mapVec[y][x]; }
 
 int Map::GetDist(Engine::Point tilePos) const {
     // Engine::Point tilePos = pos / TILE_SIZE;
-    if (tilePos.x < 0 || tilePos.x >= row || tilePos.y < 0 || tilePos.y >= col) return -1;
+    if (tilePos.x < 0 || tilePos.x >= col || tilePos.y < 0 || tilePos.y >= row) return -1;
     return distMap[tilePos.y][tilePos.x];
 }
 

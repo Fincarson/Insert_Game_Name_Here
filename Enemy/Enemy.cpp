@@ -17,6 +17,8 @@ Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInf
 
     : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, 0, 0), map(map), player(player) {
 
+    if (!map) throw std::invalid_argument("map cannot be null oi");
+    if (!player) throw std::invalid_argument("player cannot be null oi");
 }
 
 void Enemy::Update(float deltaTime) {
