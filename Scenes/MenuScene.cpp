@@ -61,7 +61,7 @@ void MenuScene::Initialize() {
     // PLAYER
     playerHomeX = (screenW/2) + 275;
     playerHomeY = (screenH/2) + 90;
-    player = new Player(playerHomeX, playerHomeY, 250, 200);
+    player = new Player(playerHomeX, playerHomeY, 250, 200, 100);   // Added hp
     player->playerInMenu(true);
     AddNewObject(player);
 

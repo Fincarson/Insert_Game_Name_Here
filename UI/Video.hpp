@@ -28,7 +28,9 @@ namespace Engine {
         /// <param name="dh">game screen height.</param>
         /// <param name="frames">how many frames in the file.</param>
         explicit Video(std::string img, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh, int frames);
+        explicit Video(std::string img, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh, int frames, int delayTime); // delayTime is for slower animation
         void Update(float deltaTime);
+        void Update(float deltaTime, int delayTime);
         /// <summary>
         /// Draw the loaded video.
         /// </summary>

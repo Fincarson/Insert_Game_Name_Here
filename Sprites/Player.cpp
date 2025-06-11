@@ -6,7 +6,7 @@
 
 #include <allegro5/keycodes.h>
 
-Player::Player(float x, float y, float w, float h)
+Player::Player(float x, float y, float w, float h, int hp)
     : AnimSprite("Gurl.png", {
         {"idle", Engine::AnimInfo(0, 4, 15, true)},
         {"walk", Engine::AnimInfo(1, 6, 5, true)},
@@ -14,7 +14,7 @@ Player::Player(float x, float y, float w, float h)
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
-        x, y, w, h, 0, 0) {
+        x, y, w, h, 0, 0), hp(hp) {
 }
 
 void Player::Update(float deltaTime) {
@@ -89,4 +89,29 @@ void Player::OnKeyDown(int keyCode) {
 
 void Player::OnKeyUp(int keyCode) {
     keyDown[keyCode] = false;
+}
+
+void Player::SetHP(int hp) {
+    this->hp = hp;  // Use "this" because someone stupid (ME) named the call variable the same with class variable
+}
+
+void Player::Hit(int damage) {
+    hp -= damage;
+}
+
+int Player::GetHP() const {
+    return hp;
+}
+
+void Player::UpdateCooldown(float deltaTime) {
+    if (damageCooldown > 0.0f)
+        damageCooldown -= deltaTime;
+}
+
+bool Player::CanTakeDamage() const {
+    return damageCooldown <= 0.0f;
+}
+
+void Player::ResetDamageCooldown() {
+    damageCooldown = 1.0f;  // In seconds
 }

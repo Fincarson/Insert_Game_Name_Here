@@ -5,12 +5,13 @@
 #include "utility.hpp"    // for TILE_SIZE
 
 /// Checks AABB‐tile collisions against any Map
-class CollisionDetector {
+class Collision {
 public:
-    CollisionDetector() = default;
+    Collision() = default;
 
     /// Returns true if (x,y) overlaps any wall or is out of bounds
-    bool isCollision(int x, int y, const Map& map) const;
+    static bool isCollision(int x, int y, const Map& map);
+    static bool IsCollision(const Engine::IObject* a, const Engine::IObject* b);
 };
 
 #endif //COLLISION_HPP

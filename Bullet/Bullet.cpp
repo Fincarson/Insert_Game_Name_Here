@@ -8,6 +8,7 @@
 #include "Engine/Group.hpp"
 #include "Engine/IObject.hpp"
 #include "Engine/IScene.hpp"
+#include "Engine/Collision.hpp"
 #include "Engine/Point.hpp"
 #include "Scenes/PlayScene.hpp"
 
@@ -45,7 +46,7 @@ void Bullet::Update(float deltaTime, const Map& map) {
     position.y += std::sin(angle) * speed * deltaTime;
 
     // Map collision: check the tile at bullet's center
-    if (map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
+    if ((map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) || (position.x <= 0 || position.y <= 0 || position.x >= map.getCol() || position.y >= map.getRow())) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
         // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
         alive = false;
         OnMapCollision();

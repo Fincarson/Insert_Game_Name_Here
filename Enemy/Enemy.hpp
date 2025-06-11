@@ -4,6 +4,7 @@
 
 #ifndef ENEMY_HPP
 #define ENEMY_HPP
+#include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
 
 

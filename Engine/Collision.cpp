@@ -1,6 +1,6 @@
 #include "Collision.hpp"
 
-bool CollisionDetector::isCollision(int x, int y, const Map& map) const {
+bool Collision::isCollision(int x, int y, const Map& map) {
     // 1) Out of map bounds?
     if (x < 0 || y < 0
      || x / TILE_SIZE >= map.getCol()
@@ -20,4 +20,12 @@ bool CollisionDetector::isCollision(int x, int y, const Map& map) const {
     if (map.isWall(bottom, right))  return true;
 
     return false;
+}
+
+bool Collision::IsCollision(const Engine::IObject* a, const Engine::IObject* b) {
+    if (!a || !b) return false;
+    return a->Position.x < b->Position.x + b->Size.x &&
+           a->Position.x + a->Size.x > b->Position.x &&
+           a->Position.y < b->Position.y + b->Size.y &&
+           a->Position.y + a->Size.y > b->Position.y;
 }

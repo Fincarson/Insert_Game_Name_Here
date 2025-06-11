@@ -30,6 +30,26 @@ namespace Engine {
         cur_sy = sy;   // usually zero
     }
 
+    Video::Video(std::string img, float sx, float sy, float sw, float sh, float dx, float dy, float dw, float dh,
+    int frames, int delayTime) : sx(sx), sy(sy), dx(dx), dy(dy), dw(dw), dh(dh),
+frames(frames), tick(0),
+elapsedTime(0.0f), frameDuration(0.35f * delayTime)
+    {
+        bmp = Resources::GetInstance().GetBitmap(img);
+
+        // ① query the full bitmap size
+        int fullW = al_get_bitmap_width(bmp.get());
+        int fullH = al_get_bitmap_height(bmp.get());
+
+        // ② compute per‐frame size
+        sw = static_cast<float>(fullW / frames);
+        sh = static_cast<float>(fullH);
+
+        // ③ initial source offset
+        cur_sx = sx;   // usually zero
+        cur_sy = sy;   // usually zerow
+    }
+
     void Video::Update(float deltaTime) {
         IObject::Update(deltaTime);
 
