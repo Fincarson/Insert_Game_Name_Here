@@ -10,7 +10,6 @@
 #include "Engine/IScene.hpp"
 #include "Engine/Collision.hpp"
 #include "Engine/Point.hpp"
-#include "Maps/Room.hpp"
 #include "Scenes/PlayScene.hpp"
 
 Bullet::Bullet(const std::string& imagePath,
@@ -54,7 +53,7 @@ void Bullet::Update(float deltaTime, const Map& map) {
     }
 }
 
-void Bullet::Draw(const Engine::Point & camera) const {
+void Bullet::Draw() const {
     auto scene = dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());  // Can't use getPlayScene() due to Draw() is const
     Engine::Point cam = scene ? scene->GetCamera() : Engine::Point(0, 0);   // Get camera position
     if (!alive || !bitmap) return;
@@ -69,7 +68,7 @@ void Bullet::Draw(const Engine::Point & camera) const {
 void Bullet::OnMapCollision() {
     // Default behavior: just deactivate
     // Override in subclasses to spawn effects
-    getPlayScene()->getCurRoom()->BulletGroup->RemoveObject(objectIterator);
+    getPlayScene()->BulletGroup->RemoveObject(objectIterator);
 }
 
 PlayScene * Bullet::getPlayScene() {

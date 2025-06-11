@@ -10,8 +10,6 @@
 #include "Engine/IScene.hpp"
 #include "Engine/Point.hpp"
 #include "Scenes/PlayScene.hpp"
-#include "Bullet/Bullet.hpp"
-#include "Maps/Room.hpp"
 
 Weapon::Weapon(const std::string& weaponImagePath,
                const std::string& bulletImagePath,
@@ -41,7 +39,7 @@ PlayScene * Weapon::getPlayScene() {
 }
 
 void Weapon::SpawnBullet(Engine::Point point, float angle) {
-    getPlayScene()->getCurRoom()->BulletGroup->AddNewObject(
+    getPlayScene()->BulletGroup->AddNewObject(
         new Bullet(bulletPath, point, angle, bulletSpeed, damage, 0));
     // std::cout << "SHOOT!!\n";
 }
