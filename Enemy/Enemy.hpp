@@ -17,15 +17,21 @@ private:
     Player * player;
     std::list<Engine::Point> path;
     int damage;
+    int hp;
 
 public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
-        const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, Map * map, Player * player);
+        const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);
 
     void Update(float deltaTime) override;
     void Pathfind();
     void Draw(const Engine::Point &camera) const override;
     [[nodiscard]] int GetDamage() const { return damage; }
+
+    void SetHP(int hp);
+    int GetHP() const;
+    void Hit(int damage);
+    bool IsDead() const;
 };
 
 

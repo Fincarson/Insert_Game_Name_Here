@@ -3,6 +3,8 @@
 
 #include <string>
 #include <allegro5/allegro.h>
+
+#include "Engine/Collision.hpp"
 #include "Engine/Point.hpp"
 #include "Maps/Map.hpp"    // for collision checks
 
@@ -48,6 +50,7 @@ protected:
     int damage;
     int ownerType;
     bool alive;
+    Collision collider;
 };
 
 #endif //BULLET_HPP

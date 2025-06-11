@@ -41,7 +41,7 @@ PlayScene * Weapon::getPlayScene() {
 }
 
 void Weapon::SpawnBullet(Engine::Point point, float angle) {
-    getPlayScene()->getCurRoom()->BulletGroup->AddNewObject(
+    getPlayScene()->GetCurRoom()->BulletGroup->AddNewObject(
         new Bullet(bulletPath, point, angle, bulletSpeed, damage, 0));
     // std::cout << "SHOOT!!\n";
 }

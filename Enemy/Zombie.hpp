@@ -10,7 +10,7 @@
 class Zombie : public Enemy {
 
 public:
-    Zombie(float x, float y, float w, float h, int damage, Map * map, Player * player);
+    Zombie(float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);
 };
 
 

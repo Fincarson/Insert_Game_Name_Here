@@ -13,9 +13,9 @@
 #include "Sprites/Player.hpp"
 
 Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
-             const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, Map * map, Player * player)
+             const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, int hp, Map * map, Player * player)
 
-    : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, 0, 0), map(map), player(player), damage(damage) {
+    : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, 0, 0), map(map), player(player), damage(damage), hp(hp) {
 
     if (!map) throw std::invalid_argument("map cannot be null oi");
     if (!player) throw std::invalid_argument("player cannot be null oi");
@@ -146,9 +146,32 @@ void Enemy::Pathfind() {
 
 void Enemy::Draw(const Engine::Point &camera) const {
     AnimSprite::Draw(camera);
+    // Debug enemy hitbox
+al_draw_rectangle(Position.x - camera.x, Position.y - camera.y, Position.x - camera.x + Size.x, Position.y - camera.y + Size.y, al_map_rgb(255, 0, 0), 2);
 
     // Pathfinding debug thing
     // for (auto& a : path) {
     //     al_draw_circle(a.x - camera.x, a.y - camera.y, 5, al_map_rgb(0, 0, 0), 5);
     // }
+}
+
+void Enemy::SetHP(int hp) {
+    this->hp = hp;
+}
+
+int Enemy::GetHP() const {
+    return hp;
+}
+
+void Enemy::Hit(int damage) {
+    hp -= damage;
+    // std::cout << "Current hp: " << hp << std::endl;
+    if (hp <= 0) {
+        // DeadAnimation(); // Someone put something here
+        getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation
+    }
+}
+
+bool Enemy::IsDead() const {
+    return hp <= 0;
 }

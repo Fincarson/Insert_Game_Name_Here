@@ -35,7 +35,7 @@ public:
         return player;
     }
 
-    Room * getCurRoom() const {
+    Room * GetCurRoom() const {
         return curRoom;
     }
 };
