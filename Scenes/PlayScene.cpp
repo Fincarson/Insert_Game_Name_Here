@@ -5,6 +5,7 @@
 #include "PlayScene.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include <allegro5/allegro_primitives.h>
 
 #include "utility.hpp"
@@ -68,6 +69,7 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet && bullet->IsAlive()) {
             bullet->Draw(camera);
+            // std::cout << "Drawing bullet...\n";
         }
     }
     // Wall debug

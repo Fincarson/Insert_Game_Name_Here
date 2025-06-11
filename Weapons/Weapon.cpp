@@ -67,6 +67,7 @@ void Weapon::Update(const Engine::Point& newPosition) {
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
         SpawnBullet(position, angle);
         lastShotTime = now;
+        // std::cout << "Shooting...\n";
     }
 }
 

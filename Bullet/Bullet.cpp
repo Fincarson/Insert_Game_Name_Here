@@ -41,14 +41,16 @@ Bullet::~Bullet() {
 void Bullet::Update(float deltaTime, const Map& map) {
     if (!alive) return;
 
-
     // Move bullet
     position.x += std::cos(angle) * speed * deltaTime;
     position.y += std::sin(angle) * speed * deltaTime;
+    // int i = position.y / TILE_SIZE;
+    // int j = position.x / TILE_SIZE;
+    // std::cout << "[DEBUG] Bullet at tile (" << i << ", " << j << ")\n";
 
     // Map collision: check the tile at bullet's center
-    if ((map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) || (position.x <= 0 || position.y <= 0 || position.x >= map.getCol() || position.y >= map.getRow())) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
-        // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
+    if ((map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) || (position.x <= 0 || position.y <= 0 || position.x >= map.getCol() * TILE_SIZE || position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
+        std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
         alive = false;
         OnMapCollision();
     }
@@ -64,6 +66,7 @@ void Bullet::Draw(const Engine::Point & camera) const {
                            position.x - cam.x, position.y - cam.y,  // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
                            angle,
                            0);
+    std::cout << "Drawing bullet...\n";
 }
 
 void Bullet::OnMapCollision() {
