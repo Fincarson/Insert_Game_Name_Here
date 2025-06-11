@@ -79,7 +79,7 @@ void Map::UpdateDistMap(Engine::Point playerPos, bool forceUpdate) {
     static const std::vector DIRECTIONS = {
         Engine::Point(0, 1), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(-1, 0)
     };
-    static constexpr int MAX_DEPTH = 20;
+    static constexpr int MAX_DEPTH = 50;
 
     while (!posQueue.empty()) {
         Engine::Point curPos = posQueue.front();
