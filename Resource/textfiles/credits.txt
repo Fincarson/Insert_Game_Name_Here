@@ -5,13 +5,13 @@ Albert Jonathan – Systems Designer
 Patrick Kosasih – Lead Level Designer
 Vincent Jefferson – UI/UX Designer
 
-Programming & Engineering
+== Programming & Engineering ==
 Albert Jonathan – Gameplay Programmer
-Patrick Kosasih – Tools & Engine Programmers
+Patrick Kosasih – Tools & Engine Programmer
 Vincent Jefferson – UI Programmer
 
 == Art & Animation ==
-Albert Jonathan – Concept Artist
+Albert Jonathan – Animation Artist
 Vincent Jefferson – Concept Artist
 Vincent Jefferson – UI Artist
 
