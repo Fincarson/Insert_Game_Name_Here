@@ -45,12 +45,12 @@ protected:
 
     ALLEGRO_BITMAP* bitmap;
     Engine::Point position;
+    Collision collider;
     float angle;
     float speed;
     int damage;
     int ownerType;
     bool alive;
-    Collision collider;
 };
 
 #endif //BULLET_HPP

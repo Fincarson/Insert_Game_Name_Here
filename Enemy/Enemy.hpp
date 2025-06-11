@@ -16,8 +16,13 @@ private:
     Map * map;
     Player * player;
     std::list<Engine::Point> path;
+    Collision collider;
     int damage;
     int hp;
+
+    Engine::Point knockbackVelocity = Engine::Point(0, 0);
+    float knockbackTimer = 0.0f;
+    const float maxKnockbackTime = 0.3f;
 
 public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,

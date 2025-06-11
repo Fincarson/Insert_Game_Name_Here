@@ -32,7 +32,7 @@ Bullet::Bullet(const std::string& imagePath,
     bitmap = al_load_bitmap(imagePath.c_str());
     // if (bitmap) std::cout << "Bullet Created\n";
     this->Position = startPos;
-    this->Size = Engine::Point(3, 3);
+    this->Size = Engine::Point(1, 1);
     // std::cout << this->Size.x << " " << this->Size.y << std::endl;
 }
 
@@ -64,7 +64,7 @@ void Bullet::Update(float deltaTime, const Map& map) {
     for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
         Enemy* enemy = dynamic_cast<Enemy*>(it);
         // if (enemy) std::cout << "ENEMY FOUND\n";
-        if (Collision::IsCollision(this, enemy)) {
+        if (collider.IsCollision(this, enemy)) {
             // std::cout << "ENEMY HIT\n";
             enemy->Hit(damage);  // Apply damage
             alive = false;

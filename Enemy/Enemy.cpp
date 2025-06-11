@@ -26,6 +26,21 @@ void Enemy::Update(float deltaTime) {
 
     Flip = Velocity.x < 0;
 
+    if (knockbackTimer > 0 && map) {
+        knockbackTimer -= deltaTime;
+        Engine::Point next;
+        next.x = Position.x + knockbackVelocity.x * deltaTime;
+        next.y = Position.y;
+        if (!collider.isCollision(int(next.x), int(next.y), *map))
+            Position = next;
+        next.x = Position.x;
+        next.y = Position.y + knockbackVelocity.y * deltaTime;
+        if (!collider.isCollision(int(next.x), int(next.y), *map))
+            Position = next;
+
+        return; // Prevent movement input while knocked back
+    }
+
     // Pathfinding thing idfk
     Pathfind();
     Engine::Point deltaPos = path.empty() || map->GetDist((Position + Size / 2) / TILE_SIZE) == -1 ?
@@ -37,7 +52,7 @@ void Enemy::Update(float deltaTime) {
 
 void Enemy::Pathfind() {
     using Engine::Point;
-    
+
     // 1. Basic path finding using the pre-calculated BFS distance map.
     static const std::vector DIRECTIONS = {
         Point(0, 1), Point(0, -1), Point(1, 0), Point(-1, 0)
@@ -169,6 +184,15 @@ void Enemy::Hit(int damage) {
     if (hp <= 0) {
         // DeadAnimation(); // Someone put something here
         getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation
+    }
+    // Compute direction away from bullet
+    float dx = Position.x - player->Position.x;
+    float dy = Position.y - player->Position.y;
+    float len = std::sqrt(dx * dx + dy * dy);
+    if (len != 0) {
+        float speed = 500; // pixels per second
+        knockbackVelocity = Engine::Point((dx / len) * speed, (dy / len) * speed);
+        knockbackTimer = maxKnockbackTime;
     }
 }
 
