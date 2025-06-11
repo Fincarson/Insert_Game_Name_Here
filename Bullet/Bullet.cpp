@@ -39,15 +39,16 @@ Bullet::~Bullet() {
 void Bullet::Update(float deltaTime, const Map& map) {
     if (!alive) return;
 
+
     // Move bullet
     position.x += std::cos(angle) * speed * deltaTime;
     position.y += std::sin(angle) * speed * deltaTime;
 
     // Map collision: check the tile at bullet's center
-    if (map.isWall(position.x / TILE_SIZE, position.y / TILE_SIZE)) {
+    if (map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
+        std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
         alive = false;
         OnMapCollision();
-        // std::cout << "BULLET DOWN\n";
     }
     // std::cout << "UPDATING BULLET\n";
 }

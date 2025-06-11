@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <allegro5/allegro_primitives.h>
 
 #include "utility.hpp"
 #include "Engine/AnimSprite.hpp"
@@ -24,7 +25,7 @@ void PlayScene::Initialize() {
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
     AddNewObject(BulletGroup = new Group());
-    AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 100, 10));
+    AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
     player->SetCollisionMap(curRoom->getMap());
 
@@ -53,7 +54,6 @@ void PlayScene::Update(float deltaTime) {
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
     }
-
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {
@@ -64,6 +64,16 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet && bullet->IsAlive()) {
             bullet->Draw();
+        }
+    }
+    // Wall debug
+    for (int i = 0; i < curRoom->GetRows(); i++){
+        for (int j = 0; j < curRoom->GetCols(); j++) {
+            int dy = i * TILE_SIZE - camera.y; // destiny y axis
+            int dx = j * TILE_SIZE - camera.x; // destiny x axis
+            if (curRoom->getMap()->isWall(i, j)) al_draw_rectangle(
+                dx, dy, dx + TILE_SIZE, dy + TILE_SIZE,
+                al_map_rgb(255, 0, 0), 2);
         }
     }
 }
