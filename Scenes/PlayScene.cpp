@@ -5,10 +5,9 @@
 #include "PlayScene.hpp"
 
 #include <algorithm>
-#include <iostream>
-#include <allegro5/allegro_primitives.h>
 
 #include "utility.hpp"
+#include "Enemy/Zombie.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
@@ -28,6 +27,7 @@ void PlayScene::Initialize() {
     AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
     player->SetCollisionMap(curRoom->getMap());
+    AddNewObject(new Zombie(300, 1000, TILE_SIZE, TILE_SIZE, curRoom->getMap(), player));
 
 }
 
@@ -43,12 +43,16 @@ void PlayScene::UpdateCamera() {
     // Limit the camera to the map's boundaries.
     camera.x = std::clamp<float>(camera.x, 0, curRoom->GetCols() * TILE_SIZE - w);
     camera.y = std::clamp<float>(camera.y, 0, curRoom->GetRows() * TILE_SIZE - h);
+
+    curRoom->getMap()->UpdateDistMap(player->Position);
+
 }
 
 void PlayScene::Update(float deltaTime) {
     IScene::Update(deltaTime);
 
     weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
+    curRoom->getMap()->UpdateDistMap(player->Position);
     UpdateCamera();
     for (auto& obj : BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
         Bullet* bullet = dynamic_cast<Bullet*>(obj);

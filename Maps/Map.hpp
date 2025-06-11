@@ -23,6 +23,11 @@ enum Tile {
 class Map : public Engine::IObject {
     friend class Room;
 
+private:
+    // For enemy pathfinding
+    std::vector<std::vector<int>> distMap;  // 2D vector that stores the Manhattan distance of each tile to the player.
+    Engine::Point lastPlayerTilePos;
+
 protected:
     int row;
     int col;
@@ -33,19 +38,21 @@ protected:
     const int SOURCE_TILE_SIZE;
 
 public:
-    Map(): row(0), col(0), SOURCE_TILE_SIZE(0) {}
-
-    Map(std::string assetsPath, int sourceTileSize,
-        int row, int col, std::vector<std::vector<Tile>> mapVec);
+    Map(std::string assetsPath, int sourceTileSize, int row, int col, std::vector<std::vector<Tile>> mapVec);
 
     void Draw(const Engine::Point & camera) const override;
+    void UpdateDistMap(Engine::Point playerPos, bool forceUpdate = false);
 
-    virtual void generateMapOffset() = 0;  // Abstract method to load the spritesheet offset of each tile.
+    virtual void generateMapOffset();  // Abstract method to load the spritesheet offset of each tile.
 
     Tile GetTile(int x, int y) const;
+    int GetDist(Engine::Point tilePos) const;
+
     bool isWall(int i, int j) const;
     bool isFloor(int i, int j) const;
     bool isNothing(int i, int j) const;
+    bool isWalkable(int i, int j) const;
+
     [[nodiscard]] int getRow() const { return row; }
     [[nodiscard]] int getCol() const { return col; }
 };

@@ -25,7 +25,6 @@ public:
     int GetRows() { return map->row; }
     int GetCols() { return map->col; };
     Map* getMap() const { return map; }
-    [[nodiscard]] Engine::Point getSpawn() const { return spawn; }
 };
 
 
