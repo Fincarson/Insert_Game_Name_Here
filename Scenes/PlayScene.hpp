@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "Engine/IScene.hpp"
-
+#include "Weapons/Weapon.hpp"
 
 class Room;
 class Player;
@@ -18,6 +18,7 @@ private:
 
     Room * curRoom = nullptr;
     Player * player = nullptr;
+    Weapon * weapon = nullptr;
 
 public:
     void Initialize() override;
@@ -25,6 +26,11 @@ public:
     void UpdateCamera();
     void Update(float deltaTime) override;
     void Draw(const Engine::Point & _unused) const override;
+    Group *BulletGroup;
+
+    Engine::Point GetCamera() const {
+        return camera;
+    }
 };
 
 

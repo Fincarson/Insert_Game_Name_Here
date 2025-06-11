@@ -6,8 +6,10 @@
 #include "Engine/Point.hpp"
 #include "Maps/Map.hpp"    // for collision checks
 
+class PlayScene;
+
 /// Base bullet class: handles movement, map collision, and lifetime.
-class Bullet {
+class Bullet : public Engine::IObject {
 public:
     /// ctor: load texture, set initial position, direction, speed, damage, and owner type
     /// ownerType: e.g. 0=player, 1=enemy
@@ -37,6 +39,7 @@ public:
 protected:
     /// Called when bullet hits a map tile (default: deactivate)
     virtual void OnMapCollision();
+    PlayScene *getPlayScene();
 
     ALLEGRO_BITMAP* bitmap;
     Engine::Point position;

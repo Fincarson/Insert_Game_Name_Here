@@ -40,7 +40,7 @@ void Map::Draw(const Engine::Point & camera) const {
                 );
 
         #ifdef DRAW_HITBOX
-            al_draw_rectangle(
+            /*if (mapVec[i][j] == WALL)*/ al_draw_rectangle(
                 dx, dy, dx + TILE_SIZE, dy + TILE_SIZE,
                 al_map_rgb(0, 255, 0), 1
             );

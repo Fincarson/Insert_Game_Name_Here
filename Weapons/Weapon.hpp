@@ -3,12 +3,17 @@
 
 #include <string>
 #include <allegro5/allegro.h>
+
+#include "Bullet/Bullet.hpp"
 #include "Engine/Point.hpp"
 #include "Engine/Angle.hpp"
+#include "Engine/IObject.hpp"
 #include "Engine/MouseState.hpp"
 
+class PlayScene;
+
 /// Base class for all weapons. Handles aiming, cooldown, and firing logic.
-class Weapon {
+class Weapon : public Engine::IObject {
 public:
     /// ctor: load weapon and bullet bitmaps, set cooldown (s), bullet speed (px/s), damage
     Weapon(const std::string& weaponImagePath,
@@ -18,6 +23,8 @@ public:
            int damage);
     virtual ~Weapon();
 
+    void SpawnBullet(Engine::Point point, float angle);
+
     /// Update weapon position & angle; fire on left mouse down when cooldown allows
     void Update(const Engine::Point& newPosition);
     /// Draw weapon rotated to current angle
@@ -25,17 +32,19 @@ public:
 
 protected:
     /// Spawn a bullet at `pos` heading at `angle`; to be implemented by each weapon type
-    virtual void SpawnBullet(const Engine::Point& pos, float angle) = 0;
+    // virtual void SpawnBullet(const Engine::Point& pos, float angle) = 0;
 
     ALLEGRO_BITMAP* weaponBitmap;
-    ALLEGRO_BITMAP* bulletBitmap;
+    std::string bulletPath;
     float cooldownTime;
     float bulletSpeed;
     int damage;
     double lastShotTime;
-
     Engine::Point position;
     float angle;
+    int flips;
+
+    PlayScene *getPlayScene();
 };
 
 #endif //WEAPON_HPP

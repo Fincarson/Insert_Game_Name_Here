@@ -1,0 +1,26 @@
+<insert game name here>
+
+== Design ==
+Albert Jonathan – Systems Designer
+Patrick Kosasih – Lead Level Designer
+Vincent Jefferson – UI/UX Designer
+
+Programming & Engineering
+Albert Jonathan – Gameplay Programmer
+Patrick Kosasih – Tools & Engine Programmers
+Vincent Jefferson – UI Programmer
+
+== Art & Animation ==
+Albert Jonathan – Concept Artist
+Vincent Jefferson – Concept Artist
+Vincent Jefferson – UI Artist
+
+== Audio ==
+Patrick Kosasih – Sound Effects Designer
+Vincent Jefferson – Sound Designer
+Vincent Jefferson – Sound Effects Designer
+Vincent Jefferson – Composers
+
+== Special Thanks ==
+ChatGPT
+You

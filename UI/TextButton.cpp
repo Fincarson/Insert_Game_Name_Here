@@ -18,8 +18,8 @@ TextButton::TextButton(std::string text,
                 x, y, w, h,
                 anchorX, anchorY)
   , _fontName(fontName)
-  , _normalFontSize(static_cast<int>(h / 3.0f))
-  , _hoverFontSize (static_cast<int>(h / 2.5f))
+  , _normalFontSize(static_cast<int>(h / 2.0f))
+  , _hoverFontSize (static_cast<int>(h / 1.5f))
   , _hoverOffsetX (50.0f)
   , label(
         text,

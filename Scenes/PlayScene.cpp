@@ -10,6 +10,7 @@
 #include "Enemy/Zombie.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
+#include "Engine/Group.hpp"
 #include "Maps/Room.hpp"
 #include "Sprites/Player.hpp"
 
@@ -21,6 +22,9 @@ void PlayScene::Initialize() {
 
     AddNewObject(curRoom = new Room("1-1.txt"));
     AddNewControlObject(player = new Player(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+    AddNewObject(BulletGroup = new Group());
+    AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
     player->SetCollisionMap(curRoom->getMap());
     AddNewObject(new Zombie(300, 1000, TILE_SIZE, TILE_SIZE, curRoom->getMap(), player));
@@ -46,11 +50,34 @@ void PlayScene::UpdateCamera() {
 
 void PlayScene::Update(float deltaTime) {
     IScene::Update(deltaTime);
+
+    weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
     curRoom->getMap()->UpdateDistMap(player->Position);
     UpdateCamera();
+    for (auto& obj : BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
+        Bullet* bullet = dynamic_cast<Bullet*>(obj);
+        if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
+    }
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {
     al_clear_to_color(al_map_rgb(24, 20, 37));
     Group::Draw(camera);
+    weapon->Draw();
+    for (auto obj : BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
+        Bullet* bullet = dynamic_cast<Bullet*>(obj);
+        if (bullet && bullet->IsAlive()) {
+            bullet->Draw();
+        }
+    }
+    // Wall debug
+    for (int i = 0; i < curRoom->GetRows(); i++){
+        for (int j = 0; j < curRoom->GetCols(); j++) {
+            int dy = i * TILE_SIZE - camera.y; // destiny y axis
+            int dx = j * TILE_SIZE - camera.x; // destiny x axis
+            if (curRoom->getMap()->isWall(i, j)) al_draw_rectangle(
+                dx, dy, dx + TILE_SIZE, dy + TILE_SIZE,
+                al_map_rgb(255, 0, 0), 2);
+        }
+    }
 }
