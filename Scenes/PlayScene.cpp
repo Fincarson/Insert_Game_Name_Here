@@ -50,6 +50,10 @@ void PlayScene::UpdateCamera() {
 }
 
 void PlayScene::Update(float deltaTime) {
+    if (player->GetHP() <= 0) {
+        std::cout << "PLAYER'S DEAD\n";
+        exit(1);
+    }
     IScene::Update(deltaTime);
 
     weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
@@ -59,6 +63,17 @@ void PlayScene::Update(float deltaTime) {
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
     }
+
+    for (auto& enemyObj : curRoom->EnemyGroup->GetObjects()) {
+        Enemy* enemy = dynamic_cast<Enemy*>(enemyObj);
+        // if (!enemy || !enemy->IsAlive()) continue;
+
+        if (Collision::IsCollision(player, enemy) && player->CanTakeDamage()) {
+            player->Hit(enemy->GetDamage(), enemy->Position);
+            player->ResetDamageCooldown();
+        }
+    }
+
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {

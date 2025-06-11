@@ -1,10 +1,14 @@
 // Player.cpp
 #include "Player.hpp"
 
+#include <cmath>
+#include <iostream>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/keyboard.h>
-
 #include <allegro5/keycodes.h>
+#include <bits/ostream.tcc>
+
+#include "Engine/Collision.hpp"
 
 Player::Player(float x, float y, float w, float h, int hp)
     : AnimSprite("Gurl.png", {
@@ -18,6 +22,25 @@ Player::Player(float x, float y, float w, float h, int hp)
 }
 
 void Player::Update(float deltaTime) {
+    // Cooldown of getting hit
+    UpdateCooldown(deltaTime);
+
+    // Knockback
+    if (knockbackTimer > 0 && collisionMap) {
+        knockbackTimer -= deltaTime;
+        Engine::Point next;
+        next.x = Position.x + knockbackVelocity.x * deltaTime;
+        next.y = Position.y;
+        if (!collider.isCollision(int(next.x), int(next.y), *collisionMap))
+            Position = next;
+        next.x = Position.x;
+        next.y = Position.y + knockbackVelocity.y * deltaTime;
+        if (!collider.isCollision(int(next.x), int(next.y), *collisionMap))
+            Position = next;
+        
+        return; // Prevent movement input while knocked back
+    }
+
     // 1) figure out your desired Velocity
     Movement();
 
@@ -95,8 +118,18 @@ void Player::SetHP(int hp) {
     this->hp = hp;  // Use "this" because someone stupid (ME) named the call variable the same with class variable
 }
 
-void Player::Hit(int damage) {
+void Player::Hit(int damage, Engine::Point enemyPos) {
     hp -= damage;
+    std::cout << "Current health: " << hp << std::endl;
+    // Compute direction away from enemy
+    float dx = Position.x - enemyPos.x;
+    float dy = Position.y - enemyPos.y;
+    float len = std::sqrt(dx * dx + dy * dy);
+    if (len != 0) {
+        float speed = 500; // pixels per second
+        knockbackVelocity = Engine::Point((dx / len) * speed, (dy / len) * speed);
+        knockbackTimer = maxKnockbackTime;
+    }
 }
 
 int Player::GetHP() const {

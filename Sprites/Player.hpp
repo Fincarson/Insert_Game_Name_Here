@@ -24,6 +24,10 @@ private:
     int hp;
     float damageCooldown = 0.0f;
 
+    Engine::Point knockbackVelocity = Engine::Point(0, 0);
+    float knockbackTimer = 0.0f;
+    const float maxKnockbackTime = 0.3f; // 0.3 seconds of knockback
+
 public:
     Player(float x, float y, float w, float h, int hp);
 
@@ -39,7 +43,7 @@ public:
     float GetY() const { return Position.y; }
 
     void SetHP(int hp);
-    void Hit(int damage);
+    void Hit(int damage, Engine::Point enemyPos);
     [[nodiscard]] int GetHP() const;
     void UpdateCooldown(float deltaTime);
     bool CanTakeDamage() const;

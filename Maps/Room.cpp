@@ -68,7 +68,7 @@ void Room::loadRoom(std::string filename) {
     for (auto& [pos, enemy] : enemies) {
         switch (enemy) {
             case 'Z':
-                EnemyGroup->AddNewObject(new Zombie(pos.x, pos.y, TILE_SIZE, TILE_SIZE, map, player));
+                EnemyGroup->AddNewObject(new Zombie(pos.x, pos.y, TILE_SIZE, TILE_SIZE, 10, map, player));
             break;
 
             default:

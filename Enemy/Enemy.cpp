@@ -13,9 +13,9 @@
 #include "Sprites/Player.hpp"
 
 Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
-             const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, Map * map, Player * player)
+             const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, Map * map, Player * player)
 
-    : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, 0, 0), map(map), player(player) {
+    : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, 0, 0), map(map), player(player), damage(damage) {
 
     if (!map) throw std::invalid_argument("map cannot be null oi");
     if (!player) throw std::invalid_argument("player cannot be null oi");
