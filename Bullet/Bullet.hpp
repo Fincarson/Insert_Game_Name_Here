@@ -25,7 +25,7 @@ public:
     void Update(float deltaTime, const Map& map);
 
     /// Draws the bullet rotated by its angle (centered)
-    void Draw() const;
+    void Draw(const Engine::Point & camera) const override;
 
     /// Is this bullet still active?
     bool IsAlive() const { return alive; }

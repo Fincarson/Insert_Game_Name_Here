@@ -5,8 +5,12 @@
 #include "Room.hpp"
 
 #include <fstream>
+#include <iostream>
 
 #include "DungeonMap.hpp"
+#include "utility.hpp"
+#include "Enemy/Zombie.hpp"
+#include "Engine/GameEngine.hpp"
 
 void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
@@ -18,6 +22,7 @@ void Room::loadRoom(std::string filename) {
     std::getline(file, buf);
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
+    std::vector<std::pair<Engine::Point, char>> enemies;
 
     for (int i = 0; i < row; i++) {
         std::string line;
@@ -42,6 +47,11 @@ void Room::loadRoom(std::string filename) {
                 Spawn = Engine::Point(j, i);
                 break;
 
+                case 'Z':
+                    mapVec[i][j] = FLOOR;
+                    enemies.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
+                break;
+
                 default:
                     mapVec[i][j] = FLOOR;
             }
@@ -50,8 +60,33 @@ void Room::loadRoom(std::string filename) {
 
     AddNewObject(map = new DungeonMap(row, col, mapVec));
     map->generateMapOffset();
+
+    // Summon enemies
+    EnemyGroup = new Group;
+    Player* player = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene())->GetPlayer();
+
+    for (auto& [pos, enemy] : enemies) {
+        switch (enemy) {
+            case 'Z':
+                EnemyGroup->AddNewObject(new Zombie(pos.x, pos.y, TILE_SIZE, TILE_SIZE, map, player));
+            break;
+
+            default:
+            break;
+        }
+    }
 }
 
 Room::Room(std::string filename) {
     loadRoom(filename);
+    AddNewObject(EnemyGroup);
+    AddNewObject(BulletGroup = new Group());
+}
+
+void Room::Update(float deltaTime) {
+    Group::Update(deltaTime);
+}
+
+void Room::Draw(const Engine::Point &camera) const {
+    Group::Draw(camera);
 }

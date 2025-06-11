@@ -17,7 +17,6 @@ Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInf
 
     : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, 0, 0), map(map), player(player) {
 
-    Pathfind();
 }
 
 void Enemy::Update(float deltaTime) {
@@ -27,14 +26,11 @@ void Enemy::Update(float deltaTime) {
 
     // Pathfinding thing idfk
     Pathfind();
-    Engine::Point deltaPos = path.empty() ? Engine::Point(0, 0) : (*std::next(path.begin()) - Position);
+    Engine::Point deltaPos = path.empty() || map->GetDist((Position + Size / 2) / TILE_SIZE) == -1 ?
+        Engine::Point(0, 0) : (*std::next(path.begin()) - Position);
 
     float speed = 200;
     Velocity = deltaPos.Normalize() * speed;
-
-    // if (deltaPos.Magnitude() < 10) {
-    //     Pathfind();
-    // }
 }
 
 void Enemy::Pathfind() {
