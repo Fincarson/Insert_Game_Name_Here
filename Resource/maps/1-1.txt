@@ -18,6 +18,10 @@ _#...#_______________
 #...............C.C.#
 #.....#########.....#
 ##...##_______#######
-_#.>.#_______________
+_#.0.#_______________
 
-IF YOU WANT TO CHANGE THE MAP, PLEASE MAKE IT AT LEAST 2 BLOCK WIDE FOR PREVENT UNEXPECTED ERROR
+// HOW TO CONNECT ROOMS:
+// Type in a digit (0-9) on the edge of the map. That digit is the passageway ID. Then type the following:
+//    ConnectRooms {passageway ID} {other room's file name} {other room's passageway ID}
+
+ConnectRooms 0 1-2.txt 0

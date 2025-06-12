@@ -1,5 +1,7 @@
 #ifndef POINT_HPP
 #define POINT_HPP
+#include <cstddef>
+#include <functional>
 
 namespace Engine {
     /// <summary>
@@ -12,6 +14,7 @@ namespace Engine {
         /// Construct a Point with coordinate (0, 0).
         /// </summary>
         explicit Point();
+
         /// <summary>
         /// Construct a Point with coordinate (x, y).
         /// </summary>
@@ -72,4 +75,13 @@ namespace Engine {
     };
     Point operator*(const float &lhs, const Point &rhs);
 }
+
+template<>
+struct std::hash<Engine::Point> {
+    std::size_t operator()(const Engine::Point& p) const noexcept {
+        // Point hash function for maps and sets idfk man
+        return std::hash<int>{}(p.x) ^ (std::hash<int>{}(p.y) << 1);
+    }
+};
+
 #endif   // POINT_HPP

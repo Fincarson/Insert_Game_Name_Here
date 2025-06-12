@@ -54,10 +54,6 @@ void Enemy::Pathfind() {
     using Engine::Point;
 
     // 1. Basic path finding using the pre-calculated BFS distance map.
-    static const std::vector DIRECTIONS = {
-        Point(0, 1), Point(0, -1), Point(1, 0), Point(-1, 0)
-    };
-
     path.clear();
     path.push_back(Position);
     Point curPos = Position;
@@ -126,11 +122,6 @@ void Enemy::Pathfind() {
          * I'm in the thick of it, everybody knows
          * I skibidi and they froze
          */
-        static const std::vector<Point> CORNERS = {
-            Point(0, 0), Point(TILE_SIZE - 1, 0),
-            Point(0, TILE_SIZE - 1), Point(TILE_SIZE - 1, TILE_SIZE - 1)
-        };
-
         for (auto& corner : CORNERS) {
             if (!isValidLine(a + corner, b + corner)) return false;
         }
