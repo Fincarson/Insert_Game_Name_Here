@@ -202,6 +202,7 @@ int Enemy::GetHP() const {
 }
 
 void Enemy::Hit(int damage) {
+    if (IsDead()) return;
     hp -= damage;
     // std::cout << "Current hp: " << hp << std::endl;
     if (hp <= 0) {
@@ -210,6 +211,7 @@ void Enemy::Hit(int damage) {
         // i gotchu bro
         SetAnimation("death");
         deathTimer = GetCurAnim().nFrames * GetCurAnim().frameDuration;
+        // xie xie bro luv u <3
     }
     // Compute direction away from bullet
     knockbackDirection = (Position - player->Position).Normalize();
