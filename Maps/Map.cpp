@@ -13,8 +13,6 @@
 #include "Engine/Resources.hpp"
 #include "UI/Label.hpp"
 
-#define DRAW_HITBOX
-
 Map::Map(std::string mapAssetsPath, int sourceTileSize, int row, int col, std::vector<std::vector<Tile>> mapVec)
     : assets(Engine::Resources::GetInstance().GetBitmap(mapAssetsPath)), SOURCE_TILE_SIZE(sourceTileSize),
       row(row), col(col), mapVec(mapVec),
@@ -77,9 +75,6 @@ void Map::UpdateDistMap(Engine::Point playerPos, bool forceUpdate) {
     posQueue.push(playerTilePos);
     distMap[playerTilePos.y][playerTilePos.x] = 0;
 
-    static const std::vector DIRECTIONS = {
-        Engine::Point(0, 1), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(-1, 0)
-    };
     static constexpr int MAX_DEPTH = 50;
 
     while (!posQueue.empty()) {

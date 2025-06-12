@@ -4,28 +4,33 @@
 
 #include "Room.hpp"
 
+#include <cmath>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "DungeonMap.hpp"
 #include "utility.hpp"
 #include "Enemy/Zombie.hpp"
 #include "Engine/GameEngine.hpp"
+#include "Engine/LOG.hpp"
 
 void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
     std::ifstream file(filename);
-    std::string buf;
+    std::string line;
 
+    /*
+     * 1. Read the map
+     */
     int row, col;
     file >> row >> col;
-    std::getline(file, buf);
+    std::getline(file, line);  // Get rid of the linebreak
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
     std::vector<std::pair<Engine::Point, char>> enemies;
 
     for (int i = 0; i < row; i++) {
-        std::string line;
         std::getline(file, line);
 
         for (int j = 0; j < col; j++) {
@@ -53,7 +58,14 @@ void Room::loadRoom(std::string filename) {
                 break;
 
                 default:
-                    mapVec[i][j] = FLOOR;
+                    if (isdigit(line[j])) {
+                        mapVec[i][j] = FLOOR;
+                        posToPassageway[Engine::Point(j, i)] = line[j] - '0';
+                        passageways[line[j] - '0'].pos = Engine::Point(j, i);
+
+                    } else {
+                        mapVec[i][j] = FLOOR;
+                    }
             }
         }
     }
@@ -61,7 +73,44 @@ void Room::loadRoom(std::string filename) {
     AddNewObject(map = new DungeonMap(row, col, mapVec));
     map->generateMapOffset();
 
-    // Summon enemies
+    /*
+     * 2. Read additional arguments (e.g. passageways to other rooms)
+     */
+    while (std::getline(file, line)) {
+        std::stringstream lineStream(line);
+        std::string command;
+        lineStream >> command;
+
+        if (command == "" || command.substr(0, 2) == "//") {
+            continue;
+        } else if (command == "ConnectRooms") {
+            int passageId, otherPassageId;
+            std::string otherRoomFile;
+            lineStream >> passageId >> otherRoomFile >> otherPassageId;
+
+            passageways[passageId].otherRoomFile = otherRoomFile;
+            passageways[passageId].otherId = otherPassageId;
+
+        } else {
+            Engine::LOG(Engine::ERROR) << "unknown command on the map file argument" << filename << ": " << command;
+        }
+    }
+
+    // Clear unused passageways.
+    // for (auto it = passageways.begin(); it != passageways.end(); ) {
+    //     if (it->second.otherRoomFile == "") {
+    //         if (auto itPos = posToPassageway.find(it->second.pos); itPos != posToPassageway.end()) {
+    //             posToPassageway.erase(itPos);
+    //         }
+    //         it = passageways.erase(it);
+    //     } else {
+    //         ++it;
+    //     }
+    // }
+
+    /*
+     * 3. Summon enemies
+     */
     EnemyGroup = new Group;
     Player* player = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene())->GetPlayer();
 
@@ -77,7 +126,7 @@ void Room::loadRoom(std::string filename) {
     }
 }
 
-Room::Room(std::string filename) {
+Room::Room(std::string filename): posToPassageway() {
     loadRoom(filename);
     AddNewObject(EnemyGroup);
     AddNewObject(BulletGroup = new Group());
@@ -89,4 +138,27 @@ void Room::Update(float deltaTime) {
 
 void Room::Draw(const Engine::Point &camera) const {
     Group::Draw(camera);
+}
+
+Engine::Point Room::GetPassagewayPos(int passagewayId) {
+    return passageways.at(passagewayId).pos;
+}
+
+int Room::GetPassagewayId(Engine::Point pos) {
+    for (auto& cornerOffset : CORNERS) {
+        auto corner = pos + cornerOffset;
+        corner.x = std::floor(corner.x / TILE_SIZE);
+        corner.y = std::floor(corner.y / TILE_SIZE);
+
+        auto it = posToPassageway.find(corner);
+        if (it != posToPassageway.end() && passageways.count(it->second)) {
+            return it->second;
+        }
+    }
+
+    return -1;
+}
+
+Room::Passageway & Room::GetPassageway(int passagewayId) {
+    return passageways.at(passagewayId);
 }

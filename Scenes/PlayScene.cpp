@@ -23,13 +23,20 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    AddNewObject(curRoom = new Room("1-1.txt"));
+    curRoom = new Room("1-1.txt");
+
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
 
     AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
     player->SetCollisionMap(curRoom->getMap());
+}
+
+PlayScene::~PlayScene() {
+    for (auto& [_, room] : rooms) {
+        delete room;
+    }
 }
 
 void PlayScene::UpdateCamera() {
@@ -55,10 +62,12 @@ void PlayScene::Update(float deltaTime) {
         exit(1);
     }
     IScene::Update(deltaTime);
-
+    curRoom->Update(deltaTime);
     weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
+
     curRoom->getMap()->UpdateDistMap(player->Position);
-    UpdateCamera();
+    CheckChangeRoom();
+
     for (auto& obj : curRoom->BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
@@ -74,10 +83,13 @@ void PlayScene::Update(float deltaTime) {
         }
     }
 
+    // Camera should be updated last.
+    UpdateCamera();
 }
 
 void PlayScene::Draw(const Engine::Point & _unused) const {
     al_clear_to_color(al_map_rgb(24, 20, 37));
+    curRoom->Draw(camera);
     Group::Draw(camera);
     weapon->Draw();
     for (auto obj : curRoom->BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
@@ -97,4 +109,33 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
                 al_map_rgb(255, 0, 0), 2);
         }
     }
+}
+
+void PlayScene::CheckChangeRoom() {
+    for (auto& cornerOffset : CORNERS) {
+        auto corner = (player->Position + cornerOffset);
+
+        if (corner.x < 0 || corner.x >= curRoom->GetCols() * TILE_SIZE ||
+            corner.y < 0 || corner.y >= curRoom->GetRows() * TILE_SIZE) {
+
+            int passagewayId = curRoom->GetPassagewayId(player->Position);
+            if (passagewayId != -1) {
+                auto& passageway = curRoom->GetPassageway(passagewayId);
+                ChangeRoom(passageway.otherRoomFile, passageway.otherId);
+            }
+            break;
+        }
+    }
+}
+
+void PlayScene::ChangeRoom(std::string roomFile, int passagewayId) {
+    if (roomFile == "") return;
+
+    if (rooms.count(roomFile) == 0) {
+        rooms[roomFile] = new Room(roomFile);
+    }
+
+    curRoom = rooms[roomFile];
+    player->Position = curRoom->GetPassagewayPos(passagewayId) * TILE_SIZE;
+    player->SetCollisionMap(curRoom->getMap());
 }

@@ -4,7 +4,7 @@
 
 #ifndef PLAYSCENE_HPP
 #define PLAYSCENE_HPP
-#include <memory>
+#include <unordered_map>
 
 #include "Engine/IScene.hpp"
 #include "Weapons/Weapon.hpp"
@@ -16,16 +16,22 @@ class PlayScene final : public Engine::IScene {
 private:
     Engine::Point camera = Engine::Point(0, 0);
 
-    Room * curRoom = nullptr;
+    std::unordered_map<std::string, Room*> rooms;
+    Room * curRoom = nullptr;  // DO NOT add curRoom to a group. curRoom is updated and drawn manually by the play scene.
     Player * player = nullptr;
     Weapon * weapon = nullptr;
 
 public:
     void Initialize() override;
+    ~PlayScene() override;
 
     void UpdateCamera();
+
     void Update(float deltaTime) override;
     void Draw(const Engine::Point & _unused) const override;
+
+    void CheckChangeRoom();
+    void ChangeRoom(std::string roomFile, int passagewayId);
 
     Engine::Point GetCamera() const {
         return camera;
