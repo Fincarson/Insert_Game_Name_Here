@@ -25,6 +25,8 @@ private:
     float knockbackTimer = 0.0f;
     const float MAX_KB_TIME = 0.4f;
 
+    int deathTimer;
+
 public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
         const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);

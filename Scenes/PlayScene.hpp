@@ -21,6 +21,8 @@ private:
     Player * player = nullptr;
     Weapon * weapon = nullptr;
 
+    int playerDeathTimer = -1;
+
 public:
     void Initialize() override;
     ~PlayScene() override;

@@ -5,6 +5,7 @@
 #include "PlayScene.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <allegro5/allegro_primitives.h>
 
@@ -27,10 +28,11 @@ void PlayScene::Initialize() {
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
+    player->SetCollisionMap(curRoom->getMap());
 
     AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
-    player->SetCollisionMap(curRoom->getMap());
+    playerDeathTimer = -1;
 }
 
 PlayScene::~PlayScene() {
@@ -58,9 +60,20 @@ void PlayScene::UpdateCamera() {
 
 void PlayScene::Update(float deltaTime) {
     if (player->GetHP() <= 0) {
-        std::cout << "PLAYER'S DEAD\n";
-        exit(1);
+        if (playerDeathTimer == -1) {
+            playerDeathTimer = 300;
+        } else if (playerDeathTimer == 0) {
+            Engine::GameEngine::GetInstance().ChangeScene("menu");
+        } else {
+            playerDeathTimer--;
+        }
+
+        player->Update(deltaTime);
+        UpdateCamera();
+
+        return;
     }
+
     IScene::Update(deltaTime);
     curRoom->Update(deltaTime);
     weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
@@ -92,6 +105,17 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
     curRoom->Draw(camera);
     Group::Draw(camera);
     weapon->Draw();
+
+    if (playerDeathTimer >= 0) {
+        int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
+        int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
+        double smoothFadeFac = 1.0 - std::pow(playerDeathTimer / 275.0, 10);
+
+        al_draw_filled_rectangle(0, 0, w, h, al_map_rgba(0, 0, 0, smoothFadeFac * 255));
+
+        player->Draw(camera);
+    }
+
     for (auto obj : curRoom->BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
         Bullet* bullet = dynamic_cast<Bullet*>(obj);
         if (bullet && bullet->IsAlive()) {

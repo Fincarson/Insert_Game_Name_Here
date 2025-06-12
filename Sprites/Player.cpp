@@ -19,7 +19,7 @@ Player::Player(float x, float y, float w, float h, int hp)
     : AnimSprite("Gurl.png", {
         {"idle", Engine::AnimInfo(0, 4, 15, true)},
         {"walk", Engine::AnimInfo(1, 6, 5, true)},
-        {"death", Engine::AnimInfo(2, 6, 20, false)},
+        {"death", Engine::AnimInfo(2, 6, 15, false)},
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
@@ -27,6 +27,12 @@ Player::Player(float x, float y, float w, float h, int hp)
 }
 
 void Player::Update(float deltaTime) {
+    if (hp <= 0) {
+        Velocity.x = 0; Velocity.y = 0;
+        AnimSprite::Update(deltaTime);
+        return;
+    }
+
     // Cooldown of getting hit
     UpdateCooldown(deltaTime);
     Tint = damageCooldown > 0.0f ? al_map_rgb(255, 128, 128) : al_map_rgb(255, 255, 255);
@@ -137,6 +143,11 @@ void Player::Hit(int damage, Engine::Point enemyPos) {
     maxSpeed.AddBuff("kb", MAX_KB_TIME, 1.75, true);
     friction.AddBuff("kb", MAX_KB_TIME, 0.25);
     accel.AddBuff("kb", MAX_KB_TIME, 0.2);
+
+    // Death
+    if (hp <= 0) {
+        SetAnimation("death");
+    }
 }
 
 int Player::GetHP() const {

@@ -41,10 +41,10 @@ namespace Engine {
     void AnimSprite::Update(float deltaTime) {
         Sprite::Update(deltaTime);
 
-        curFrameTimer--;
-        if (curFrameTimer <= 0) {
-            auto& curAnim = itCurAnim->second;
+        auto& curAnim = itCurAnim->second;
 
+        curFrameTimer--;
+        if (curFrameTimer <= 0 && (curAnim.loop || curFrame < curAnim.nFrames - 1)) {
             curFrameTimer = curAnim.frameDuration;
             curFrame = (curFrame + 1) % curAnim.nFrames;
         }
@@ -57,5 +57,9 @@ namespace Engine {
         curFrameTimer = nextAnim.frameDuration;
 
         itCurAnim = itNextAnim;
+    }
+
+    AnimInfo AnimSprite::GetCurAnim() const {
+        return itCurAnim->second;
     }
 } // Engine

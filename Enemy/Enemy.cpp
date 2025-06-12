@@ -22,11 +22,25 @@ Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInf
 }
 
 void Enemy::Update(float deltaTime) {
+    AnimSprite::Update(deltaTime);
+
+    if (IsDead()) {
+        // Update death timer
+        deathTimer--;
+        if (deathTimer <= 0) {
+            getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation
+        }
+    }
+
     if (knockbackTimer > 0 && map) {
         // Knockback from player
         knockbackTimer -= deltaTime;
-        Velocity = knockbackDirection.Normalize() * knockbackPower * knockbackTimer / MAX_KB_TIME;
+        Velocity = knockbackDirection * knockbackPower * knockbackTimer / MAX_KB_TIME;
         Tint = al_map_rgb(255, 128, 128);
+
+    } else if (IsDead()) {
+        Velocity = Engine::Point(0, 0);
+        Tint = al_map_rgb(255, 255, 255);
 
     } else {
         // Target player
@@ -42,7 +56,6 @@ void Enemy::Update(float deltaTime) {
     }
 
     Collision(deltaTime);
-    AnimSprite::Update(deltaTime);  // Updating AnimSprite should be done last (source: trust me bro)
 }
 
 void Enemy::Pathfind() {
@@ -193,17 +206,14 @@ void Enemy::Hit(int damage) {
     // std::cout << "Current hp: " << hp << std::endl;
     if (hp <= 0) {
         // DeadAnimation(); // Someone put something here
-        getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation
+
+        // i gotchu bro
+        SetAnimation("death");
+        deathTimer = GetCurAnim().nFrames * GetCurAnim().frameDuration;
     }
     // Compute direction away from bullet
-    float dx = Position.x - player->Position.x;
-    float dy = Position.y - player->Position.y;
-    float len = std::sqrt(dx * dx + dy * dy);
-    if (len != 0) {
-        float speed = 500; // pixels per second
-        knockbackDirection = Engine::Point((dx / len) * speed, (dy / len) * speed);
-        knockbackTimer = MAX_KB_TIME;
-    }
+    knockbackDirection = (Position - player->Position).Normalize();
+    knockbackTimer = MAX_KB_TIME;
 }
 
 bool Enemy::IsDead() const {

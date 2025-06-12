@@ -43,6 +43,7 @@ public:
     void Update(float deltaTime) override;
 
     void SetAnimation(std::string anim);
+    AnimInfo GetCurAnim() const;
 };
 
 } // Engine
