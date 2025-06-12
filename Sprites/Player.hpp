@@ -8,6 +8,10 @@
 #include "Engine/IControl.hpp"
 #include "Engine/Collision.hpp"
 #include "Maps/Map.hpp"
+#include "Mechanics/Buffable.hpp"
+
+
+// extern template class Buffable<float>;
 
 
 class Player : public Engine::AnimSprite, public Engine::IControl {
@@ -16,9 +20,10 @@ private:
 
     bool moving = false;
     bool inMenu = false;
-    float accel = 150.0f;
-    float decelFac = 0.5f;
-    float maxSpeed = 500.0f;
+    Buffable<float> accel = 150.0f;
+    Buffable<float> friction = 100.0f;
+    Buffable<float> maxSpeed = 500.0f;
+
     Collision collider;
     const Map* collisionMap = nullptr;
     int hp;
@@ -26,7 +31,7 @@ private:
 
     Engine::Point knockbackVelocity = Engine::Point(0, 0);
     float knockbackTimer = 0.0f;
-    const float maxKnockbackTime = 0.3f; // 0.3 seconds of knockback
+    const float KB_TIME = 0.5f; // 0.5 seconds of knockback
 
 public:
     Player(float x, float y, float w, float h, int hp);

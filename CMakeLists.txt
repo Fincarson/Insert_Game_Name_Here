@@ -102,6 +102,8 @@ add_executable(Insert_Game_Name_Here
 
         Bullet/Bullet.hpp
         Bullet/Bullet.cpp
+        Mechanics/Buffable.cpp
+        Mechanics/Buffable.hpp
 )
 
 

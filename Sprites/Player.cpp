@@ -9,6 +9,11 @@
 #include <bits/ostream.tcc>
 
 #include "Engine/Collision.hpp"
+#include "Mechanics/Buffable.hpp"
+
+// template<> class Buffable<float>;
+// template Buffable<float>::Buffable(float);
+// template Buffable<float>::operator float();
 
 Player::Player(float x, float y, float w, float h, int hp)
     : AnimSprite("Gurl.png", {
@@ -25,21 +30,9 @@ void Player::Update(float deltaTime) {
     // Cooldown of getting hit
     UpdateCooldown(deltaTime);
 
-    // Knockback
-    if (knockbackTimer > 0 && collisionMap) {
-        knockbackTimer -= deltaTime;
-        Engine::Point next;
-        next.x = Position.x + knockbackVelocity.x * deltaTime;
-        next.y = Position.y;
-        if (!collider.isCollision(int(next.x), int(next.y), *collisionMap))
-            Position = next;
-        next.x = Position.x;
-        next.y = Position.y + knockbackVelocity.y * deltaTime;
-        if (!collider.isCollision(int(next.x), int(next.y), *collisionMap))
-            Position = next;
-        
-        return; // Prevent movement input while knocked back
-    }
+    accel.Update(deltaTime);
+    friction.Update(deltaTime);
+    maxSpeed.Update(deltaTime);
 
     // 1) figure out your desired Velocity
     Movement();
@@ -76,12 +69,22 @@ void Player::Movement() {
     bool right = keyDown[ALLEGRO_KEY_D] || keyDown[ALLEGRO_KEY_RIGHT];
 
     // Vertical movement
-    if (up == down) Velocity.y *= decelFac;  // None pressed or both pressed.
+    if (up == down && abs(Velocity.y) > 0) {
+        // None pressed or both pressed: Slow down by friction.
+        float prevVy = Velocity.y;
+        Velocity.y -= friction * (Velocity.y >= 0 ? 1 : -1);
+        if ((prevVy * Velocity.y) < 0) Velocity.y = 0;
+    }
     else if (up)    Velocity.y -= accel;
     else if (down)  Velocity.y += accel;
 
     // Horizontal movement
-    if (left == right) Velocity.x *= decelFac;  // None pressed or both pressed.
+    if (left == right && abs(Velocity.x) > 0) {
+        // None pressed or both pressed.
+        float prevVx = Velocity.x;
+        Velocity.x -= friction * (Velocity.x >= 0 ? 1 : -1);
+        if ((prevVx * Velocity.x) < 0) Velocity.x = 0;
+    }
     else if (left)     Velocity.x -= accel;
     else if (right)    Velocity.x += accel;
 
@@ -91,7 +94,6 @@ void Player::Movement() {
     if (!moving) {
         if (Velocity.Magnitude() <= 10.0f) {
             Velocity.x = 0; Velocity.y = 0;
-        } else {
         }
     }
 
@@ -122,14 +124,15 @@ void Player::Hit(int damage, Engine::Point enemyPos) {
     hp -= damage;
     std::cout << "Current health: " << hp << std::endl;
     // Compute direction away from enemy
-    float dx = Position.x - enemyPos.x;
-    float dy = Position.y - enemyPos.y;
-    float len = std::sqrt(dx * dx + dy * dy);
-    if (len != 0) {
-        float speed = 500; // pixels per second
-        knockbackVelocity = Engine::Point((dx / len) * speed, (dy / len) * speed);
-        knockbackTimer = maxKnockbackTime;
-    }
+
+    // Knockback
+    float speed = 1000; // pixels per second
+    Engine::Point dPos = Position - enemyPos;
+    Velocity = dPos.Normalize() * speed;
+
+    maxSpeed.AddBuff("kb", KB_TIME, 1.75, true);
+    friction.AddBuff("kb", KB_TIME, 0.25);
+    accel.AddBuff("kb", KB_TIME, 0.2);
 }
 
 int Player::GetHP() const {
@@ -146,5 +149,5 @@ bool Player::CanTakeDamage() const {
 }
 
 void Player::ResetDamageCooldown() {
-    damageCooldown = 1.0f;  // In seconds
+    damageCooldown = KB_TIME;  // In seconds
 }
