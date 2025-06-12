@@ -23,6 +23,9 @@ struct Buff {
 
 template <typename T>
 class Buffable {
+    /*
+     * A class for player/enemy attributes that can change a lot over time while still preserving its default value.
+     */
     T defaultVal;
     T buffedVal;
 

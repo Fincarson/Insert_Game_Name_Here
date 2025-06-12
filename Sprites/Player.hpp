@@ -29,9 +29,7 @@ private:
     int hp;
     float damageCooldown = 0.0f;
 
-    Engine::Point knockbackVelocity = Engine::Point(0, 0);
-    float knockbackTimer = 0.0f;
-    const float KB_TIME = 0.5f; // 0.5 seconds of knockback
+    const float MAX_KB_TIME = 0.5f; // 0.5 seconds of knockback
 
 public:
     Player(float x, float y, float w, float h, int hp);
@@ -39,6 +37,8 @@ public:
     void Update(float deltaTime) override;
 
     void Movement();
+    void Collision(float deltaTime);
+
     void OnKeyDown(int keyCode) override;
     void OnKeyUp(int keyCode) override;
     void SetCollisionMap(const Map* m) { collisionMap = m; }

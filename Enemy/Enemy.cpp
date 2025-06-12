@@ -22,72 +22,32 @@ Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInf
 }
 
 void Enemy::Update(float deltaTime) {
-    AnimSprite::Update(deltaTime);
-
-    Flip = Velocity.x < 0;
-
     if (knockbackTimer > 0 && map) {
+        // Knockback from player
         knockbackTimer -= deltaTime;
-        Engine::Point next;
-        next.x = Position.x + knockbackVelocity.x * deltaTime;
-        next.y = Position.y;
-        if (!collider.isCollision(int(next.x), int(next.y), *map))
-            Position = next;
-        next.x = Position.x;
-        next.y = Position.y + knockbackVelocity.y * deltaTime;
-        if (!collider.isCollision(int(next.x), int(next.y), *map))
-            Position = next;
+        Velocity = knockbackDirection.Normalize() * knockbackPower * knockbackTimer / MAX_KB_TIME;
+        Tint = al_map_rgb(255, 128, 128);
 
-        return; // Prevent movement input while knocked back
+    } else {
+        // Target player
+        Flip = Velocity.x < 0;
+        Tint = al_map_rgb(255, 255, 255);
+
+        Pathfind();
+        Engine::Point deltaPos = path.empty() || map->GetDist((Position + Size / 2) / TILE_SIZE) == -1 ?
+            Engine::Point(0, 0) : (*std::next(path.begin()) - Position);
+
+        float speed = 200;
+        Velocity = deltaPos.Normalize() * speed;
     }
 
-    // Pathfinding thing idfk
-    Pathfind();
-    Engine::Point deltaPos = path.empty() || map->GetDist((Position + Size / 2) / TILE_SIZE) == -1 ?
-        Engine::Point(0, 0) : (*std::next(path.begin()) - Position);
-
-    float speed = 200;
-    Velocity = deltaPos.Normalize() * speed;
+    Collision(deltaTime);
+    AnimSprite::Update(deltaTime);  // Updating AnimSprite should be done last (source: trust me bro)
 }
 
 void Enemy::Pathfind() {
     using Engine::Point;
 
-    // 1. Basic path finding using the pre-calculated BFS distance map.
-    path.clear();
-    path.push_back(Position);
-    Point curPos = Position;
-
-    int maxPath = 20;
-
-    while (maxPath--) {
-        float minDist = map->GetDist((curPos + Size / 2) / TILE_SIZE);
-        Point nextTarget = curPos;
-
-        for (auto& dir : DIRECTIONS) {
-            Point adjacentTile = (curPos + Size / 2) / TILE_SIZE + dir;
-            adjacentTile.x = std::floor(adjacentTile.x);
-            adjacentTile.y = std::floor(adjacentTile.y);
-
-            float dist = map->GetDist(adjacentTile);
-            float turnCost = (1 - abs(dir.Dot(Velocity.Normalize()))) / 2;
-
-            // if (dist != -1 && dir  != prevDir) dist += 0.5;  // Turning cost
-
-            if (dist != -1 && dist + turnCost < minDist) {
-                nextTarget = adjacentTile * TILE_SIZE;
-                minDist = dist + turnCost;
-            }
-        }
-
-        if (nextTarget == curPos) break;
-        path.push_back(nextTarget);
-        curPos = nextTarget;
-        if (std::floor(minDist) == 0) break;
-    }
-    path.push_back(player->Position);
-
-    // 2. Reduce and smoothen out the path using the string-pulling thing from I2P I.
     auto isValidLine = [&](Point a, Point b) {
         /*
          * Bresenham line algorithm thingy.
@@ -129,11 +89,48 @@ void Enemy::Pathfind() {
         return true;
     };
 
-    if (path.size() < 3) return;
-    if (isValidThickLine(path.front(), path.back())) {
-        path = {path.front(), path.back()};
+    // 0. Check if there is a direct straight path.
+    if (isValidThickLine(Position, player->Position)) {
+        path = {Position, player->Position};
         return;
     }
+
+    // 1. Basic path finding using the pre-calculated BFS distance map.
+    path.clear();
+    path.push_back(Position);
+    Point curPos = Position;
+
+    int maxPath = 20;
+
+    while (maxPath--) {
+        float minDist = map->GetDist((curPos + Size / 2) / TILE_SIZE);
+        Point nextTarget = curPos;
+
+        for (auto& dir : DIRECTIONS) {
+            Point adjacentTile = (curPos + Size / 2) / TILE_SIZE + dir;
+            adjacentTile.x = std::floor(adjacentTile.x);
+            adjacentTile.y = std::floor(adjacentTile.y);
+
+            float dist = map->GetDist(adjacentTile);
+            float turnCost = (1 - abs(dir.Dot(Velocity.Normalize()))) / 2;
+
+            // if (dist != -1 && dir  != prevDir) dist += 0.5;  // Turning cost
+
+            if (dist != -1 && dist + turnCost < minDist) {
+                nextTarget = adjacentTile * TILE_SIZE;
+                minDist = dist + turnCost;
+            }
+        }
+
+        if (nextTarget == curPos) break;
+        path.push_back(nextTarget);
+        curPos = nextTarget;
+        if (std::floor(minDist) == 0) break;
+    }
+    path.push_back(player->Position);
+
+    // 2. Reduce and smoothen out the path using the string-pulling thing from I2P I.
+    if (path.size() < 3) return;
 
     auto itCurPoint = path.begin();
     auto itNextPoint = std::next(path.begin(), 2);
@@ -150,10 +147,32 @@ void Enemy::Pathfind() {
     }
 }
 
+void Enemy::Collision(float deltaTime) {
+    // Prune any axis that would hit a wall
+    if (map) {
+        // ← pull current position out of AnimSprite…
+        //    replace these with however AnimSprite exposes its pos
+        float currX = Position.x;
+        float currY = Position.y;
+
+        // 2a) test horizontal only
+        float nextX = currX + Velocity.x * deltaTime;
+        if (collider.isCollision(int(nextX), int(currY), *map)) {
+            Velocity.x = 0;
+        }
+
+        // 2b) test vertical only
+        float nextY = currY + Velocity.y * deltaTime;
+        if (collider.isCollision(int(currX), int(nextY), *map)) {
+            Velocity.y = 0;
+        }
+    }
+}
+
 void Enemy::Draw(const Engine::Point &camera) const {
     AnimSprite::Draw(camera);
     // Debug enemy hitbox
-al_draw_rectangle(Position.x - camera.x, Position.y - camera.y, Position.x - camera.x + Size.x, Position.y - camera.y + Size.y, al_map_rgb(255, 0, 0), 2);
+    al_draw_rectangle(Position.x - camera.x, Position.y - camera.y, Position.x - camera.x + Size.x, Position.y - camera.y + Size.y, al_map_rgb(255, 0, 0), 2);
 
     // Pathfinding debug thing
     // for (auto& a : path) {
@@ -182,8 +201,8 @@ void Enemy::Hit(int damage) {
     float len = std::sqrt(dx * dx + dy * dy);
     if (len != 0) {
         float speed = 500; // pixels per second
-        knockbackVelocity = Engine::Point((dx / len) * speed, (dy / len) * speed);
-        knockbackTimer = maxKnockbackTime;
+        knockbackDirection = Engine::Point((dx / len) * speed, (dy / len) * speed);
+        knockbackTimer = MAX_KB_TIME;
     }
 }
 

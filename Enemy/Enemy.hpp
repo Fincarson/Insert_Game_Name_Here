@@ -20,9 +20,10 @@ private:
     int damage;
     int hp;
 
-    Engine::Point knockbackVelocity = Engine::Point(0, 0);
+    Engine::Point knockbackDirection = Engine::Point(0, 0);
+    float knockbackPower = 750.0f;
     float knockbackTimer = 0.0f;
-    const float maxKnockbackTime = 0.3f;
+    const float MAX_KB_TIME = 0.4f;
 
 public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
@@ -30,6 +31,8 @@ public:
 
     void Update(float deltaTime) override;
     void Pathfind();
+    void Collision(float deltaTime);
+
     void Draw(const Engine::Point &camera) const override;
     [[nodiscard]] int GetDamage() const { return damage; }
 

@@ -29,35 +29,17 @@ Player::Player(float x, float y, float w, float h, int hp)
 void Player::Update(float deltaTime) {
     // Cooldown of getting hit
     UpdateCooldown(deltaTime);
+    Tint = damageCooldown > 0.0f ? al_map_rgb(255, 128, 128) : al_map_rgb(255, 255, 255);
 
+    // Update the buffable attributes.
     accel.Update(deltaTime);
     friction.Update(deltaTime);
     maxSpeed.Update(deltaTime);
 
-    // 1) figure out your desired Velocity
     Movement();
+    Collision(deltaTime);
 
-    // 2) prune any axis that would hit a wall
-    if (collisionMap) {
-        // ← pull current position out of AnimSprite…
-        //    replace these with however AnimSprite exposes its pos
-        float currX = Position.x;
-        float currY = Position.y;
-
-        // 2a) test horizontal only
-        float nextX = currX + Velocity.x * deltaTime;
-        if (collider.isCollision(int(nextX), int(currY), *collisionMap)) {
-            Velocity.x = 0;
-        }
-
-        // 2b) test vertical only
-        float nextY = currY + Velocity.y * deltaTime;
-        if (collider.isCollision(int(currX), int(nextY), *collisionMap)) {
-            Velocity.y = 0;
-        }
-    }
-
-    // 3) now let AnimSprite actually apply Velocity → position & advance frame
+    // Let AnimSprite actually apply Velocity → position & advance frame
     AnimSprite::Update(deltaTime);
 }
 
@@ -108,6 +90,28 @@ void Player::Movement() {
     Flip = moving && Velocity.x < 0;
 }
 
+void Player::Collision(float deltaTime) {
+    // Prune any axis that would hit a wall
+    if (collisionMap) {
+        // ← pull current position out of AnimSprite…
+        //    replace these with however AnimSprite exposes its pos
+        float currX = Position.x;
+        float currY = Position.y;
+
+        // 2a) test horizontal only
+        float nextX = currX + Velocity.x * deltaTime;
+        if (collider.isCollision(int(nextX), int(currY), *collisionMap)) {
+            Velocity.x = 0;
+        }
+
+        // 2b) test vertical only
+        float nextY = currY + Velocity.y * deltaTime;
+        if (collider.isCollision(int(currX), int(nextY), *collisionMap)) {
+            Velocity.y = 0;
+        }
+    }
+}
+
 void Player::OnKeyDown(int keyCode) {
     keyDown[keyCode] = true;
 }
@@ -130,9 +134,9 @@ void Player::Hit(int damage, Engine::Point enemyPos) {
     Engine::Point dPos = Position - enemyPos;
     Velocity = dPos.Normalize() * speed;
 
-    maxSpeed.AddBuff("kb", KB_TIME, 1.75, true);
-    friction.AddBuff("kb", KB_TIME, 0.25);
-    accel.AddBuff("kb", KB_TIME, 0.2);
+    maxSpeed.AddBuff("kb", MAX_KB_TIME, 1.75, true);
+    friction.AddBuff("kb", MAX_KB_TIME, 0.25);
+    accel.AddBuff("kb", MAX_KB_TIME, 0.2);
 }
 
 int Player::GetHP() const {
@@ -149,5 +153,5 @@ bool Player::CanTakeDamage() const {
 }
 
 void Player::ResetDamageCooldown() {
-    damageCooldown = KB_TIME;  // In seconds
+    damageCooldown = MAX_KB_TIME;  // In seconds
 }
