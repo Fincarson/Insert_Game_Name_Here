@@ -26,9 +26,9 @@ public:
     void SpawnBullet(Engine::Point point, float angle);
 
     /// Update weapon position & angle; fire on left mouse down when cooldown allows
-    void Update(const Engine::Point& newPosition);
+    virtual void Update(float deltaTime, const Engine::Point& mousePosition);
     /// Draw weapon rotated to current angle
-    void Draw() const;
+    virtual void Draw() const;
 
 protected:
     /// Spawn a bullet at `pos` heading at `angle`; to be implemented by each weapon type
@@ -40,11 +40,15 @@ protected:
     float bulletSpeed;
     int damage;
     double lastShotTime;
-    Engine::Point position;
     float angle;
     int flips;
 
+    ALLEGRO_MOUSE_STATE mstate;
+
     PlayScene *getPlayScene();
+    PlayScene *scene;
+    Engine::Point cam;
+    Engine::Point mousePos;
 };
 
 #endif //WEAPON_HPP

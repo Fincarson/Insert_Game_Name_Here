@@ -104,6 +104,8 @@ add_executable(Insert_Game_Name_Here
         Bullet/Bullet.cpp
         Mechanics/Buffable.cpp
         Mechanics/Buffable.hpp
+        Weapons/LaserWeapon.cpp
+        Weapons/LaserWeapon.hpp
 )
 
 

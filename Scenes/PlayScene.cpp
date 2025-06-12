@@ -16,6 +16,7 @@
 #include "Engine/Group.hpp"
 #include "Maps/Room.hpp"
 #include "Sprites/Player.hpp"
+#include "Weapons/LaserWeapon.hpp"
 
 void PlayScene::Initialize() {
     int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
@@ -30,7 +31,8 @@ void PlayScene::Initialize() {
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
     player->SetCollisionMap(curRoom->getMap());
 
-    AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
+    AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", "images/fireball.png", 10));
+    // AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));
 
     playerDeathTimer = -1;
 }
@@ -76,7 +78,7 @@ void PlayScene::Update(float deltaTime) {
 
     IScene::Update(deltaTime);
     curRoom->Update(deltaTime);
-    weapon->Update(Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
+    weapon->Update(deltaTime, Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
 
     curRoom->getMap()->UpdateDistMap(player->Position);
     CheckChangeRoom();

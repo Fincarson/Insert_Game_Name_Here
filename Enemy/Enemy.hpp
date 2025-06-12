@@ -42,6 +42,8 @@ public:
     int GetHP() const;
     void Hit(int damage);
     bool IsDead() const;
+
+    Rect GetBoundingBox() const;
 };
 
 

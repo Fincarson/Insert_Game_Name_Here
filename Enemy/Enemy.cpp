@@ -219,3 +219,12 @@ void Enemy::Hit(int damage) {
 bool Enemy::IsDead() const {
     return hp <= 0;
 }
+
+Rect Enemy::GetBoundingBox() const {
+    return Rect{
+        Position.x,
+        Position.y,
+        Position.x + Size.x,
+        Position.y + Size.y
+    };
+}

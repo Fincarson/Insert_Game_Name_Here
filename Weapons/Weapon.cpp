@@ -24,7 +24,6 @@ Weapon::Weapon(const std::string& weaponImagePath,
     , bulletSpeed(bulletSpeed)
     , damage(damage)
     , lastShotTime(0.0)
-    , position(0, 0)
     , angle(0.0f)
     , flips(0)
 {
@@ -46,34 +45,33 @@ void Weapon::SpawnBullet(Engine::Point point, float angle) {
     // std::cout << "SHOOT!!\n";
 }
 
-void Weapon::Update(const Engine::Point& newPosition) {
+void Weapon::Update(float deltaTime, const Engine::Point& newPosition) {
     // std::cout << "UPDATING WEAPON\n";
-    position = newPosition;
+    Position = newPosition;
     // update aiming angle
-    auto scene = getPlayScene();
-    Engine::Point camera = scene ? scene->GetCamera() : Engine::Point(0, 0);
-    Engine::Point mousePos = MouseState::GetPosition();
-    mousePos.x += camera.x;
-    mousePos.y += camera.y;
-    angle = Angle::Get(position, mousePos);
+    scene = getPlayScene();
+    cam = scene ? scene->GetCamera() : Engine::Point(0, 0);
+    mousePos = MouseState::GetPosition();
+    mousePos.x += cam.x;
+    mousePos.y += cam.y;
+    angle = Angle::Get(Position, mousePos);
     // std::cout << angle << "\n";
     if (angle < M_PI_2 && angle >= -M_PI_2) flips = 0;
     else flips = 2;
+    al_get_mouse_state(&mstate);
 
-    // handle firing
-    double now = al_get_time();
+    // handle firing (For normal weapon later)
+    /*double now = al_get_time();
     ALLEGRO_MOUSE_STATE mstate;
     al_get_mouse_state(&mstate);
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
-        SpawnBullet(position, angle);
+        SpawnBullet(Position, angle);
         lastShotTime = now;
         // std::cout << "Shooting...\n";
-    }
+    }*/
 }
 
 void Weapon::Draw() const {
-    auto scene = dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());  // Can't use getPlayScene() due to Draw() is const
-    Engine::Point cam = scene ? scene->GetCamera() : Engine::Point(0, 0);   // Get camera position
     if (!weaponBitmap) return;
     // std::cout << "DRAWING WEAPON\n";
     // draw rotated around center
@@ -83,7 +81,7 @@ void Weapon::Draw() const {
     al_draw_scaled_rotated_bitmap(
         weaponBitmap,
         cx, cy,
-        position.x - cam.x, position.y - cam.y,     // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
+        Position.x - cam.x, Position.y - cam.y,     // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
         scale, scale,
         angle,
         flips
