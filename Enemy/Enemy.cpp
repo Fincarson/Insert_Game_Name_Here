@@ -191,8 +191,9 @@ void Enemy::Collision(float deltaTime) {
 void Enemy::Draw(const Engine::Point &camera) const {
     AnimSprite::Draw(camera);
     // Debug enemy hitbox
+#ifdef DRAW_HITBOX
     al_draw_rectangle(Position.x - camera.x, Position.y - camera.y, Position.x - camera.x + Size.x, Position.y - camera.y + Size.y, al_map_rgb(255, 0, 0), 2);
-
+#endif
     // Pathfinding debug thing
     // for (auto& a : path) {
     //     al_draw_circle(a.x - camera.x, a.y - camera.y, 5, al_map_rgb(0, 0, 0), 5);

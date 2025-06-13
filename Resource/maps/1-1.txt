@@ -25,3 +25,10 @@ _#.0.#_______________
 //    ConnectRooms {passageway ID} {other room's file name} {other room's passageway ID}
 
 ConnectRooms 0 1-2.txt 0
+
+// How to add subtitles:
+//    Say {delay} {duration} {text}
+
+Say 2 3 Where am I?
+Say 0.5 4 Wait... This place looks familiar.
+Say 0.5 5 Isn't this the world from the I2P I project?
