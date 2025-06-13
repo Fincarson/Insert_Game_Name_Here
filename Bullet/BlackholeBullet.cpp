@@ -40,7 +40,7 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
     cam = scene->GetCamera();   // CRITICAL!!
     if (!scene) return;
 
-    float pullStrength = 20000;
+    float pullStrength = 15000;
     // Pull enemies
     for (auto& obj : scene->GetCurRoom()->EnemyGroup->GetObjects()) {
         Enemy* enemy = dynamic_cast<Enemy*>(obj);
