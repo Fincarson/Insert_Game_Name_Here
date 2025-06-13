@@ -104,7 +104,10 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
             Enemy* enemy = dynamic_cast<Enemy*>(obj);
             if (!enemy) continue;
             if ((Position - enemy->Position).Magnitude() < explosionRadius) {
-                enemy->Hit(damage, Position);
+                Engine::Point knockbackPosition;
+                knockbackPosition.x = Position.x - TILE_SIZE/2;
+                knockbackPosition.y = Position.y - TILE_SIZE/2;
+                enemy->Hit(damage, knockbackPosition);
             }
         }
 
