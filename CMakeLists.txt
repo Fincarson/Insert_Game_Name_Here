@@ -116,6 +116,10 @@ add_executable(Insert_Game_Name_Here
         Weapons/MagicStaff.hpp
         Bullet/FireballBullet.cpp
         Bullet/FireballBullet.hpp
+        Weapons/SwordWeapon.cpp
+        Weapons/SwordWeapon.hpp
+        Weapons/SwordSlashEffect.cpp
+        Weapons/SwordSlashEffect.hpp
 )
 
 

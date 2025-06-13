@@ -60,10 +60,8 @@ void Weapon::Update(float deltaTime, const Engine::Point& newPosition) {
     else flips = 2;
     al_get_mouse_state(&mstate);
 
-    // handle firing (For normal weapon later)
+    // handle firing (For gun weapon later)
     /*double now = al_get_time();
-    ALLEGRO_MOUSE_STATE mstate;
-    al_get_mouse_state(&mstate);
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
         SpawnBullet(Position, angle);
         lastShotTime = now;

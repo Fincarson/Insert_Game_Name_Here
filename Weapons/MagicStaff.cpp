@@ -30,7 +30,7 @@ void MagicStaff::Update(float deltaTime, const Engine::Point &newPosition) {
             Engine::Point MiddlePosition = Engine::Point(enemy->Position.x + TILE_SIZE/2, enemy->Position.y + TILE_SIZE/2);
             Engine::Point dir = Position - MiddlePosition;
             float len = dir.Magnitude();
-            if (len < rangeRadius && len > 1e-6) {
+            if (len < rangeRadius && len > 0) {
                 float shootAngle = Angle::Get(Position, MiddlePosition);
                 CreateBullet(shootAngle, enemy);
             }
