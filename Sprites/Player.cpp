@@ -27,7 +27,7 @@ Player::Player(float x, float y, float w, float h, int hp)
 }
 
 void Player::Update(float deltaTime) {
-    if (hp <= 0) {
+    if (inMenu || hp <= 0) {
         Velocity.x = 0; Velocity.y = 0;
         AnimSprite::Update(deltaTime);
         return;

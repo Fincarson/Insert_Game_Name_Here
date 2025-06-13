@@ -1,6 +1,8 @@
 #ifndef menu_scene_h
 #define menu_scene_h
 
+#include <chrono>
+
 #include "Engine/AudioHelper.hpp"
 #include "Engine/IScene.hpp"
 #include "Engine/Resources.hpp"
