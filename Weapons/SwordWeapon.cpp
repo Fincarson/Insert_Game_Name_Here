@@ -45,7 +45,7 @@ void SwordWeapon::Draw() const {
     Weapon::Draw();
     if (!scene) return;
 
-    Engine::Point playerPos = scene->GetPlayer()->Position;
+    // Engine::Point playerPos = scene->GetPlayer()->Position;
 
     // Visual effect: 3 white slash lines
     if (al_mouse_button_down(&mstate, 1)) {

@@ -21,6 +21,7 @@
 #include "Weapons/BlackholeWeapon.hpp"
 #include "Weapons/LaserWeapon.hpp"
 #include "Weapons/Lightsaber.hpp"
+#include "Weapons/SwordWeapon.hpp"
 
 
 void PlayScene::Initialize() {
