@@ -59,6 +59,8 @@ public:
     void AddCoin() { coins++; }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
+
+    float MinInteractDist = 1E9;
 };
 
 

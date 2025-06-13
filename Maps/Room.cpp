@@ -82,6 +82,8 @@ void Room::loadRoom(std::string filename) {
     /*
      * 2. Read additional arguments (e.g. passageways to other rooms)
      */
+    auto gameScene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene());
+
     while (std::getline(file, line)) {
         std::stringstream lineStream(line);
         std::string command;
@@ -97,22 +99,20 @@ void Room::loadRoom(std::string filename) {
             passageways[passageId].otherRoomFile = otherRoomFile;
             passageways[passageId].otherId = otherPassageId;
 
+        } else if (command == "Say") {
+            float delay, duration;
+            std::string text;
+
+            lineStream >> delay >> duration;
+            lineStream.get();
+            std::getline(lineStream, text);
+
+            gameScene->AddSubtitle(delay, duration, text);
+
         } else {
             Engine::LOG(Engine::ERROR) << "unknown command on the map file argument" << filename << ": " << command;
         }
     }
-
-    // Clear unused passageways.
-    // for (auto it = passageways.begin(); it != passageways.end(); ) {
-    //     if (it->second.otherRoomFile == "") {
-    //         if (auto itPos = posToPassageway.find(it->second.pos); itPos != posToPassageway.end()) {
-    //             posToPassageway.erase(itPos);
-    //         }
-    //         it = passageways.erase(it);
-    //     } else {
-    //         ++it;
-    //     }
-    // }
 
     /*
      * 3. Summon enemies

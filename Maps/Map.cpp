@@ -129,3 +129,7 @@ bool Map::isWalkable(int i, int j) const {
     return isFloor(i, j);
 }
 
+bool Map::isBorderTile(int i, int j) const {
+    return i == -1 || j == -1 || i == row || i == col;
+}
+

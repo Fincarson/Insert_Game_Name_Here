@@ -122,6 +122,8 @@ add_executable(Insert_Game_Name_Here
         Weapons/SwordSlashEffect.hpp
         Enemy/Coins.cpp
         Enemy/Coins.hpp
+        Mechanics/InteractableSprite.cpp
+        Mechanics/InteractableSprite.hpp
 )
 
 

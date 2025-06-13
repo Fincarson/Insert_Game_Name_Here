@@ -52,6 +52,7 @@ public:
     bool isFloor(int i, int j) const;
     bool isNothing(int i, int j) const;
     bool isWalkable(int i, int j) const;
+    bool isBorderTile(int i, int j) const;
 
     [[nodiscard]] int getRow() const { return row; }
     [[nodiscard]] int getCol() const { return col; }
