@@ -91,7 +91,7 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
         Engine::Point MiddlePosition = Engine::Point(player->Position.x + TILE_SIZE/2, player->Position.y + TILE_SIZE/2);
         Engine::Point dir = Position - MiddlePosition;
         float len = dir.Magnitude();
-        if (len < explosionRadius && len > 1e-6) {
+        if (len < explosionRadius && len > 5) {
             Engine::Point pullVec = dir.Normalize() * (pullStrength * deltaTime / len);
             player->ExternalForce.x += pullVec.x;
             player->ExternalForce.y += pullVec.y;
