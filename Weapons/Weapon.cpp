@@ -39,9 +39,9 @@ PlayScene * Weapon::getPlayScene() {
     return dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
 
-void Weapon::SpawnBullet(Engine::Point point, float angle) {
-    getPlayScene()->GetCurRoom()->BulletGroup->AddNewObject(
-        new Bullet(bulletPath, point, angle, bulletSpeed, damage, 0));
+void Weapon::CreateBullet() {
+    scene->GetCurRoom()->BulletGroup->AddNewObject(
+        new Bullet(bulletPath, Position, angle, bulletSpeed, damage, 0));
     // std::cout << "SHOOT!!\n";
 }
 

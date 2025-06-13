@@ -1,6 +1,6 @@
 #include "Collision.hpp"
 
-bool Collision::isCollision(int x, int y, const Map& map) {
+bool Collision::IsCollision(int x, int y, const Map& map) {
     // 1) Out of map bounds? (Add 1 extra tile to each boundary to enable room changing)
     if (x < -TILE_SIZE || y < -TILE_SIZE
      || x / TILE_SIZE >= map.getCol()

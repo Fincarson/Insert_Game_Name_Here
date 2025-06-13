@@ -24,10 +24,10 @@ public:
     virtual ~Bullet();
 
     /// Update position by deltaTime (s), check map collisions, and trigger OnMapCollision
-    void Update(float deltaTime, const Map& map);
+    virtual void Update(float deltaTime, const Map& map);
 
     /// Draws the bullet rotated by its angle (centered)
-    //void Draw(const Engine::Point & camera) const override;
+    virtual void Draw() const;
 
     /// Is this bullet still active?
     bool IsAlive() const { return alive; }
@@ -40,11 +40,11 @@ public:
 
 protected:
     /// Called when bullet hits a map tile (default: deactivate)
-    virtual void OnMapCollision();
+    virtual void OnExplode();
     PlayScene *getPlayScene();
-
+    PlayScene *scene;
+    Engine::Point cam;
     ALLEGRO_BITMAP* bitmap;
-    Engine::Point position;
     Collision collider;
     float angle;
     float speed;
