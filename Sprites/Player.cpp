@@ -23,7 +23,7 @@ Player::Player(float x, float y, float w, float h, int hp)
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
-        x, y, w, h, 0, 0), hp(hp) {
+        x, y, w, h, 0, 0), hp(hp), coins(0) {
 }
 
 void Player::Update(float deltaTime) {

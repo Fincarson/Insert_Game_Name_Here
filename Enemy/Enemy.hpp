@@ -19,6 +19,7 @@ private:
     Collision collider;
     int damage;
     int hp;
+    bool isCoin;
 
     Engine::Point knockbackDirection = Engine::Point(0, 0);
     float knockbackPower = 750.0f;
@@ -31,7 +32,7 @@ public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
         const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);
 
-    void Update(float deltaTime) override;
+    virtual void Update(float deltaTime);
     void Pathfind();
     void Collision(float deltaTime);
 
@@ -40,10 +41,16 @@ public:
 
     void SetHP(int hp);
     int GetHP() const;
-    void Hit(int damage, Engine::Point hitPos);
+    virtual void Hit(int damage, Engine::Point hitPos);
     bool IsDead() const;
 
     Rect GetBoundingBox() const;
+    auto GetCollider() { return collider; }
+    Player* GetPlayer() const { return player; }
+    bool IsCoin() const { return isCoin; }
+    void SetCoin(bool coin) { isCoin = coin; }
+    int GetDeathTimer() const { return deathTimer; }
+    void SetDeathTimer(int num) { deathTimer = num; }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
 };

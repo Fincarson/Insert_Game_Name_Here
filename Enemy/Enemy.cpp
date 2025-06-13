@@ -28,9 +28,12 @@ void Enemy::Update(float deltaTime) {
         // Update death timer
         deathTimer--;
         if (deathTimer <= 0) {
-            getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation
+            getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation)
         }
     }
+
+    // Coin checker
+    if (IsCoin()) return;
 
     if (knockbackTimer > 0 && map) {
         // Knockback from player
@@ -62,6 +65,11 @@ void Enemy::Update(float deltaTime) {
     ExternalForce = Engine::Point(0, 0);
 
     Collision(deltaTime);
+
+    if (Collision::IsCollision(player, this) && player->CanTakeDamage() && !IsDead()) {
+        player->Hit(GetDamage(), Position);
+        player->ResetDamageCooldown();
+    }
 }
 
 void Enemy::Pathfind() {

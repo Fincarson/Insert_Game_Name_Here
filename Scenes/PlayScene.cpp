@@ -95,16 +95,6 @@ void PlayScene::Update(float deltaTime) {
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
     }
 
-    for (auto& enemyObj : curRoom->EnemyGroup->GetObjects()) {
-        Enemy* enemy = dynamic_cast<Enemy*>(enemyObj);
-        // if (!enemy || !enemy->IsAlive()) continue;
-
-        if (Collision::IsCollision(player, enemy) && player->CanTakeDamage() && !enemy->IsDead()) {
-            player->Hit(enemy->GetDamage(), enemy->Position);
-            player->ResetDamageCooldown();
-        }
-    }
-
     // Camera should be updated last.
     UpdateCamera();
 }

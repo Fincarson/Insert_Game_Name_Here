@@ -120,6 +120,8 @@ add_executable(Insert_Game_Name_Here
         Weapons/SwordWeapon.hpp
         Weapons/SwordSlashEffect.cpp
         Weapons/SwordSlashEffect.hpp
+        Enemy/Coins.cpp
+        Enemy/Coins.hpp
 )
 
 

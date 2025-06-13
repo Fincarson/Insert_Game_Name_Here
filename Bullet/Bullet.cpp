@@ -65,6 +65,7 @@ void Bullet::Update(float deltaTime, const Map& map) {
         Enemy* enemy = dynamic_cast<Enemy*>(it);
         // if (enemy) std::cout << "ENEMY FOUND\n";
         if (collider.IsCollision(this, enemy)) {
+            if (enemy->IsCoin()) continue;
             // std::cout << "ENEMY HIT\n";
             alive = false;
             OnExplode(enemy);
