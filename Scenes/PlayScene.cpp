@@ -34,7 +34,7 @@ void PlayScene::Initialize() {
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
     player->SetCollisionMap(curRoom->getMap());
-    AddNewObject(weapon = new SwordWeapon("images/sukuna_sword.png", 1, 50, 1.5));
+    AddNewObject(weapon = new SwordWeapon("images/sukuna_sword.png", 1, 20, 1.5));
     // AddNewObject(weapon = new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 10, 3));
     // AddNewObject(weapon = new Lightsaber("images/lightsaber_handle.png", 10));    // Lightsaber
     // AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
@@ -99,7 +99,7 @@ void PlayScene::Update(float deltaTime) {
         Enemy* enemy = dynamic_cast<Enemy*>(enemyObj);
         // if (!enemy || !enemy->IsAlive()) continue;
 
-        if (Collision::IsCollision(player, enemy) && player->CanTakeDamage()) {
+        if (Collision::IsCollision(player, enemy) && player->CanTakeDamage() && !enemy->IsDead()) {
             player->Hit(enemy->GetDamage(), enemy->Position);
             player->ResetDamageCooldown();
         }
