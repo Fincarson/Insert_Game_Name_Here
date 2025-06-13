@@ -57,7 +57,7 @@ void Bullet::Update(float deltaTime, const Map& map) {
     if ((map.isWall(Position.y / TILE_SIZE, Position.x / TILE_SIZE)) || (Position.x <= 0 || Position.y <= 0 || Position.x >= map.getCol() * TILE_SIZE || Position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for Position.y and j is for Position.x
         // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
         alive = false;
-        // OnMapCollision();
+        // OnExplode();
     }
 
     for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
@@ -65,9 +65,8 @@ void Bullet::Update(float deltaTime, const Map& map) {
         // if (enemy) std::cout << "ENEMY FOUND\n";
         if (collider.IsCollision(this, enemy)) {
             // std::cout << "ENEMY HIT\n";
-            enemy->Hit(damage, scene->GetPlayer()->Position);
             alive = false;
-            // OnMapCollision();
+            OnExplode(enemy);
             return;
         }
     }
@@ -83,8 +82,8 @@ void Bullet::Draw() const {
                            0);
 }
 
-void Bullet::OnExplode() {
-    std::cout << "Bullet::OnMapCollision on " << Position.x/TILE_SIZE << " " << Position.y/TILE_SIZE << std::endl;
+void Bullet::OnExplode(Enemy* enemy) {
+    std::cout << "Bullet::OnExplode on " << Position.x/TILE_SIZE << " " << Position.y/TILE_SIZE << std::endl;
     getPlayScene()->GetCurRoom()->BulletGroup->RemoveObject(objectIterator);
 }
 

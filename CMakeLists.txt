@@ -112,6 +112,10 @@ add_executable(Insert_Game_Name_Here
         Bullet/BlackholeBullet.hpp
         Weapons/Lightsaber.cpp
         Weapons/Lightsaber.hpp
+        Weapons/MagicStaff.cpp
+        Weapons/MagicStaff.hpp
+        Bullet/FireballBullet.cpp
+        Bullet/FireballBullet.hpp
 )
 
 

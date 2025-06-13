@@ -8,6 +8,7 @@
 #include "Engine/Point.hpp"
 #include "Maps/Map.hpp"    // for collision checks
 
+class Enemy;
 class PlayScene;
 
 /// Base bullet class: handles movement, map collision, and lifetime.
@@ -40,7 +41,7 @@ public:
 
 protected:
     /// Called when bullet hits a map tile (default: deactivate)
-    virtual void OnExplode();
+    virtual void OnExplode(Enemy* enemy);
     PlayScene *getPlayScene();
     PlayScene *scene;
     Engine::Point cam;

@@ -42,6 +42,7 @@ void Lightsaber::Update(float deltaTime, const Engine::Point &newPosition) {
         else
             ++it;
     }
+
     double now = al_get_time();
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
         lightsaberOn = !lightsaberOn;
