@@ -44,6 +44,11 @@ void Player::Update(float deltaTime) {
 
     Movement();
     Collision(deltaTime);
+    if (!collider.IsCollision(int(Position.x + ExternalForce.x), int(Position.y), *collisionMap))
+        Position.x += ExternalForce.x;
+    if (!collider.IsCollision(int(Position.x), int(Position.y + ExternalForce.y), *collisionMap))
+        Position.y += ExternalForce.y;
+    ExternalForce = Engine::Point(0, 0);
 
     // Let AnimSprite actually apply Velocity → position & advance frame
     AnimSprite::Update(deltaTime);
@@ -106,13 +111,13 @@ void Player::Collision(float deltaTime) {
 
         // 2a) test horizontal only
         float nextX = currX + Velocity.x * deltaTime;
-        if (collider.isCollision(int(nextX), int(currY), *collisionMap)) {
+        if (collider.IsCollision(int(nextX), int(currY), *collisionMap)) {
             Velocity.x = 0;
         }
 
         // 2b) test vertical only
         float nextY = currY + Velocity.y * deltaTime;
-        if (collider.isCollision(int(currX), int(nextY), *collisionMap)) {
+        if (collider.IsCollision(int(currX), int(nextY), *collisionMap)) {
             Velocity.y = 0;
         }
     }

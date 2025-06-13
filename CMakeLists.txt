@@ -106,6 +106,10 @@ add_executable(Insert_Game_Name_Here
         Mechanics/Buffable.hpp
         Weapons/LaserWeapon.cpp
         Weapons/LaserWeapon.hpp
+        Weapons/BlackholeWeapon.cpp
+        Weapons/BlackholeWeapon.hpp
+        Bullet/BlackholeBullet.cpp
+        Bullet/BlackholeBullet.hpp
 )
 
 

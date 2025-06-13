@@ -11,9 +11,10 @@
 #include <bits/ostream.tcc>
 
 #include "Maps/Room.hpp"
+#include "Sprites/Player.hpp"
 
-LaserWeapon::LaserWeapon(std::string weaponImg, std::string beamImg, float damage)
-    : Weapon(weaponImg, beamImg, 1, 1, damage) {
+LaserWeapon::LaserWeapon(std::string weaponImg, float damage)
+    : Weapon(weaponImg, "images/fireball.png", 1, 1, damage) {
     cooldownPerHit = 0.5f;
     laserLength = 0;
 }
@@ -105,7 +106,7 @@ void LaserWeapon::CheckLaserHits() {
 
         if (IntersectLineRect(laserStart, laserEnd, box)) {
             if (hitCooldownMap.find(enemy) == hitCooldownMap.end()) {
-                enemy->Hit(damage);
+                enemy->Hit(damage, scene->GetPlayer()->Position);
                 hitCooldownMap[enemy] = cooldownPerHit;
             }
         }

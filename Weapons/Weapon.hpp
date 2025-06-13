@@ -23,10 +23,10 @@ public:
            int damage);
     virtual ~Weapon();
 
-    void SpawnBullet(Engine::Point point, float angle);
+    virtual void CreateBullet();
 
     /// Update weapon position & angle; fire on left mouse down when cooldown allows
-    virtual void Update(float deltaTime, const Engine::Point& mousePosition);
+    virtual void Update(float deltaTime, const Engine::Point& newPosition);
     /// Draw weapon rotated to current angle
     virtual void Draw() const;
 

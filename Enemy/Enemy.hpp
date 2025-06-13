@@ -40,10 +40,12 @@ public:
 
     void SetHP(int hp);
     int GetHP() const;
-    void Hit(int damage);
+    void Hit(int damage, Engine::Point hitPos);
     bool IsDead() const;
 
     Rect GetBoundingBox() const;
+
+    Engine::Point ExternalForce = Engine::Point(0, 0);
 };
 
 

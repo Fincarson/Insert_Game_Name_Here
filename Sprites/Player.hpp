@@ -53,6 +53,8 @@ public:
     void UpdateCooldown(float deltaTime);
     bool CanTakeDamage() const;
     void ResetDamageCooldown();
+
+    Engine::Point ExternalForce = Engine::Point(0, 0);
 };
 
 

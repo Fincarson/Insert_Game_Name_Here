@@ -15,7 +15,7 @@ protected:
     std::unordered_map<Enemy*, float> hitCooldownMap;  // Per-enemy cooldown tracker
 
 public:
-    LaserWeapon(std::string weaponImg, std::string beamImg, float damage);
+    LaserWeapon(std::string weaponImg, float damage);
 
     void Update(float deltaTime, const Engine::Point& mousePosition) override;
     void Draw() const override;

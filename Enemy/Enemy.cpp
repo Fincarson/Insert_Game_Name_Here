@@ -55,6 +55,12 @@ void Enemy::Update(float deltaTime) {
         Velocity = deltaPos.Normalize() * speed;
     }
 
+    if (!collider.IsCollision(int(Position.x + ExternalForce.x), int(Position.y), *map))
+        Position.x += ExternalForce.x;
+    if (!collider.IsCollision(int(Position.x), int(Position.y + ExternalForce.y), *map))
+        Position.y += ExternalForce.y;
+    ExternalForce = Engine::Point(0, 0);
+
     Collision(deltaTime);
 }
 
@@ -170,13 +176,13 @@ void Enemy::Collision(float deltaTime) {
 
         // 2a) test horizontal only
         float nextX = currX + Velocity.x * deltaTime;
-        if (collider.isCollision(int(nextX), int(currY), *map)) {
+        if (collider.IsCollision(int(nextX), int(currY), *map)) {
             Velocity.x = 0;
         }
 
         // 2b) test vertical only
         float nextY = currY + Velocity.y * deltaTime;
-        if (collider.isCollision(int(currX), int(nextY), *map)) {
+        if (collider.IsCollision(int(currX), int(nextY), *map)) {
             Velocity.y = 0;
         }
     }
@@ -201,12 +207,12 @@ int Enemy::GetHP() const {
     return hp;
 }
 
-void Enemy::Hit(int damage) {
+void Enemy::Hit(int damage, Engine::Point hitPos) {
     if (IsDead()) return;
     hp -= damage;
     // std::cout << "Current hp: " << hp << std::endl;
     if (hp <= 0) {
-        // DeadAnimation(); // Someone put something here
+        // Someone put something here
 
         // i gotchu bro
         SetAnimation("death");
@@ -214,7 +220,7 @@ void Enemy::Hit(int damage) {
         // xie xie bro luv u <3
     }
     // Compute direction away from bullet
-    knockbackDirection = (Position - player->Position).Normalize();
+    knockbackDirection = (Position - hitPos).Normalize();
     knockbackTimer = MAX_KB_TIME;
 }
 

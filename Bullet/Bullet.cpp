@@ -14,6 +14,7 @@
 #include "Engine/Point.hpp"
 #include "Maps/Room.hpp"
 #include "Scenes/PlayScene.hpp"
+#include "Sprites/Player.hpp"
 
 Bullet::Bullet(const std::string& imagePath,
                const Engine::Point& startPos,
@@ -22,7 +23,6 @@ Bullet::Bullet(const std::string& imagePath,
                int damage,
                int ownerType)
     : bitmap(nullptr)
-    , position(startPos)
     , angle(angleRadians)
     , speed(speed)
     , damage(damage)
@@ -31,34 +31,33 @@ Bullet::Bullet(const std::string& imagePath,
 {
     bitmap = al_load_bitmap(imagePath.c_str());
     // if (bitmap) std::cout << "Bullet Created\n";
-    this->Position = startPos;
-    this->Size = Engine::Point(1, 1);
+    alive = true;
+    Position = startPos;
+    Size = Engine::Point(1, 1);
     // std::cout << this->Size.x << " " << this->Size.y << std::endl;
 }
 
 Bullet::~Bullet() {
-    if (bitmap) {
-        al_destroy_bitmap(bitmap);
-        bitmap = nullptr;
-    }
 }
 
 void Bullet::Update(float deltaTime, const Map& map) {
     if (!alive) return;
 
+    scene = getPlayScene();
+    cam = scene ? scene->GetCamera() : Engine::Point(0, 0);
+
     // Move bullet
-    position.x += std::cos(angle) * speed * deltaTime;
-    position.y += std::sin(angle) * speed * deltaTime;
-    this->Position = position;  // I accidentally made 2 kinds of position (Feel free to fix but be very careful)
-    // int i = position.y / TILE_SIZE;
-    // int j = position.x / TILE_SIZE;
+    Position.x += std::cos(angle) * speed * deltaTime;
+    Position.y += std::sin(angle) * speed * deltaTime;
+    // int i = Position.y / TILE_SIZE;
+    // int j = Position.x / TILE_SIZE;
     // std::cout << "[DEBUG] Bullet at tile (" << i << ", " << j << ")\n";
 
     // Map collision: check the tile at bullet's center
-    if ((map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) || (position.x <= 0 || position.y <= 0 || position.x >= map.getCol() * TILE_SIZE || position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
+    if ((map.isWall(Position.y / TILE_SIZE, Position.x / TILE_SIZE)) || (Position.x <= 0 || Position.y <= 0 || Position.x >= map.getCol() * TILE_SIZE || Position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for Position.y and j is for Position.x
         // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
         alive = false;
-        OnMapCollision();
+        // OnMapCollision();
     }
 
     for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
@@ -66,31 +65,26 @@ void Bullet::Update(float deltaTime, const Map& map) {
         // if (enemy) std::cout << "ENEMY FOUND\n";
         if (collider.IsCollision(this, enemy)) {
             // std::cout << "ENEMY HIT\n";
-            enemy->Hit(damage);  // Apply damage
+            enemy->Hit(damage, scene->GetPlayer()->Position);
             alive = false;
-            OnMapCollision(); // Destroy bullet
+            // OnMapCollision();
             return;
         }
     }
 }
 
-void Bullet::Draw(const Engine::Point & camera) const {
-    auto scene = dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());  // Can't use getPlayScene() due to Draw() is const
-    Engine::Point cam = scene ? scene->GetCamera() : Engine::Point(0, 0);   // Get camera position
-    if (!alive || !bitmap) return;
+void Bullet::Draw() const {
+    if (!bitmap) return;
     float cx = al_get_bitmap_width(bitmap) * 0.5f;
     float cy = al_get_bitmap_height(bitmap) * 0.5f;
     al_draw_rotated_bitmap(bitmap, cx, cy,
-                           position.x - cam.x, position.y - cam.y,  // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
+                           Position.x - cam.x, Position.y - cam.y,  // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
                            angle,
                            0);
-    // std::cout << "Drawing bullet...\n";
-    al_draw_filled_circle(position.x - cam.x, position.y - cam.y, 2, al_map_rgb(255, 255, 255));
 }
 
-void Bullet::OnMapCollision() {
-    // Default behavior: just deactivate
-    // Override in subclasses to spawn effects
+void Bullet::OnExplode() {
+    std::cout << "Bullet::OnMapCollision on " << Position.x/TILE_SIZE << " " << Position.y/TILE_SIZE << std::endl;
     getPlayScene()->GetCurRoom()->BulletGroup->RemoveObject(objectIterator);
 }
 

@@ -10,7 +10,7 @@ public:
     Collision() = default;
 
     /// Returns true if (x,y) overlaps any wall or is out of bounds
-    static bool isCollision(int x, int y, const Map& map);
+    static bool IsCollision(int x, int y, const Map& map);
     static bool IsCollision(const Engine::IObject* a, const Engine::IObject* b);
 };
 
