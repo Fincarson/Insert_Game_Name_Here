@@ -42,6 +42,7 @@ public:
 protected:
     /// Called when bullet hits a map tile (default: deactivate)
     virtual void OnExplode(Enemy* enemy);
+    void OnExplode();
     PlayScene *getPlayScene();
     PlayScene *scene;
     Engine::Point cam;

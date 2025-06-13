@@ -23,8 +23,37 @@ BlackholeBullet::BlackholeBullet(std::string imagePath,
 }
 
 void BlackholeBullet::Update(float deltaTime, const Map& map) {
-    if (alive) {
-        Bullet::Update(deltaTime, map);
+    if (alive) {    // I had to put my own bullet logic here due to different OnExplode
+        if (!alive) return;
+
+        scene = getPlayScene();
+        cam = scene ? scene->GetCamera() : Engine::Point(0, 0);
+
+        // Move bullet
+        Position.x += std::cos(angle) * speed * deltaTime;
+        Position.y += std::sin(angle) * speed * deltaTime;
+        // int i = Position.y / TILE_SIZE;
+        // int j = Position.x / TILE_SIZE;
+        // std::cout << "[DEBUG] Bullet at tile (" << i << ", " << j << ")\n";
+
+        // Map collision: check the tile at bullet's center
+        if ((map.isWall(Position.y / TILE_SIZE, Position.x / TILE_SIZE)) || (Position.x <= 0 || Position.y <= 0 || Position.x >= map.getCol() * TILE_SIZE || Position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for Position.y and j is for Position.x
+            // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
+            alive = false;
+            // OnExplode();
+            return;
+        }
+
+        for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
+            Enemy* enemy = dynamic_cast<Enemy*>(it);
+            // if (enemy) std::cout << "ENEMY FOUND\n";
+            if (collider.IsCollision(this, enemy)) {
+                // std::cout << "ENEMY HIT\n";
+                alive = false;
+                // OnExplode(enemy);
+                return;
+            }
+        }
         return;
     }
     // If already removed, do nothing
@@ -48,7 +77,7 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
         Engine::Point MiddlePosition = Engine::Point(enemy->Position.x + TILE_SIZE/2, enemy->Position.y + TILE_SIZE/2);
         Engine::Point dir = Position - MiddlePosition;
         float len = dir.Magnitude();
-        if (len < explosionRadius && len > 1e-6) {
+        if (len < explosionRadius && len > 5) {
             Engine::Point pullVec = dir.Normalize() * (pullStrength * deltaTime / len);
             enemy->ExternalForce.x += pullVec.x;
             enemy->ExternalForce.y += pullVec.y;

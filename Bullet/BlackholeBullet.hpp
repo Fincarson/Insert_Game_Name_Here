@@ -5,13 +5,15 @@
 #include <vector>
 
 class BlackholeBullet : public Bullet {
-private:
+protected:
     bool exploded;
     float elapsed = 0;
     float explosionDuration = 1.0f; // 1 second pull duration
     float explosionRadius = 3.0f * TILE_SIZE;
     ALLEGRO_BITMAP* explodeBitmap = nullptr;
     bool dealtFinalDamage = false;
+    std::unordered_map<Enemy*, float> hitCooldownMap;
+    float cooldownPerHit;
 
 public:
     BlackholeBullet(std::string imagePath, const Engine::Point& startPos, float angleRadians, float speed, int damage, int ownerType);
