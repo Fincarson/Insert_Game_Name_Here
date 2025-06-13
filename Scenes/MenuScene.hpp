@@ -157,6 +157,7 @@ class MenuScene final : public Engine::IScene {
     bool exiting                 = false;
 
     // DIALOGUE
+    float dialogueTimer = 0.0f;
     float dialogueAlpha  = 0.0f;
     float dialogue2Alpha = 0.0f;
     float dialogue3Alpha = 0.0f;
@@ -169,9 +170,9 @@ class MenuScene final : public Engine::IScene {
     bool dialogue2FadingOut = false;
     bool dialogue3FadingOut = false;
 
-    bool Dialogue1Finished   = false;
-    bool dialogue2Started = false;
-    bool dialogue3Started = false;
+    bool Dialogue1Finished = false;
+    bool dialogue2Started  = false;
+    bool dialogue3Started  = false;
 
     Engine::Label* Dialogue1 = nullptr;
     Engine::Label* Dialogue2 = nullptr;
