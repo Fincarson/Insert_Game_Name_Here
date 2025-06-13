@@ -31,6 +31,7 @@ void Enemy::Update(float deltaTime) {
         // Update death timer
         deathTimer--;
         if (deathTimer <= 0) {
+            // Summon coin after death
             if (!IsCoin()) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
             getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation)
         }
