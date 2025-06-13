@@ -55,6 +55,8 @@ public:
     void ResetDamageCooldown();
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
+
+    float MinInteractDist = 1E9;
 };
 
 

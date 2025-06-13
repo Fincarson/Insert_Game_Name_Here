@@ -14,10 +14,10 @@ bool Collision::IsCollision(int x, int y, const Map& map) {
     int bottom = (y + TILE_SIZE - 1) / TILE_SIZE;
 
     // 3) If any corner is a wall, it’s a collision
-    if (map.isWall(top,    left))   return true;
-    if (map.isWall(top,    right))  return true;
-    if (map.isWall(bottom, left))   return true;
-    if (map.isWall(bottom, right))  return true;
+    if (!map.isWalkable(top,    left))   return true;
+    if (!map.isWalkable(top,    right))  return true;
+    if (!map.isWalkable(bottom, left))   return true;
+    if (!map.isWalkable(bottom, right))  return true;
 
     return false;
 }

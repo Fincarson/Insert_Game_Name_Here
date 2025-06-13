@@ -90,7 +90,9 @@ void PlayScene::Update(float deltaTime) {
         return;
     }
 
+    player->MinInteractDist = 1E9;
     IScene::Update(deltaTime);
+
     curRoom->Update(deltaTime);
     weapon->Update(deltaTime, Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
 
@@ -226,7 +228,6 @@ void PlayScene::ChangeRoom(std::string roomFile, int passagewayId) {
     if (roomFile == "") return;
 
     if (rooms.count(roomFile) == 0) {
-        std::cout << "Kontol\n";
         rooms[roomFile] = new Room(roomFile);
     }
 
