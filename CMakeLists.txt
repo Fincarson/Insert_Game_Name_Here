@@ -112,6 +112,16 @@ add_executable(Insert_Game_Name_Here
         Bullet/BlackholeBullet.hpp
         Weapons/Lightsaber.cpp
         Weapons/Lightsaber.hpp
+        Weapons/MagicStaff.cpp
+        Weapons/MagicStaff.hpp
+        Bullet/FireballBullet.cpp
+        Bullet/FireballBullet.hpp
+        Weapons/SwordWeapon.cpp
+        Weapons/SwordWeapon.hpp
+        Weapons/SwordSlashEffect.cpp
+        Weapons/SwordSlashEffect.hpp
+        Enemy/Coins.cpp
+        Enemy/Coins.hpp
         Mechanics/InteractableSprite.cpp
         Mechanics/InteractableSprite.hpp
 )

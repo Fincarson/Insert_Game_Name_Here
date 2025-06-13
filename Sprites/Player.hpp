@@ -31,6 +31,8 @@ private:
 
     const float MAX_KB_TIME = 0.5f; // 0.5 seconds of knockback
 
+    int coins;
+
 public:
     Player(float x, float y, float w, float h, int hp);
 
@@ -53,6 +55,8 @@ public:
     void UpdateCooldown(float deltaTime);
     bool CanTakeDamage() const;
     void ResetDamageCooldown();
+    int GetCoin() const { return coins; }
+    void AddCoin() { coins++; }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
 
