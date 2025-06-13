@@ -16,7 +16,7 @@ BlackholeWeapon::BlackholeWeapon(const std::string& weaponImagePath,
 
 void BlackholeWeapon::Update(float deltaTime, const Engine::Point& newPosition) {
     Weapon::Update(deltaTime, newPosition);
-    double now = al_get_time();;
+    double now = al_get_time();
     if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
         CreateBullet();
         lastShotTime = now;

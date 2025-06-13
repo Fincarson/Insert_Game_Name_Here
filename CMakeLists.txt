@@ -110,6 +110,8 @@ add_executable(Insert_Game_Name_Here
         Weapons/BlackholeWeapon.hpp
         Bullet/BlackholeBullet.cpp
         Bullet/BlackholeBullet.hpp
+        Weapons/Lightsaber.cpp
+        Weapons/Lightsaber.hpp
 )
 
 

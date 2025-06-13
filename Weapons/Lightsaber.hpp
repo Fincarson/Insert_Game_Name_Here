@@ -1,22 +1,21 @@
-#ifndef LASERWEAPON_HPP
-#define LASERWEAPON_HPP
+#ifndef LIGHTSABER_HPP
+#define LIGHTSABER_HPP
 
-#include "Weapon.hpp"
-#include "Engine/Point.hpp"
-#include <unordered_map>
+#include "weapon.hpp"
+#include "LaserWeapon.hpp"
 
-class Enemy; // Forward declaration
-
-class LaserWeapon : public Weapon {
+class Lightsaber : public Weapon {
 protected:
+    float maxLaserLength = 1.2 * TILE_SIZE;
     float cooldownPerHit;                     // Time between each damage tick per enemy
     float laserLength;                        // How far the laser reaches
     Engine::Point laserStart, laserEnd;       // Beam coordinates
     std::unordered_map<Enemy*, float> hitCooldownMap;  // Per-enemy cooldown tracker
+    bool lightsaberOn;
 
 public:
-    LaserWeapon(std::string weaponImg, float damage);
-    void Update(float deltaTime, const Engine::Point& mousePosition) override;
+    Lightsaber(std::string weaponImg, float damage);
+    void Update(float deltaTime, const Engine::Point& newPosition) override;
     void Draw() const override;
 
     float getLaserLength();
@@ -24,5 +23,4 @@ public:
     void CheckLaserHits(); // Damage enemies intersecting with the beam
 };
 
-
-#endif //LASERWEAPON_HPP
+#endif //LIGHTSABER_HPP
