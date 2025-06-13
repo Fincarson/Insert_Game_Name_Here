@@ -9,7 +9,9 @@
 #include <allegro5/allegro_primitives.h>
 
 #include "Coins.hpp"
+#include "Knight.hpp"
 #include "utility.hpp"
+#include "Zombie.hpp"
 #include "Maps/Map.hpp"
 #include "Sprites/Player.hpp"
 
@@ -50,6 +52,8 @@ void Enemy::Update(float deltaTime) {
     } else {
         // Target player
         Flip = Velocity.x < 0;
+        // Set in reverse if animation facing is different
+        if (dynamic_cast<Knight*>(this)) Flip = Velocity.x >= 0;
         Tint = al_map_rgb(255, 255, 255);
 
         Pathfind();
@@ -121,8 +125,10 @@ void Enemy::Pathfind() {
     // 0. Check if there is a direct straight path.
     if (isValidThickLine(Position, player->Position)) {
         path = {Position, player->Position};
+        validThickLine = true;
         return;
     }
+    validThickLine = false;
 
     // 1. Basic path finding using the pre-calculated BFS distance map.
     path.clear();

@@ -28,6 +28,8 @@ private:
 
     int deathTimer;
 
+    bool validThickLine = false;
+
 public:
     Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
         const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);
@@ -36,7 +38,7 @@ public:
     void Pathfind();
     void Collision(float deltaTime);
 
-    void Draw(const Engine::Point &camera) const override;
+    virtual void Draw(const Engine::Point &camera) const;
     [[nodiscard]] int GetDamage() const { return damage; }
 
     void SetHP(int hp);
@@ -51,6 +53,8 @@ public:
     void SetCoin(bool coin) { isCoin = coin; }
     int GetDeathTimer() const { return deathTimer; }
     void SetDeathTimer(int num) { deathTimer = num; }
+    bool GetValidThickLine() const { return validThickLine; }
+    Map * GetMap() const { return map; }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
 };

@@ -124,6 +124,8 @@ add_executable(Insert_Game_Name_Here
         Enemy/Coins.hpp
         Mechanics/InteractableSprite.cpp
         Mechanics/InteractableSprite.hpp
+        Enemy/Knight.cpp
+        Enemy/Knight.hpp
 )
 
 

@@ -12,6 +12,7 @@
 #include "DungeonMap.hpp"
 #include "utility.hpp"
 #include "Enemy/Coins.hpp"
+#include "Enemy/Knight.hpp"
 #include "Enemy/Zombie.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/LOG.hpp"
@@ -54,6 +55,11 @@ void Room::loadRoom(std::string filename) {
                 break;
 
                 case 'Z':
+                    mapVec[i][j] = FLOOR;
+                    enemies.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
+                break;
+
+                case 'K':
                     mapVec[i][j] = FLOOR;
                     enemies.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
                 break;
@@ -124,6 +130,10 @@ void Room::loadRoom(std::string filename) {
         switch (enemy) {
             case 'Z':
                 EnemyGroup->AddNewObject(new Zombie(pos.x, pos.y, TILE_SIZE, TILE_SIZE, 10, 100, map, player));
+            break;
+
+            case 'K':
+                EnemyGroup->AddNewObject(new Knight(pos.x, pos.y, TILE_SIZE, TILE_SIZE, 10, 250, map, player));
             break;
 
             case 'C':

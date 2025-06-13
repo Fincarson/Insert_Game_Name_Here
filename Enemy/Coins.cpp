@@ -1,7 +1,6 @@
 #include "Coins.hpp"
 
 #include <iostream>
-
 #include "Sprites/Player.hpp"
 
 Coins::Coins(float x, float y, float w, float h, Map *map, Player *player)
