@@ -22,6 +22,67 @@
 ALLEGRO_VERTEX_DECL* MenuScene::fade_decl = nullptr;
 
 void MenuScene::Initialize() {
+    Group::Clear();
+
+    // INITIALIZE
+    fadeTimer      = 0.0f;
+    menuTime       = 0.0f;
+    scrollOffset   = 0.0f;
+    scrollTargetOffset = 0.0f;
+    backTimer      = 0.0f;
+
+    exitState      = EXIT_IDLE;
+    exitFadeTimer  = 0.0f;
+    exitWaitTimer  = 0.0f;
+    playSceneQueued= false;
+    exiting        = false;
+
+    showMenu       = true;
+    backEnabled    = false;
+    buttonsMoving  = false;
+
+    inSettings     = false;
+    inLeaderboard  = false;
+    inCredits      = false;
+    inQuit         = false;
+    playerWalk     = false;
+    showMenu = true;
+    exiting = false;
+
+    dialogueTimer = 0;
+    dialogueAlpha = 0.0f;
+    dialogueFadingIn = false;
+    dialogueFadingOut = false;
+    Dialogue1Finished = false;
+    dialogueAlpha      = 0.0f;
+    dialogueFadingIn   = false;
+    dialogueFadingOut  = false;
+    Dialogue1Finished  = false;
+
+
+    Dialogue1Finished = false;
+
+    dialogue2FadingIn = false;
+    dialogue2FadingOut = false;
+    dialogue2Started = false;
+
+    dialogue3FadingIn = false;
+    dialogue3FadingOut = false;
+    dialogue3Started = false;
+
+    dialogueFadingIn = false;
+    dialogueFadingOut = false;
+
+    dialogue2Alpha     = 0.0f;
+    dialogue2FadingIn  = false;
+    dialogue2FadingOut = false;
+    dialogue2Started   = false;
+
+    dialogue3Alpha     = 0.0f;
+    dialogue3FadingIn  = false;
+    dialogue3FadingOut = false;
+    dialogue3Started   = false;
+
     // CREDITS
     std::ifstream fin("textfiles/credits.txt");
     if (!fin.is_open()) std::cerr << "[Error] couldn't open credits.txt\n";
@@ -46,6 +107,7 @@ void MenuScene::Initialize() {
 
 
     // BACKGROUND
+    scrollTargetOffset = 0.0f;
     rainEffect  = new RainEffect(rainPosX, rainPosY, 2000, 1080);
     holeMask    = new Engine::Video("hole.png",              0, 0, 1920, 1080, 0,     0, screenW, screenH, 1);
     holeMask2   = new Engine::Video("hole2.png",             0, 0, 1920, 1080, 0,     0, screenW, screenH, 1);
@@ -72,6 +134,7 @@ void MenuScene::Initialize() {
 
 
     // PLAYER
+    playSceneQueued = false;
     playerHomeX = (screenW/2) + 275;
     playerHomeY = (screenH/2) + 90;
     player = new Player(playerHomeX, playerHomeY, 250, 200, 100);
@@ -80,6 +143,7 @@ void MenuScene::Initialize() {
 
 
     // LEADERBOARD/SCOREBOARD
+    entries.clear();
     std::ifstream finL("textfiles/scoreboard.txt");
     if (!finL.is_open()) std::cerr << "[Error] couldn't open " << "scoreboard.txt" << "\n";
     std::string name, dateStr;
@@ -105,6 +169,8 @@ void MenuScene::Initialize() {
 
 
     // BUTTONS
+    backEnabled = false;
+    buttonsMoving = false;
     startX = (screenW / 3) * 0.1f + 150.0f;
     PlayButtonX             = startX;  PlayButtonY              = 200.0f;
     settingsButtonX         = startX;  settingsButtonY          = 310.0f;
@@ -208,6 +274,14 @@ void MenuScene::Initialize() {
     AddNewControlObject(yesExitButton);
     AddNewControlObject(noExitButton);
 
+    menuTime = 0.0f;
+    for (int i = 0; i < BTN_BACK; ++i) {
+        menuButtons[i].animX = offScreenButton_X;
+        menuButtons[i].btn->SetPosition(offScreenButton_X, menuButtons[i].originalPosY);
+        menuButtons[i].btn->SetLabelPosition(offScreenButton_X, menuButtons[i].btn->GetPositionLabelY());
+        menuButtons[i].btn->SetBevelLabelPosition(offScreenButton_X, menuButtons[i].btn->GetPositionBevelLabelY());
+    }
+
     playButton->SetOnClickCallback([this](){
         std::cout << "[DEBUG] Entering PlayOnClick\n";
         this->PlayOnClick(1);
@@ -292,7 +366,7 @@ void MenuScene::Initialize() {
     AddNewControlObject(settingsSFXSlider);
 
     // DIALOGUE
-    Dialogue1 = new Engine::Label("How may I be of service tonight? ", "Arial Regular.ttf", 20, screenW / 2.0f, screenH-50,255, 255, 255, 255,  0.5f, 0.5f);
+    Dialogue1 = new Engine::Label("How may I be of service tonight?", "Arial Regular.ttf", 20, screenW / 2.0f, screenH-50,255, 255, 255, 255,  0.5f, 0.5f);
     Dialogue2 = new Engine::Label("Goodbye Master Aurick, I'll see you later.", "Arial Regular.ttf", 20, screenW / 2.0f, screenH-50,255, 255, 255, 255,  0.5f, 0.5f);
     Dialogue3 = new Engine::Label("Good hunting, Master Aurick", "Arial Regular.ttf", 20, screenW / 2.0f, screenH-50,255, 255, 255, 255,  0.5f, 0.5f);
     Dialogue1->Visible = false;
@@ -452,7 +526,6 @@ void MenuScene::Update(float deltaTime) {
 
     // DIALOGUE 1
     if (fadeTimer >= fadeDuration) {
-        static float dialogueTimer = 0;
         dialogueTimer += deltaTime;
         if (dialogueTimer >= 1.0f && !Dialogue1->Visible && !Dialogue1Finished) {
             AudioHelper::PlaySample("dialogue2.mp3", false, AudioHelper::SFXVolume, 0);
@@ -668,6 +741,7 @@ void MenuScene::Update(float deltaTime) {
             if (playSceneQueued) {
                 AudioHelper::StopSample(menuBGM);
                 AudioHelper::StopSample(rain);
+                exitState = EXIT_IDLE;
                 Engine::GameEngine::GetInstance().ChangeScene("play");
             }
             else {
@@ -698,6 +772,7 @@ void MenuScene::Update(float deltaTime) {
 
 void MenuScene::PlayOnClick(int stage) {
     AudioHelper::PlaySample("dialogue4.mp3", false,  0.5f * AudioHelper::SFXVolume, 0);
+    for (int i = 0; i < BTN_BACK; i++)menuButtons[i].targetX = offScreenButton_X;
     dialogue3Alpha     = 0.0f;
     dialogue3FadingIn  = true;
     dialogue3FadingOut = false;

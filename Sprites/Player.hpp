@@ -11,7 +11,7 @@
 #include "Mechanics/Buffable.hpp"
 
 
-// extern template class Buffable<float>;
+extern template class Buffable<float>;
 
 
 class Player : public Engine::AnimSprite, public Engine::IControl {
