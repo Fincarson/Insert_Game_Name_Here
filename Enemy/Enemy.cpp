@@ -8,6 +8,7 @@
 #include <iostream>
 #include <allegro5/allegro_primitives.h>
 
+#include "Coins.hpp"
 #include "utility.hpp"
 #include "Maps/Map.hpp"
 #include "Sprites/Player.hpp"
@@ -28,6 +29,7 @@ void Enemy::Update(float deltaTime) {
         // Update death timer
         deathTimer--;
         if (deathTimer <= 0) {
+            if (!IsCoin()) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
             getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation)
         }
     }

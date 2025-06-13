@@ -18,7 +18,7 @@ void Coins::Update(float deltaTime) {
     if (!IsDead() && Collision::IsCollision(GetPlayer(), this)) {
         // Add coin++ here or smth
         GetPlayer()->AddCoin();
-        std::cout << "Collision triggered\n";
+        std::cout << "Player's coin: " << GetPlayer()->GetCoin() << std::endl;
         SetHP(-1);
         SetAnimation("death");
         SetDeathTimer(GetCurAnim().nFrames * GetCurAnim().frameDuration);
