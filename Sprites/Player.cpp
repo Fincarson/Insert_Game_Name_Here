@@ -6,12 +6,12 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/keyboard.h>
 #include <allegro5/keycodes.h>
-#include <bits/ostream.tcc>
+//#include <bits/ostream.tcc>
 
 #include "Engine/Collision.hpp"
 #include "Mechanics/Buffable.hpp"
 
-// template<> class Buffable<float>;
+template class Buffable<float>;
 // template Buffable<float>::Buffable(float);
 // template Buffable<float>::operator float();
 
@@ -27,7 +27,7 @@ Player::Player(float x, float y, float w, float h, int hp)
 }
 
 void Player::Update(float deltaTime) {
-    if (hp <= 0) {
+    if (inMenu || hp <= 0) {
         Velocity.x = 0; Velocity.y = 0;
         AnimSprite::Update(deltaTime);
         return;

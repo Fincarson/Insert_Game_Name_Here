@@ -51,7 +51,10 @@ namespace Engine {
         /// </summary>
         /// <returns>Height of the text.</returns>
         int GetTextHeight() const;
-        void SetPosition(float x) {Position.x = x;}
+        void SetPosition(float x, float y) {Position.x = x; Position.y = y;}
+        void SetText(const std::string &text) {Text = text;}
+        float GetPositionX() const {return Position.x;}
+        float GetPositionY() const {return Position.y;}
     };
 }
 

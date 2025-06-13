@@ -16,15 +16,17 @@ public:
     IntroScene();
     void Initialize() override;
     void Update(float dt) override;
-    void Draw(const Engine::Point & camera) const override;    // for the fade‐rectangle overlay
+    void Draw(const Engine::Point & camera) const override;
 
 private:
     Engine::Label* titleLabel;
+    Engine::Label* Dialogue;
     FadePhase      phase;
     float          timer;
-    float          rectAlpha;      // opacity of the fullscreen fade‐quad
+    float          rectAlpha;
     int            screenW, screenH;
-    const float    fadeTime = 1.0f;   // seconds for each fade‐in/out
+    const float    fadeTime = 2.0f;
+
 };
 
 

@@ -8,6 +8,8 @@
 #include "Engine/IControl.hpp"
 #include <string>
 
+#include "Scenes/MenuScene.hpp"
+
 namespace Engine {
 
     class TextButton : public ImageButton {
@@ -28,10 +30,15 @@ namespace Engine {
 
         void Update(float deltaTime) override;
         void Draw(const Point & camera) const override;
-        void SetPosition(float x) {Position.x = x;}
-        void SetLabelPosition(float x);
-        void SetBevelLabelPosition(float x);
+        void SetPosition(float x, float y) {Position.x = x; Position.y = y;}
+        void SetLabelPosition(float x, float y) {label.SetPosition(x, y);}
+        void SetBevelLabelPosition(float x, float y) {bevelLabel.SetPosition(x, y);}
         void SetOnClickCallback(std::function<void()> cb);
+        void ChangeFont(std::string input) {_fontName = input;}
+        float GetPositionLabelX() {return label.GetPositionX();}
+        float GetPositionLabelY() {return label.GetPositionY();}
+        float GetPositionBevelLabelX() {return bevelLabel.GetPositionX();}
+        float GetPositionBevelLabelY() {return bevelLabel.GetPositionY();}
 
     private:
         // Original label positions (for reset)

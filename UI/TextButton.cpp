@@ -6,6 +6,7 @@
 #include "Engine/Resources.hpp"
 #include <allegro5/allegro_primitives.h>
 
+class MenuScene;
 using namespace Engine;
 
 TextButton::TextButton(std::string text,
@@ -18,8 +19,8 @@ TextButton::TextButton(std::string text,
                 x, y, w, h,
                 anchorX, anchorY)
   , _fontName(fontName)
-  , _normalFontSize(static_cast<int>(h / 2.0f))
-  , _hoverFontSize (static_cast<int>(h / 1.5f))
+  , _normalFontSize(static_cast<int>(h / 1.8f))
+  , _hoverFontSize (static_cast<int>(h / 1.3f))
   , _hoverOffsetX (50.0f)
   , label(
         text,
@@ -79,14 +80,6 @@ void TextButton::Draw(const Point & camera) const {
 
     bevelLabel.Draw(camera);
     label.Draw(camera);
-}
-
-void TextButton::SetLabelPosition(float x) {
-    label.SetPosition(x);
-}
-
-void TextButton::SetBevelLabelPosition(float x) {
-    bevelLabel.SetPosition(x);
 }
 
 void TextButton::SetOnClickCallback(std::function<void()> cb) {

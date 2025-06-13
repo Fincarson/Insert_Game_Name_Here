@@ -16,8 +16,8 @@
 class RainEffect final : public Engine::IObject {
     struct Drop { float x, y, speed; };
     std::vector<Drop> drops;
-    const float len   = 25.0f;    // visual length of a drop
-    const float slope = -0.1f;    // horizontal / vertical ratio
+    const float len   = 40.0f;    // visual length of a drop
+    const float slope = -0.5f;    // horizontal / vertical ratio
 
     // clipping region
     int _clipX, _clipY, _clipW, _clipH;
@@ -25,7 +25,7 @@ class RainEffect final : public Engine::IObject {
 
 public:
     // default: rain everywhere
-    explicit RainEffect(size_t count = 120)
+    explicit RainEffect(size_t count = 200)
       : RainEffect(0, 0,
                    static_cast<int>(Engine::GameEngine::GetInstance().GetScreenSize().x),
                    static_cast<int>(Engine::GameEngine::GetInstance().GetScreenSize().y),
@@ -33,7 +33,7 @@ public:
     {}
 
     // rain only in [x,y] .. [x+w, y+h]
-    RainEffect(int x, int y, int w, int h, size_t count = 90)
+    RainEffect(int x, int y, int w, int h, size_t count = 180)
       : _clipX(x), _clipY(y), _clipW(w), _clipH(h)
     {
         std::srand(static_cast<unsigned>(std::time(nullptr)));
