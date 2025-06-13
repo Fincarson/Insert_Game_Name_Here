@@ -6,7 +6,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/keyboard.h>
 #include <allegro5/keycodes.h>
-#include <bits/ostream.tcc>
+//#include <bits/ostream.tcc>
 
 #include "Engine/Collision.hpp"
 #include "Mechanics/Buffable.hpp"
@@ -38,9 +38,9 @@ void Player::Update(float deltaTime) {
     Tint = damageCooldown > 0.0f ? al_map_rgb(255, 128, 128) : al_map_rgb(255, 255, 255);
 
     // Update the buffable attributes.
-    accel.Update(deltaTime);
-    friction.Update(deltaTime);
-    maxSpeed.Update(deltaTime);
+    //accel.Update(deltaTime);
+    //friction.Update(deltaTime);
+    //maxSpeed.Update(deltaTime);
 
     Movement();
     Collision(deltaTime);
@@ -60,21 +60,21 @@ void Player::Movement() {
     if (up == down && abs(Velocity.y) > 0) {
         // None pressed or both pressed: Slow down by friction.
         float prevVy = Velocity.y;
-        Velocity.y -= friction * (Velocity.y >= 0 ? 1 : -1);
+        //Velocity.y -= friction * (Velocity.y >= 0 ? 1 : -1);
         if ((prevVy * Velocity.y) < 0) Velocity.y = 0;
     }
-    else if (up)    Velocity.y -= accel;
-    else if (down)  Velocity.y += accel;
+    //else if (up)    //Velocity.y -= accel;
+    //else if (down)  //Velocity.y += accel;
 
     // Horizontal movement
     if (left == right && abs(Velocity.x) > 0) {
         // None pressed or both pressed.
         float prevVx = Velocity.x;
-        Velocity.x -= friction * (Velocity.x >= 0 ? 1 : -1);
+        //Velocity.x -= friction * (Velocity.x >= 0 ? 1 : -1);
         if ((prevVx * Velocity.x) < 0) Velocity.x = 0;
     }
-    else if (left)     Velocity.x -= accel;
-    else if (right)    Velocity.x += accel;
+    //else if (left)     Velocity.x -= accel;
+    //else if (right)    Velocity.x += accel;
 
     bool prevMoving = moving;
     moving = up != down || left != right;
@@ -85,9 +85,9 @@ void Player::Movement() {
         }
     }
 
-    if (Velocity.Magnitude() > maxSpeed) {
-        Velocity = Velocity.Normalize() * maxSpeed;
-    }
+    //if (Velocity.Magnitude() > maxSpeed) {
+        //Velocity = Velocity.Normalize() * maxSpeed;
+    //}
 
     if (moving != prevMoving) {
         SetAnimation(moving ? "walk" : "idle");
@@ -140,9 +140,9 @@ void Player::Hit(int damage, Engine::Point enemyPos) {
     Engine::Point dPos = Position - enemyPos;
     Velocity = dPos.Normalize() * speed;
 
-    maxSpeed.AddBuff("kb", MAX_KB_TIME, 1.75, true);
-    friction.AddBuff("kb", MAX_KB_TIME, 0.25);
-    accel.AddBuff("kb", MAX_KB_TIME, 0.2);
+    //maxSpeed.AddBuff("kb", MAX_KB_TIME, 1.75, true);
+    //friction.AddBuff("kb", MAX_KB_TIME, 0.25);
+    //accel.AddBuff("kb", MAX_KB_TIME, 0.2);
 
     // Death
     if (hp <= 0) {

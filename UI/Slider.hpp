@@ -10,7 +10,7 @@ private:
     Image Bar;
     Image End1;
     Image End2;
-    std::function<void(float value)> OnValueChangedCallback;
+    std::function<void(float)> OnValueChangedCallback = [](float){};
     float value = 0;
 
 public:
@@ -19,10 +19,11 @@ public:
     bool Down = false;
     Slider(float x, float y, float w, float h);
     void Draw(const Engine::Point & camera) const override;
-    void SetOnValueChangedCallback(std::function<void(float value)> onValueChangedCallback);
+    void SetOnValueChangedCallback(std::function<void(float)> onValueChangedCallback);
     void SetValue(float value);
     void OnMouseDown(int button, int mx, int my) override;
     void OnMouseUp(int button, int mx, int my) override;
     void OnMouseMove(int mx, int my) override;
+    void SetGroupPosition(float x, float y);
 };
 #endif   // SLIDER_HPP

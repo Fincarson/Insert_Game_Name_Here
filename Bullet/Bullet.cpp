@@ -1,18 +1,15 @@
 #include "Bullet.hpp"
 #include <cmath>
 #include <iostream>
-#include <allegro5/allegro_primitives.h>
-#include <bits/ostream.tcc>
+//#include <bits/ostream.tcc>
 
 #include "utility.hpp"
-#include "Enemy/Enemy.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
 #include "Engine/IObject.hpp"
 #include "Engine/IScene.hpp"
 #include "Engine/Collision.hpp"
 #include "Engine/Point.hpp"
-#include "Maps/Room.hpp"
 #include "Scenes/PlayScene.hpp"
 
 Bullet::Bullet(const std::string& imagePath,
@@ -31,9 +28,6 @@ Bullet::Bullet(const std::string& imagePath,
 {
     bitmap = al_load_bitmap(imagePath.c_str());
     // if (bitmap) std::cout << "Bullet Created\n";
-    this->Position = startPos;
-    this->Size = Engine::Point(1, 1);
-    // std::cout << this->Size.x << " " << this->Size.y << std::endl;
 }
 
 Bullet::~Bullet() {
@@ -46,35 +40,20 @@ Bullet::~Bullet() {
 void Bullet::Update(float deltaTime, const Map& map) {
     if (!alive) return;
 
+
     // Move bullet
     position.x += std::cos(angle) * speed * deltaTime;
     position.y += std::sin(angle) * speed * deltaTime;
-    this->Position = position;  // I accidentally made 2 kinds of position (Feel free to fix but be very careful)
-    // int i = position.y / TILE_SIZE;
-    // int j = position.x / TILE_SIZE;
-    // std::cout << "[DEBUG] Bullet at tile (" << i << ", " << j << ")\n";
 
     // Map collision: check the tile at bullet's center
-    if ((map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) || (position.x <= 0 || position.y <= 0 || position.x >= map.getCol() * TILE_SIZE || position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
+    if ((map.isWall(position.y / TILE_SIZE, position.x / TILE_SIZE)) || (position.x <= 0 || position.y <= 0 || position.x >= map.getCol() || position.y >= map.getRow())) {       // BE VERY CAREFUL!! i is for position.y and j is for position.x
         // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
         alive = false;
         OnMapCollision();
     }
-
-    for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
-        Enemy* enemy = dynamic_cast<Enemy*>(it);
-        // if (enemy) std::cout << "ENEMY FOUND\n";
-        if (collider.IsCollision(this, enemy)) {
-            // std::cout << "ENEMY HIT\n";
-            enemy->Hit(damage);  // Apply damage
-            alive = false;
-            OnMapCollision(); // Destroy bullet
-            return;
-        }
-    }
 }
 
-void Bullet::Draw(const Engine::Point & camera) const {
+/*void Bullet::Draw() const {
     auto scene = dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());  // Can't use getPlayScene() due to Draw() is const
     Engine::Point cam = scene ? scene->GetCamera() : Engine::Point(0, 0);   // Get camera position
     if (!alive || !bitmap) return;
@@ -84,14 +63,12 @@ void Bullet::Draw(const Engine::Point & camera) const {
                            position.x - cam.x, position.y - cam.y,  // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
                            angle,
                            0);
-    // std::cout << "Drawing bullet...\n";
-    al_draw_filled_circle(position.x - cam.x, position.y - cam.y, 2, al_map_rgb(255, 255, 255));
-}
+}*/
 
 void Bullet::OnMapCollision() {
     // Default behavior: just deactivate
     // Override in subclasses to spawn effects
-    getPlayScene()->GetCurRoom()->BulletGroup->RemoveObject(objectIterator);
+    //getPlayScene()->BulletGroup->RemoveObject(objectIterator);
 }
 
 PlayScene * Bullet::getPlayScene() {

@@ -8,7 +8,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <cmath>
 #include <iostream>
-#include <bits/ostream.tcc>
+//#include <bits/ostream.tcc>
 
 #include "Maps/Room.hpp"
 
