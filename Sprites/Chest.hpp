@@ -15,12 +15,14 @@ public:
 
     void Update(float deltaTime) override;
 
-    int openTimer = -1;
+    // int openTimer = -1;
 
     std::map<std::string, int> contents;
     std::map<std::string, int>::iterator itCurSummonItem = contents.begin();
-    int summonCount;
-    Room * curRoom;
+    int summonCount = 0;
+    int summonTimer = 0;
+    Room * curRoom = nullptr;
+    bool isOpen = false;
 };
 
 

@@ -36,6 +36,7 @@ private:
     std::unordered_map<std::string, Room*> rooms;
     Room * curRoom = nullptr;  // DO NOT add curRoom to a group. curRoom is updated and drawn manually by the play scene.
     Player * player = nullptr;
+    std::vector<Weapon*> weapons;
     Weapon * weapon = nullptr;
     Group * UIGroup = nullptr;
 
@@ -46,6 +47,10 @@ private:
     float dialogueTimer = 0;
     float dialogueDelayTimer = 0;
     Engine::Label * dialogueLabel = nullptr;
+    Engine::Label * equipWeaponLabel = nullptr;
+    std::vector<std::string> weaponNames;
+    int curWeaponIdx = 0;
+    float equipWeaponLabelTimer = 0.0;
 
     Engine::Image* heartFull = nullptr;
     Engine::Image* heart75   = nullptr;
@@ -55,6 +60,7 @@ private:
     float prevHP       = 0.0f;
     float hpDelayTimer = 0.0f;
     float shrinkRate   = 0.0f;
+
     static constexpr float HP_DELAY_DURATION  = 2.0f;  // wait 2 s
     static constexpr float SHRINK_DURATION    = 1.0f;
 
@@ -126,6 +132,11 @@ public:
 
     // override input so we can catch ESC:
     void OnKeyUp(int keyCode) override;
+    void OnMouseScroll(int mx, int my, int delta) override;
+
+    void UnlockWeapon(std::string weaponId);
+
+    void EquipWeapon(int idx);
 };
 
 

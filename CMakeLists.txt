@@ -130,6 +130,8 @@ add_executable(Insert_Game_Name_Here
         Sprites/Chest.hpp
         Enemy/Agis.cpp
         Enemy/Agis.hpp
+        Sprites/ShopDisplay.cpp
+        Sprites/ShopDisplay.hpp
 )
 
 

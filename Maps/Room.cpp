@@ -18,6 +18,7 @@
 #include "Engine/GameEngine.hpp"
 #include "Engine/LOG.hpp"
 #include "Sprites/Chest.hpp"
+#include "Sprites/ShopDisplay.hpp"
 
 void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
@@ -34,6 +35,7 @@ void Room::loadRoom(std::string filename) {
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
     std::vector<std::pair<Engine::Point, char>> entities;
+    std::unordered_map<int, std::vector<Engine::Point>> passagewayTiles;
 
     for (int i = 0; i < row; i++) {
         std::getline(file, line);
@@ -66,11 +68,21 @@ void Room::loadRoom(std::string filename) {
                     entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
                 break;
 
+                case 'H':  // Colliding entity
+                case 'S':
+                    mapVec[i][j] = BARRIER;
+                    entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
+                break;
+
                 default:
                     if (isdigit(line[j])) {
                         mapVec[i][j] = FLOOR;
-                        posToPassageway[Engine::Point(j, i)] = line[j] - '0';
-                        passageways[line[j] - '0'].pos = Engine::Point(j, i);
+                        int passagewayId = line[j] - '0';
+
+                        posToPassageway[Engine::Point(j, i)] = passagewayId;
+                        passagewayTiles[passagewayId].push_back(Engine::Point(j, i));
+                        passageways[passagewayId].pos = passagewayTiles[passagewayId][passagewayTiles[passagewayId].size() / 2];
+                        // If there are multiple passageway tiles, take the median.
 
                     } else {
                         mapVec[i][j] = FLOOR;
@@ -87,6 +99,7 @@ void Room::loadRoom(std::string filename) {
      */
     auto gameScene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene());
     std::vector<std::map<std::string, int>> chestContents;
+    std::vector<std::pair<std::string, int>> shopItems;
 
     while (std::getline(file, line)) {
         std::stringstream lineStream(line);
@@ -124,6 +137,12 @@ void Room::loadRoom(std::string filename) {
 
             chestContents.push_back(curChestContents);
 
+        } else if (command == "ShopItem") {
+            std::string shopItemId;
+            int price;
+            lineStream >> shopItemId >> price;
+            shopItems.push_back({shopItemId, price});
+
         } else {
             Engine::LOG(Engine::ERROR) << "unknown command on the map file argument" << filename << ": " << command;
         }
@@ -137,8 +156,10 @@ void Room::loadRoom(std::string filename) {
     Player* player = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene())->GetPlayer();
 
     auto itCurChest = chestContents.begin();
-    auto& curChest = *itCurChest;
+    auto itCurShopItem = shopItems.begin();
+
     static const std::map<std::string, int> DEFAULT_CHEST = {{"coin", 5}};
+    std::map<std::string, int> curChest = DEFAULT_CHEST;
 
     for (auto& [pos, entity] : entities) {
         switch (entity) {
@@ -163,6 +184,14 @@ void Room::loadRoom(std::string filename) {
             case 'H':
                 curChest = (itCurChest != chestContents.end()) ? *(itCurChest++) : DEFAULT_CHEST;
                 InteractableGroup->AddNewObject(new Chest(pos.x, pos.y, TILE_SIZE, TILE_SIZE, player, curChest));
+            break;
+
+            case 'S':
+                if (itCurShopItem == shopItems.end()) throw std::out_of_range("not enough shop display arguments");
+                InteractableGroup->AddNewObject(new ShopDisplay(pos.x, pos.y, TILE_SIZE, TILE_SIZE,
+                    player, itCurShopItem->first, itCurShopItem->second));
+
+                ++itCurShopItem;
             break;
 
             default:

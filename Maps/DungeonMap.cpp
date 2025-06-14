@@ -187,6 +187,7 @@ void DungeonMap::generateMapOffset() {
                 break;
 
                 case FLOOR:
+                case BARRIER:
                     assetOffsets[i][j] = getFloorOffset(i, j);
                 break;
 

@@ -32,7 +32,7 @@ void Chest::OpenChest() {
     interactionEnabled = false;
 
     // Start summoning the chest contents
-    openTimer = 100;
+    isOpen = true;
     itCurSummonItem = contents.begin();
     summonCount = 0;
     curRoom = getPlayScene()->GetCurRoom();
@@ -41,10 +41,13 @@ void Chest::OpenChest() {
 void Chest::Update(float deltaTime) {
     InteractableSprite::Update(deltaTime);
 
-    if (openTimer != -1) {
-        Tint = al_map_rgba(255, 255, 255, std::min<int>(255 * (openTimer / 50.0f), 255));
+    if (isOpen) {
+        // Tint = al_map_rgba(255, 255, 255, std::min<int>(255 * (openTimer / 50.0f), 255));
+        summonTimer--;
 
-        if (itCurSummonItem != contents.end()) {
+        if (summonTimer <= 0 && itCurSummonItem != contents.end()) {
+            summonTimer = 3;
+
             float summonRot = 2 * M_PI * summonCount / itCurSummonItem->second;
             Engine::Point summonPos = Position + Size/2 + TILE_SIZE * Engine::Point(std::cos(summonRot), std::sin(summonRot));
 
@@ -62,10 +65,10 @@ void Chest::Update(float deltaTime) {
                 ++itCurSummonItem;
             }
 
-        } else if (openTimer > 0) {
+        } /*else if (openTimer > 0) {
             openTimer--;
         } else {
             getPlayScene()->GetCurRoom()->InteractableGroup->RemoveObject(objectIterator);
-        }
+        }*/
     }
 }

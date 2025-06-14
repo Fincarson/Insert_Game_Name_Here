@@ -17,6 +17,7 @@ enum Tile {
     FLOOR,
     WALL,
     HOLE,
+    BARRIER,  // Minecraft barriers (invisible walls)
 };
 
 
@@ -51,7 +52,8 @@ public:
     bool isWall(int i, int j) const;
     bool isFloor(int i, int j) const;
     bool isNothing(int i, int j) const;
-    bool isWalkable(int i, int j) const;
+    bool isHole(int i, int j) const;
+    bool isWalkable(int i, int j, bool isBorderWalkable = false) const;
     bool isBorderTile(int i, int j) const;
 
     [[nodiscard]] int getRow() const { return row; }

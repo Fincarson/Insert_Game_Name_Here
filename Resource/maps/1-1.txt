@@ -18,7 +18,7 @@ _#...#_______________
 #...................#
 #.....#########.....#
 ##...##_______#######
-_#.0.#_______________
+_#000#_______________
 
 // HOW TO CONNECT ROOMS:
 // Type in a digit (0-9) on the edge of the map. That digit is the passageway ID. Then type the following:

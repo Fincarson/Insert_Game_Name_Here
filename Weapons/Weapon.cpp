@@ -69,7 +69,7 @@ void Weapon::Update(float deltaTime, const Engine::Point& newPosition) {
     }*/
 }
 
-void Weapon::Draw() const {
+void Weapon::Draw(const Engine::Point& camera) const {
     if (!weaponBitmap) return;
     // std::cout << "DRAWING WEAPON\n";
     // draw rotated around center
@@ -79,9 +79,13 @@ void Weapon::Draw() const {
     al_draw_scaled_rotated_bitmap(
         weaponBitmap,
         cx, cy,
-        Position.x - cam.x, Position.y - cam.y,     // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
+        Position.x - camera.x, Position.y - camera.y,     // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
         scale, scale,
         angle,
         flips
     );
+}
+
+void Weapon::Draw() const {
+    Draw(cam);
 }
