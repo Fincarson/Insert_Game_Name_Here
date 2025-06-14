@@ -18,6 +18,7 @@ const std::map<std::string, std::function<Engine::IObject*()>> SHOP_ITEMS = {
     {"lightsaber", [] { return new Lightsaber("images/lightsaber_handle.png", 20); }},    // Lightsaber
     {"blackhole", [] { return new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 50); }},  // Blackhole weapon
     {"laser", [] { return new LaserWeapon("images/cheat_gun_mini.png", 10); }},     // Laser Weapon
+    {"awp", [] { return new DefaultWeapon("images/awp_mini.png", "images/fireball.png", 0.4, 500, 5); }},
 };
 
 
