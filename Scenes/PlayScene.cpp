@@ -37,7 +37,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("shop.txt", 0);
+    ChangeRoom("final_boss.txt", -1);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
@@ -46,7 +46,7 @@ void PlayScene::Initialize() {
     // AddNewObject(weapon = new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 10, 3));
     // AddNewObject(weapon = new Lightsaber("images/lightsaber_handle.png", 10));    // Lightsaber
     // AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
-    AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", 1000));     // Laser Weapon
+    // AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", 1000));     // Laser Weapon
     // AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));     // Parent class (No longer functioning)
 
     playerDeathTimer = -1;
@@ -90,6 +90,9 @@ void PlayScene::Initialize() {
     shrinkRate    = 0.0f;
 
     coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
+
+    UnlockWeapon("laser");
+
 }
 
 PlayScene::~PlayScene() {
@@ -436,7 +439,7 @@ void PlayScene::ChangeRoom(std::string roomFile, int passagewayId) {
     }
 
     curRoom = rooms[roomFile];
-    player->Position = curRoom->GetPassagewayPos(passagewayId) * TILE_SIZE;
+    if (passagewayId != -1) player->Position = curRoom->GetPassagewayPos(passagewayId) * TILE_SIZE;
     player->SetCollisionMap(curRoom->getMap());
 }
 

@@ -33,7 +33,7 @@ Agis::Agis(float x, float y, float w, float h, int damage, int hp, Map *map, Pla
 void Agis::Update(float deltaTime) {
     AnimSprite::Update(deltaTime);
     scene = getPlayScene();
-    if (!domainActivated) {
+    if (!domainActivated && GetStatus() != OPENDOMAIN) {
         bulletTimer += deltaTime;
         if (bulletTimer >= 1.0f) {
             bulletTimer = 0;
@@ -211,8 +211,8 @@ void Agis::Draw(const Engine::Point &camera) const {
             float x2 = x1 + slashLength * std::cos(angle);
             float y2 = y1 + slashLength * std::sin(angle);
             al_draw_line(
-                x1 - camera.x, y1 - camera.y,
-                x2 - camera.x, y2 - camera.y,
+                x1 - 1600/4, y1 - 832/4,
+                x2 - 1600/4, y2 - 832/4,
                 (std::rand() % 3 == 0) ? al_map_rgb(255, 255, 255) : (std::rand() % 3 == 1) ? al_map_rgb(100, 100, 100) : al_map_rgb(0, 0, 0), 2.0
             );
         }
