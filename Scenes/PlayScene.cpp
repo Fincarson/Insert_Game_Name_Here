@@ -91,7 +91,7 @@ void PlayScene::Initialize() {
 
     coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
 
-    // UnlockWeapon("sword");
+    UnlockWeapon("awp");
 
 }
 

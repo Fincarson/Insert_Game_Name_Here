@@ -24,7 +24,7 @@ struct AnimInfo {
 
 
 class AnimSprite : public Sprite {
-private:
+protected:
     std::map<std::string, AnimInfo> animations;
     int sw;
     int sh;

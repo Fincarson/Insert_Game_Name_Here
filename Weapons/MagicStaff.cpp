@@ -22,7 +22,10 @@ MagicStaff::MagicStaff(const std::string &weaponImagePath, const std::string &bu
 
 void MagicStaff::Update(float deltaTime, const Engine::Point &newPosition) {
     Weapon::Update(deltaTime, newPosition);
-    if (al_mouse_button_down(&mstate, 1)) {
+
+    bool mouseDown = al_mouse_button_down(&mstate, 1);
+
+    if (mouseDown) {
         for (auto& obj : scene->GetCurRoom()->EnemyGroup->GetObjects()) {
             Enemy* enemy = dynamic_cast<Enemy*>(obj);
             if (!enemy) break;
@@ -36,6 +39,18 @@ void MagicStaff::Update(float deltaTime, const Engine::Point &newPosition) {
             }
         }
     }
+
+    if (mouseDown != prevMouseDown) {
+        if (mouseDown) {
+            AudioHelper::PlaySample("magicstaff_on.wav");
+            ambientSound = AudioHelper::PlaySample("magicstaff_ambience.wav");
+        } else if (ambientSound) {
+            AudioHelper::PlaySample("lasergun_stop.wav");
+            AudioHelper::StopSample(ambientSound);
+        }
+    }
+
+    prevMouseDown = mouseDown;
 
     // Update cooldowns per enemy
     for (auto it = hitCooldownMap.begin(); it != hitCooldownMap.end(); ) {

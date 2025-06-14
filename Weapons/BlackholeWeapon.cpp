@@ -2,6 +2,7 @@
 
 #include "BlackHoleWeapon.hpp"
 #include "Bullet/BlackHoleBullet.hpp"
+#include "Engine/AudioHelper.hpp"
 #include "Engine/Point.hpp"
 #include "Maps/Room.hpp"
 #include "Scenes/PlayScene.hpp"
@@ -25,6 +26,7 @@ void BlackholeWeapon::Update(float deltaTime, const Engine::Point& newPosition) 
 }
 
 void BlackholeWeapon::CreateBullet() {
+    AudioHelper::PlaySample("blackhole_gun.wav");
     scene->GetCurRoom()->BulletGroup->AddNewObject(
         new BlackholeBullet(bulletPath, Position, angle, bulletSpeed, damage, 0));
 }
