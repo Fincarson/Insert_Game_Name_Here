@@ -21,6 +21,6 @@ void FireballBullet::Draw() const {
 }
 
 void FireballBullet::OnExplode() {
-    EnemyHit->Hit(damage, getPlayScene()->GetPlayer()->Position);
+    if (EnemyHit) EnemyHit->Hit(damage, getPlayScene()->GetPlayer()->Position);
     Bullet::OnExplode();
 }

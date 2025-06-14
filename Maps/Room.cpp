@@ -18,7 +18,7 @@
 #include "Engine/LOG.hpp"
 #include "Sprites/Chest.hpp"
 
-void Room::loadRoom(std::string filename) {
+void Room::loadRoom(std::string filename, std::string mapname) {
     filename = "Resource/maps/" + filename;
     std::ifstream file(filename);
     std::string line;
@@ -80,7 +80,7 @@ void Room::loadRoom(std::string filename) {
         }
     }
 
-    AddNewObject(map = new DungeonMap(row, col, mapVec));
+    AddNewObject(map = new DungeonMap(row, col, mapVec, mapname));
     map->generateMapOffset();
 
     /*
@@ -166,8 +166,9 @@ void Room::loadRoom(std::string filename) {
     }
 }
 
-Room::Room(std::string filename) {
-    loadRoom(filename);
+
+Room::Room(std::string filename, std::string mapname): posToPassageway() {
+    loadRoom(filename, mapname);
     AddNewObject(EnemyGroup);
     AddNewObject(InteractableGroup);
     AddNewObject(BulletGroup = new Group());
