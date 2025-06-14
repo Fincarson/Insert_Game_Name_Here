@@ -6,6 +6,7 @@
 #define PLAYSCENE_HPP
 #include <queue>
 #include <unordered_map>
+#include <allegro5/allegro_audio.h>
 
 #include "Engine/IScene.hpp"
 #include "UI/Label.hpp"
@@ -62,6 +63,7 @@ private:
     float prevHP       = 0.0f;
     float hpDelayTimer = 0.0f;
     float shrinkRate   = 0.0f;
+    ALLEGRO_SAMPLE_ID curBgm;
 
     static constexpr float HP_DELAY_DURATION  = 2.0f;  // wait 2 s
     static constexpr float SHRINK_DURATION    = 1.0f;
