@@ -193,6 +193,8 @@ void PlayScene::Update(float deltaTime) {
 
     // — Normal game update (unchanged) —
     player->MinInteractDist = 1E9;
+    player->ClosestInteractable = nullptr;
+
     IScene::Update(deltaTime);
     curRoom->Update(deltaTime);
     weapon->Update(deltaTime, Engine::Point{

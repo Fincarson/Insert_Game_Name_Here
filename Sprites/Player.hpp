@@ -11,6 +11,7 @@
 #include "Mechanics/Buffable.hpp"
 
 
+class InteractableSprite;
 extern template class Buffable<float>;
 
 
@@ -58,11 +59,12 @@ public:
     bool CanTakeDamage() const;
     void ResetDamageCooldown();
     int GetCoin() const { return coins; }
-    void AddCoin() { coins++; }
+    void AddCoin(int x = 1) { coins += x; }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
 
     float MinInteractDist = 1E9;
+    InteractableSprite* ClosestInteractable = nullptr;
 };
 
 

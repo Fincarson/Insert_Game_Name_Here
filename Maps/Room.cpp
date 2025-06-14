@@ -16,6 +16,7 @@
 #include "Enemy/Zombie.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/LOG.hpp"
+#include "Sprites/Chest.hpp"
 
 void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
@@ -30,7 +31,7 @@ void Room::loadRoom(std::string filename) {
     std::getline(file, line);  // Get rid of the linebreak
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
-    std::vector<std::pair<Engine::Point, char>> enemies;
+    std::vector<std::pair<Engine::Point, char>> entities;
 
     for (int i = 0; i < row; i++) {
         std::getline(file, line);
@@ -55,18 +56,15 @@ void Room::loadRoom(std::string filename) {
                 break;
 
                 case 'Z':
-                    mapVec[i][j] = FLOOR;
-                    enemies.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
-                break;
-
                 case 'K':
-                    mapVec[i][j] = FLOOR;
-                    enemies.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
-                break;
-
                 case 'C':
                     mapVec[i][j] = FLOOR;
-                    enemies.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
+                    entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
+                break;
+
+                case 'H':
+                    mapVec[i][j] = FLOOR;
+                    entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
                 break;
 
                 default:
@@ -89,6 +87,7 @@ void Room::loadRoom(std::string filename) {
      * 2. Read additional arguments (e.g. passageways to other rooms)
      */
     auto gameScene = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene());
+    std::vector<std::map<std::string, int>> chestContents;
 
     while (std::getline(file, line)) {
         std::stringstream lineStream(line);
@@ -115,19 +114,35 @@ void Room::loadRoom(std::string filename) {
 
             gameScene->AddSubtitle(delay, duration, text);
 
+        } else if (command == "Chest") {
+            std::map<std::string, int> curChestContents;
+            std::string item;
+            int count;
+
+            while (lineStream >> item >> count) {
+                curChestContents[item] = count;
+            }
+
+            chestContents.push_back(curChestContents);
+
         } else {
             Engine::LOG(Engine::ERROR) << "unknown command on the map file argument" << filename << ": " << command;
         }
     }
 
     /*
-     * 3. Summon enemies
+     * 3. Summon non-map stuff
      */
     EnemyGroup = new Group;
+    InteractableGroup = new Group;
     Player* player = dynamic_cast<PlayScene *>(Engine::GameEngine::GetInstance().GetActiveScene())->GetPlayer();
 
-    for (auto& [pos, enemy] : enemies) {
-        switch (enemy) {
+    auto itCurChest = chestContents.begin();
+    auto& curChest = *itCurChest;
+    static const std::map<std::string, int> DEFAULT_CHEST = {{"coin", 5}};
+
+    for (auto& [pos, entity] : entities) {
+        switch (entity) {
             case 'Z':
                 EnemyGroup->AddNewObject(new Zombie(pos.x, pos.y, TILE_SIZE, TILE_SIZE, 10, 100, map, player));
             break;
@@ -140,15 +155,21 @@ void Room::loadRoom(std::string filename) {
                 EnemyGroup->AddNewObject(new Coins(pos.x, pos.y, TILE_SIZE, TILE_SIZE, map, player));
             break;
 
+            case 'H':
+                curChest = (itCurChest != chestContents.end()) ? *(itCurChest++) : DEFAULT_CHEST;
+                InteractableGroup->AddNewObject(new Chest(pos.x, pos.y, TILE_SIZE, TILE_SIZE, player, curChest));
+            break;
+
             default:
             break;
         }
     }
 }
 
-Room::Room(std::string filename): posToPassageway() {
+Room::Room(std::string filename) {
     loadRoom(filename);
     AddNewObject(EnemyGroup);
+    AddNewObject(InteractableGroup);
     AddNewObject(BulletGroup = new Group());
 }
 

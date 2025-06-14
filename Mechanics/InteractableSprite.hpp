@@ -8,10 +8,15 @@
 
 
 class InteractableSprite : public Engine::AnimSprite {
+
 protected:
     Player* interactingPlayer = nullptr;
-    std::function<void()> interactFunc;
+    std::function<void()> interactFunc = nullptr;
     bool playerInRange = false;
+    bool interactionEnabled = true;
+
+    Sprite* indicator;
+    float indicatorHoverTimer;
 
 public:
     InteractableSprite(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
