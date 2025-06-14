@@ -24,7 +24,7 @@ Player::Player(float x, float y, float w, float h, int hp)
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
-        x, y, w, h, 0, 0), hp(hp), maxHP(hp), coins(0) {
+        x, y, w, h, 0, 0), hp(hp), maxHP(hp), coins(1000) {
 }
 
 void Player::Update(float deltaTime) {
@@ -157,6 +157,7 @@ void Player::Hit(int damage, Engine::Point enemyPos) {
     // Death
     if (hp <= 0) {
         SetAnimation("death");
+        AudioHelper::PlaySample("die.wav");
     }
 }
 

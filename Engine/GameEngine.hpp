@@ -109,6 +109,9 @@ namespace Engine {
         /// <param name="name">The unique name of your scene for later access.</param>
         /// <param name="scene">The pointer to the scene you want to add.</param>
         void AddNewScene(const std::string &name, IScene *scene);
+
+        void FullResetScene(const std::string &name, IScene *scene);
+
         /// <summary>
         /// Change to another scene. The scene will be changed at next update.
         /// </summary>

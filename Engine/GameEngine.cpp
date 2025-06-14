@@ -240,6 +240,12 @@ namespace Engine {
             throw std::invalid_argument("Cannot add scenes with the same name.");
         scenes[name] = scene;
     }
+    void GameEngine::FullResetScene(const std::string & name, IScene *scene) {
+        if (scenes.count(name) == 0)
+            throw std::invalid_argument("Cannot reset scenes that aren't added.");
+        delete scenes[name];
+        scenes[name] = scene;
+    }
     void GameEngine::ChangeScene(const std::string &name) {
         nextScene = name;
     }

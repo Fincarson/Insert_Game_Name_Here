@@ -28,6 +28,7 @@ Chest::Chest(float x, float y, float w, float h, Player* player, const std::map<
 
 void Chest::OpenChest() {
     SetAnimation("open");
+    AudioHelper::PlaySample("chest.ogg");
 
     interactionEnabled = false;
 
