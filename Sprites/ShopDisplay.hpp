@@ -29,8 +29,10 @@ const std::map<std::string, std::string> SHOP_ITEM_NAMES = {
 
 
 class ShopDisplay : public InteractableSprite {
+    std::string itemId;
     IObject* shopItem;
     int price;
+    bool sold = false;
 
     Engine::Label * nameLabel;
     Engine::Label * priceLabel;

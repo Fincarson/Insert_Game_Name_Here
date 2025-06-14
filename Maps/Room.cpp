@@ -34,6 +34,7 @@ void Room::loadRoom(std::string filename) {
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
     std::vector<std::pair<Engine::Point, char>> entities;
+    std::unordered_map<int, std::vector<Engine::Point>> passagewayTiles;
 
     for (int i = 0; i < row; i++) {
         std::getline(file, line);

@@ -24,6 +24,7 @@
 #include "Weapons/BlackholeWeapon.hpp"
 #include "Weapons/LaserWeapon.hpp"
 #include "Engine/Resources.hpp"
+#include "Sprites/ShopDisplay.hpp"
 #include "Weapons/Lightsaber.hpp"
 #include "Weapons/MagicStaff.hpp"
 #include "Weapons/SwordWeapon.hpp"
@@ -44,7 +45,7 @@ void PlayScene::Initialize() {
     // AddNewObject(weapon = new SwordWeapon("images/sukuna_sword.png", 1, 20, 1.5));
     // AddNewObject(weapon = new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 10, 3));
     // AddNewObject(weapon = new Lightsaber("images/lightsaber_handle.png", 10));    // Lightsaber
-    AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
+    // AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
     // AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", 10));     // Laser Weapon
     // AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));     // Parent class (No longer functioning)
 
@@ -53,6 +54,9 @@ void PlayScene::Initialize() {
     UIGroup = new Group;
     UIGroup->AddNewObject(dialogueLabel = new Engine::Label("", "Arial Regular.ttf",
         24, w / 2.0f, h-50,255, 255, 255, 255,  0.5f, 0.5f));
+
+    UIGroup->AddNewObject(equipWeaponLabel = new Engine::Label("", "BebasNeue.ttf",
+        48, w - 20, 20, 255, 255, 255, 255, 1, 0));
 
     const float marginX   = 20;
     const float marginY   = 30;
@@ -197,10 +201,20 @@ void PlayScene::Update(float deltaTime) {
 
     IScene::Update(deltaTime);
     curRoom->Update(deltaTime);
-    weapon->Update(deltaTime, Engine::Point{
-        player->Position.x + TILE_SIZE/2,
-        player->Position.y + TILE_SIZE*2/3
-    });
+
+    if (weapon)
+        weapon->Update(deltaTime, Engine::Point{
+            player->Position.x + TILE_SIZE/2,
+            player->Position.y + TILE_SIZE*2/3
+        });
+
+    if (equipWeaponLabelTimer >= 0) {
+        equipWeaponLabelTimer -= deltaTime;
+        equipWeaponLabel->Color = al_map_rgba(255, 255, 255, 255 * (equipWeaponLabelTimer / 2.0f));
+    } else {
+        equipWeaponLabel->Text = "";
+    }
+
     curRoom->getMap()->UpdateDistMap(player->Position);
     CheckChangeRoom();
     for (auto& obj : curRoom->BulletGroup->GetObjects())
@@ -253,7 +267,8 @@ void PlayScene::Draw(const Engine::Point&) const {
         al_clear_to_color(al_map_rgb(24,20,37));
         curRoom->Draw(camera);
         Group::Draw(camera);
-        weapon->Draw();
+
+        if (weapon) weapon->Draw();
 
         const float marginX = 30;
         const float marginY = 30;
@@ -431,7 +446,7 @@ void PlayScene::OnKeyUp(int keyCode) {
                 al_clear_to_color(al_map_rgb(24,20,37));
                 curRoom->Draw(camera);
                 Group::Draw(camera);
-                weapon->Draw();
+                if (weapon) weapon->Draw();
                 UIGroup->Draw(Engine::Point{0,0});
                 al_set_target_backbuffer(al_get_current_display());
 
@@ -460,4 +475,29 @@ void PlayScene::OnKeyUp(int keyCode) {
         return;
     }
     IScene::OnKeyUp(keyCode);
+}
+
+void PlayScene::OnMouseScroll(int mx, int my, int delta) {
+    IScene::OnMouseScroll(mx, my, delta);
+
+    if (weapons.size() > 0) {
+        curWeaponIdx = (curWeaponIdx + delta) % static_cast<int>(weapons.size());
+        if (curWeaponIdx < 0) {
+            curWeaponIdx += weapons.size();
+        }
+        EquipWeapon(curWeaponIdx);
+    }
+}
+
+void PlayScene::UnlockWeapon(std::string weaponId) {
+    weapons.push_back(dynamic_cast<Weapon *>(SHOP_ITEMS.at(weaponId)()));
+    weaponNames.push_back(SHOP_ITEM_NAMES.at(weaponId));
+
+    EquipWeapon(weapons.size() - 1);
+}
+
+void PlayScene::EquipWeapon(int idx) {
+    weapon = weapons[idx];
+    equipWeaponLabel->Text = weaponNames[idx];
+    equipWeaponLabelTimer = 2.0f;
 }

@@ -7,13 +7,14 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "Player.hpp"
 #include "Enemy/Coins.hpp"
 
 ShopDisplay::ShopDisplay(float x, float y, float w, float h, Player *player, std::string itemId, int price)
     : InteractableSprite(
         "glass.png", {{"nothing", Engine::AnimInfo(0, 1, 1, false)}}, "nothing", 16, 16,
         x, y, w, h, 0, 0),
-      price(price) {
+      price(price), itemId(itemId) {
 
     if (auto it = SHOP_ITEMS.find(itemId); it == SHOP_ITEMS.end()) {
         throw std::invalid_argument("unknown shop item id: " + itemId);
@@ -35,18 +36,32 @@ ShopDisplay::ShopDisplay(float x, float y, float w, float h, Player *player, std
 }
 
 void ShopDisplay::Draw(const Engine::Point &camera) const {
-    shopItem->Draw(camera);
-
-    if (playerInRange && interactionEnabled) {
+    if (sold) {
+        nameLabel->Text = "SOLD OUT";
         nameLabel->Draw(camera);
-        priceLabel->Draw(camera);
-        coinIcon->Draw(camera);
+
+    } else {
+        shopItem->Draw(camera);
+
+        if (playerInRange && interactionEnabled) {
+            nameLabel->Draw(camera);
+            priceLabel->Draw(camera);
+            coinIcon->Draw(camera);
+        }
     }
 
     InteractableSprite::Draw(camera);
 }
 
 void ShopDisplay::BuyItem() {
+    if (interactingPlayer->GetCoin() < price) {
+        return;
+    }
+
+    interactingPlayer->AddCoin(-price);
+    sold = true;
+    interactionEnabled = false;
+
     PlayScene* playScene = getPlayScene();
-    std::cout << "BUY ITEM RAHHHHHHHHHH - Price: " << price << "\n";
+    playScene->UnlockWeapon(itemId);
 }
