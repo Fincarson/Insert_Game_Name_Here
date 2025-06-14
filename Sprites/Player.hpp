@@ -23,7 +23,7 @@ private:
     bool inMenu = false;
     Buffable<float> accel = 150.0f;
     Buffable<float> friction = 100.0f;
-    Buffable<float> maxSpeed = 500.0f;
+    Buffable<float> maxSpeed = 1000.0f;
 
     Collision collider;
     const Map* collisionMap = nullptr;
@@ -59,7 +59,7 @@ public:
     bool CanTakeDamage() const;
     void ResetDamageCooldown();
     int GetCoin() const { return coins; }
-    void AddCoin(int x = 1) { coins += x; }
+    void AddCoin(int x = 10) { coins += x; }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
 

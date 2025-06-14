@@ -43,7 +43,7 @@ void PlayScene::Initialize() {
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
     player->SetCollisionMap(curRoom->getMap());
     // AddNewObject(weapon = new SwordWeapon("images/sukuna_sword.png", 1, 20, 1.5));
-    AddNewObject(weapon = new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 10, 3));
+    // AddNewObject(weapon = new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 10, 3));
     // AddNewObject(weapon = new Lightsaber("images/lightsaber_handle.png", 10));    // Lightsaber
     // AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
     // AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", 10));     // Laser Weapon
@@ -55,8 +55,11 @@ void PlayScene::Initialize() {
     UIGroup->AddNewObject(dialogueLabel = new Engine::Label("", "Arial Regular.ttf",
         24, w / 2.0f, h-50,255, 255, 255, 255,  0.5f, 0.5f));
 
-    UIGroup->AddNewObject(equipWeaponLabel = new Engine::Label("", "BebasNeue.ttf",
+    UIGroup->AddNewObject(equipWeaponLabel = new Engine::Label("0", "BebasNeue.ttf",
         48, w - 20, 20, 255, 255, 255, 255, 1, 0));
+
+    UIGroup->AddNewObject(coinLabel = new Engine::Label("", "BebasNeue.ttf",
+        64, 140, 120,255, 255, 255, 255,  0, 0));
 
     const float marginX   = 20;
     const float marginY   = 30;
@@ -85,6 +88,8 @@ void PlayScene::Initialize() {
     delayedHP     = float(player->GetMaxHP());
     hpDelayTimer  = 0.0f;
     shrinkRate    = 0.0f;
+
+    coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
 }
 
 PlayScene::~PlayScene() {
@@ -110,6 +115,7 @@ void PlayScene::UpdateCamera() {
 }
 
 void PlayScene::Update(float deltaTime) {
+    coinLabel->Text = std::to_string(player->GetCoin());
     if (player->GetHP() <= 0) {
         if (playerDeathTimer == -1) {
             // Just died
@@ -306,6 +312,10 @@ void PlayScene::Draw(const Engine::Point&) const {
 
         // Draw at the x=marginX, y=marginY+(barH-iconH)/2 you set in Initialize
         heartIcon->Draw(Engine::Point(0, 0));
+        coinImg->Draw(Engine::Point(0, 0));
+
+        // Coin
+
 
         for (auto obj : curRoom->BulletGroup->GetObjects()) {
             if (auto b = dynamic_cast<Bullet*>(obj)) b->Draw();

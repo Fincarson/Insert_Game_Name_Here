@@ -48,6 +48,7 @@ private:
     float dialogueDelayTimer = 0;
     Engine::Label * dialogueLabel = nullptr;
     Engine::Label * equipWeaponLabel = nullptr;
+    Engine::Label * coinLabel = nullptr;
     std::vector<std::string> weaponNames;
     int curWeaponIdx = 0;
     float equipWeaponLabelTimer = 0.0;
@@ -56,6 +57,7 @@ private:
     Engine::Image* heart75   = nullptr;
     Engine::Image* heart50   = nullptr;
     Engine::Image* heart25   = nullptr;
+    Engine::Image* coinImg = nullptr;
     float delayedHP    = 0.0f;
     float prevHP       = 0.0f;
     float hpDelayTimer = 0.0f;

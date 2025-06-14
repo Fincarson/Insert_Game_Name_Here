@@ -20,6 +20,6 @@ Say 0.5 4 Shopkeeper: You don't seem to be from around here.
 
 ShopItem sword 150
 ShopItem magic 250
-ShopItem lightsaber 150
+ShopItem lightsaber 100
 ShopItem blackhole 300
 ShopItem laser 500
