@@ -46,7 +46,7 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
 
         for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
             Enemy* enemy = dynamic_cast<Enemy*>(it);
-            // if (enemy) std::cout << "ENEMY FOUND\n";
+            if (!enemy || enemy->IsCoin()) continue;
             if (collider.IsCollision(this, enemy)) {
                 // std::cout << "ENEMY HIT\n";
                 alive = false;
@@ -102,7 +102,7 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
     if (elapsed >= explosionDuration) {
         for (auto& obj : scene->GetCurRoom()->EnemyGroup->GetObjects()) {
             Enemy* enemy = dynamic_cast<Enemy*>(obj);
-            if (!enemy) continue;
+            if (!enemy || enemy->IsCoin()) continue;
             if ((Position - enemy->Position).Magnitude() < explosionRadius) {
                 Engine::Point knockbackPosition;
                 knockbackPosition.x = Position.x - TILE_SIZE/2;
