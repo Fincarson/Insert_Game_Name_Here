@@ -37,7 +37,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("final_boss.txt", -1);
+    ChangeRoom("1-1.txt", -1);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
@@ -58,8 +58,8 @@ void PlayScene::Initialize() {
     UIGroup->AddNewObject(equipWeaponLabel = new Engine::Label("0", "BebasNeue.ttf",
         48, w - 20, 20, 255, 255, 255, 255, 1, 0));
 
-    UIGroup->AddNewObject(coinLabel = new Engine::Label("", "BebasNeue.ttf",
-        64, 140, 120,255, 255, 255, 255,  0, 0));
+    coinLabel = new Engine::Label("", "BebasNeue.ttf",
+        64, 140, 120,255, 255, 255, 255,  0, 0);
 
     const float marginX   = 20;
     const float marginY   = 30;
@@ -91,7 +91,7 @@ void PlayScene::Initialize() {
 
     coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
 
-    UnlockWeapon("laser");
+    UnlockWeapon("sword");
 
 }
 
@@ -316,6 +316,7 @@ void PlayScene::Draw(const Engine::Point&) const {
         // Draw at the x=marginX, y=marginY+(barH-iconH)/2 you set in Initialize
         heartIcon->Draw(Engine::Point(0, 0));
         coinImg->Draw(Engine::Point(0, 0));
+        coinLabel->Draw(Engine::Point(0, 0));
 
         // Coin
 

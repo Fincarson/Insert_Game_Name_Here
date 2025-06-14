@@ -23,7 +23,7 @@ private:
     bool inMenu = false;
     Buffable<float> accel = 150.0f;
     Buffable<float> friction = 100.0f;
-    Buffable<float> maxSpeed = 1000.0f;
+    Buffable<float> maxSpeed = 750.0f;
 
     Collision collider;
     const Map* collisionMap = nullptr;

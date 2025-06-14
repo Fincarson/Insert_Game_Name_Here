@@ -176,7 +176,7 @@ void Room::loadRoom(std::string filename) {
             break;
 
             case 'A': {
-                float size = TILE_SIZE * 3;
+                float size = TILE_SIZE * 5;
                 EnemyGroup->AddNewObject(new Agis(pos.x - size/2, pos.y - size/2, size, size, 10, 5000, map, player));
                 break;
             }
