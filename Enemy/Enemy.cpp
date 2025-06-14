@@ -34,13 +34,13 @@ void Enemy::Update(float deltaTime) {
         deathTimer--;
         if (deathTimer <= 0) {
             // Summon coin after death
-            if (!dynamic_cast<Coins*>(this)) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
+            if (!IsCoin()) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
             getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation)
         }
     }
 
     // Coin checker
-    if (dynamic_cast<Coins*>(this)) return;
+    if (IsCoin()) return;
 
     if (knockbackTimer > 0 && map) {
         // Knockback from player
@@ -217,6 +217,17 @@ void Enemy::Draw(const Engine::Point &camera) const {
     // for (auto& a : path) {
     //     al_draw_circle(a.x - camera.x, a.y - camera.y, 5, al_map_rgb(0, 0, 0), 5);
     // }
+
+    if (hp > 0 && MaxHP > 0 && !IsCoin()) {
+        float barWidth = Size.x;
+        float barHeight = 2;
+        float barX = Position.x - camera.x;
+        float barY = Position.y - camera.y - 10;
+
+        al_draw_filled_rectangle(barX, barY, barX + barWidth, barY + barHeight, al_map_rgb(255, 0, 0));  // Red background
+        al_draw_filled_rectangle(barX, barY, barX + barWidth * (float(hp) / float(MaxHP)), barY + barHeight, al_map_rgb(0, 255, 0));  // Green health
+        al_draw_rectangle(barX, barY, barX + barWidth, barY + barHeight, al_map_rgb(0, 0, 0), 1);  // Black border
+    }
 }
 
 void Enemy::SetHP(int hp) {
@@ -225,6 +236,14 @@ void Enemy::SetHP(int hp) {
 
 int Enemy::GetHP() const {
     return hp;
+}
+
+void Enemy::SetMaxHP(int hp) {
+    MaxHP = hp;
+}
+
+int Enemy::GetMaxHP() const {
+    return MaxHP;
 }
 
 void Enemy::Hit(int damage, Engine::Point hitPos) {

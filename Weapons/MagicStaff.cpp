@@ -27,7 +27,7 @@ void MagicStaff::Update(float deltaTime, const Engine::Point &newPosition) {
             Enemy* enemy = dynamic_cast<Enemy*>(obj);
             if (!enemy) break;
             if (enemy->IsCoin()) continue;
-            Engine::Point MiddlePosition = Engine::Point(enemy->Position.x + TILE_SIZE/2, enemy->Position.y + TILE_SIZE/2);
+            Engine::Point MiddlePosition = Engine::Point(enemy->Position.x + enemy->Size.x/2, enemy->Position.y + enemy->Size.x/2);
             Engine::Point dir = Position - MiddlePosition;
             float len = dir.Magnitude();
             if (len < rangeRadius && len > 0) {
@@ -55,7 +55,7 @@ void MagicStaff::Draw() const {
 void MagicStaff::CreateBullet(float shootAngle, Enemy* enemy) {
     if (hitCooldownMap.find(enemy) == hitCooldownMap.end()) {
         scene->GetCurRoom()->BulletGroup->AddNewObject(
-            new FireballBullet(bulletPath, Position, shootAngle, bulletSpeed, damage, 0, nullptr));
+            new FireballBullet(bulletPath, Position + Size/2, shootAngle, bulletSpeed, damage, 0, nullptr));
         hitCooldownMap[enemy] = cooldownPerHit;
     }
 }
