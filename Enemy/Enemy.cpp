@@ -22,6 +22,8 @@ Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInf
 
     if (!map) throw std::invalid_argument("map cannot be null oi");
     if (!player) throw std::invalid_argument("player cannot be null oi");
+
+    MaxHP = hp;
 }
 
 void Enemy::Update(float deltaTime) {
@@ -32,13 +34,13 @@ void Enemy::Update(float deltaTime) {
         deathTimer--;
         if (deathTimer <= 0) {
             // Summon coin after death
-            if (!IsCoin()) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
+            if (!dynamic_cast<Coins*>(this)) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
             getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation)
         }
     }
 
     // Coin checker
-    if (IsCoin()) return;
+    if (dynamic_cast<Coins*>(this)) return;
 
     if (knockbackTimer > 0 && map) {
         // Knockback from player
