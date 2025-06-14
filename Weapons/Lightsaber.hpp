@@ -1,7 +1,7 @@
 #ifndef LIGHTSABER_HPP
 #define LIGHTSABER_HPP
 
-#include "weapon.hpp"
+#include "Weapon.hpp"
 #include "LaserWeapon.hpp"
 
 class Lightsaber : public Weapon {

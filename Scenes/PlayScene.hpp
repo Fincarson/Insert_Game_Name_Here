@@ -9,6 +9,7 @@
 
 #include "Engine/IScene.hpp"
 #include "UI/Label.hpp"
+#include "UI/Image.hpp"
 #include "Weapons/Weapon.hpp"
 
 class Room;
@@ -45,6 +46,17 @@ private:
     float dialogueTimer = 0;
     float dialogueDelayTimer = 0;
     Engine::Label * dialogueLabel = nullptr;
+
+    Engine::Image* heartFull = nullptr;
+    Engine::Image* heart75   = nullptr;
+    Engine::Image* heart50   = nullptr;
+    Engine::Image* heart25   = nullptr;
+    float delayedHP    = 0.0f;
+    float prevHP       = 0.0f;
+    float hpDelayTimer = 0.0f;
+    float shrinkRate   = 0.0f;
+    static constexpr float HP_DELAY_DURATION  = 2.0f;  // wait 2 s
+    static constexpr float SHRINK_DURATION    = 1.0f;
 
 public:
     void Initialize() override;

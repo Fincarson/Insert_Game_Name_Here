@@ -23,7 +23,7 @@ Player::Player(float x, float y, float w, float h, int hp)
         },
         "idle",  // Starting animation
         32, 32,  // Animation frame size
-        x, y, w, h, 0, 0), hp(hp), coins(0) {
+        x, y, w, h, 0, 0), hp(hp), maxHP(hp), coins(0) {
 }
 
 void Player::Update(float deltaTime) {
@@ -170,4 +170,8 @@ bool Player::CanTakeDamage() const {
 
 void Player::ResetDamageCooldown() {
     damageCooldown = MAX_KB_TIME;  // In seconds
+}
+
+int Player::GetMaxHP() const {
+    return maxHP;
 }

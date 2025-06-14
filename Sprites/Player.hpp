@@ -27,6 +27,7 @@ private:
     Collision collider;
     const Map* collisionMap = nullptr;
     int hp;
+    int maxHP;
     float damageCooldown = 0.0f;
 
     const float MAX_KB_TIME = 0.5f; // 0.5 seconds of knockback
@@ -35,6 +36,7 @@ private:
 
 public:
     Player(float x, float y, float w, float h, int hp);
+    int GetMaxHP() const;
 
     void Update(float deltaTime) override;
 

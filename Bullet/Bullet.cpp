@@ -2,7 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <allegro5/allegro_primitives.h>
-#include <bits/ostream.tcc>
+//#include <bits/ostream.tcc>
 
 #include "utility.hpp"
 #include "Enemy/Enemy.hpp"

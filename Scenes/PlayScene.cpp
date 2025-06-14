@@ -9,6 +9,7 @@
 #include <iostream>
 #include <queue>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro.h>
 
 #include "utility.hpp"
 #include "Enemy/Zombie.hpp"
@@ -18,8 +19,10 @@
 #include "Maps/Room.hpp"
 #include "Sprites/Player.hpp"
 #include "UI/Label.hpp"
+#include "UI/Image.hpp"
 #include "Weapons/BlackholeWeapon.hpp"
 #include "Weapons/LaserWeapon.hpp"
+#include "Engine/Resources.hpp"
 #include "Weapons/Lightsaber.hpp"
 #include "Weapons/SwordWeapon.hpp"
 
@@ -48,6 +51,34 @@ void PlayScene::Initialize() {
     UIGroup = new Group;
     UIGroup->AddNewObject(dialogueLabel = new Engine::Label("", "Arial Regular.ttf",
         24, w / 2.0f, h-50,255, 255, 255, 255,  0.5f, 0.5f));
+
+    const float marginX   = 20;
+    const float marginY   = 30;
+    const float barH      = 30;
+    const float spacing   = 5;
+    const float heartScale = 3.5f;   // ← 1.5× size
+
+    // ─── Load one heart to measure its native size ───
+    auto heartBmp = Engine::Resources::GetInstance().GetBitmap("heart.png");
+    int nativeW = al_get_bitmap_width (heartBmp.get());
+    int nativeH = al_get_bitmap_height(heartBmp.get());
+
+    // ─── Compute scaled dimensions ───
+    float iconW = nativeW * heartScale;
+    float iconH = nativeH * heartScale;
+
+    // ─── Position it (still top‐left, vertically centered on the bar) ───
+    float iconX = marginX;
+    float iconY = marginY + (barH - iconH) / 2.0f;
+
+    // ─── Create all four heart images at the new size ───
+    heartFull = new Engine::Image("heart.png", iconX, iconY, iconW, iconH, 0, 0);
+    heart75   = new Engine::Image("heart_broken1.png", iconX, iconY, iconW, iconH, 0, 0);
+    heart50   = new Engine::Image("heart_broken2.png", iconX, iconY, iconW, iconH, 0, 0);
+    heart25   = new Engine::Image("heart_broken3.png", iconX, iconY, iconW, iconH, 0, 0);
+    delayedHP     = float(player->GetMaxHP());
+    hpDelayTimer  = 0.0f;
+    shrinkRate    = 0.0f;
 }
 
 PlayScene::~PlayScene() {
@@ -107,6 +138,27 @@ void PlayScene::Update(float deltaTime) {
         if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
     }
 
+    float currHP = float(player->GetHP());
+
+    // only start/reset the delay if we just took damage
+    if (currHP < prevHP) {
+        hpDelayTimer = HP_DELAY_DURATION;
+        shrinkRate   = (delayedHP - currHP) / SHRINK_DURATION;
+    }
+    // remember for next frame
+    prevHP = currHP;
+
+    // tick down the delay
+    if (hpDelayTimer > 0.0f) {
+        hpDelayTimer -= deltaTime;
+        if (hpDelayTimer < 0.0f) hpDelayTimer = 0.0f;
+    }
+    // once the delay is done, shrink the red bar smoothly
+    else if (delayedHP > currHP) {
+        delayedHP -= shrinkRate * deltaTime;
+        if (delayedHP < currHP) delayedHP = currHP;
+    }
+
     // Dialogue stuff
     if (dialogueDelayTimer > 0) {
         dialogueDelayTimer -= deltaTime;
@@ -143,6 +195,46 @@ void PlayScene::Draw(const Engine::Point & _unused) const {
     curRoom->Draw(camera);
     Group::Draw(camera);
     weapon->Draw();
+
+    const float marginX = 30;
+    const float marginY = 30;
+    const float spacing = 5;
+    const float barW    = 300;
+    const float barH    = 30;
+
+    // ─── Re-measure the icon (or cache iconW/iconH in members) ───
+    auto bmp = Engine::Resources::GetInstance().GetBitmap("heart.png");
+    float iconW = al_get_bitmap_width (bmp.get());
+
+    // compute positions
+    float barX = marginX + iconW + spacing;
+    float barY = marginY;
+    float maxHP = float(player->GetMaxHP());
+    float curHP = float(player->GetHP());
+
+    // 1) black background full‐width
+    al_draw_filled_rectangle(barX, barY,barX + barW, barY + barH,al_map_rgb(0, 0, 0));
+
+    // 2) red layer (delayedHP)
+    al_draw_filled_rectangle(barX, barY,barX + barW * (delayedHP / maxHP), barY + barH,al_map_rgb(255, 0, 0));
+
+    // 3) green layer (current HP)
+    al_draw_filled_rectangle(barX, barY, barX + barW * (curHP    / maxHP), barY + barH, al_map_rgb(0, 255, 0));
+
+    // 4) white border
+    al_draw_rectangle(barX, barY, barX + barW, barY + barH, al_map_rgb(255, 255, 255), 2.0f);
+    float hpRatio = curHP / maxHP;
+    Engine::Image* heartIcon = nullptr;
+    if      (hpRatio > 0.75f) heartIcon = heartFull;
+    else if (hpRatio > 0.50f) heartIcon = heart75;
+    else if (hpRatio > 0.25f) heartIcon = heart50;
+    else                      heartIcon = heart25;
+
+    // Draw at the x=marginX, y=marginY+(barH-iconH)/2 you set in Initialize
+    heartIcon->Draw(Engine::Point(0, 0));
+
+    // ─── Finally draw the rest of your UI ───
+    UIGroup->Draw(Engine::Point(0, 0));
 
     if (playerDeathTimer >= 0) {
         double smoothFadeFac = 1.0 - std::pow(playerDeathTimer / 275.0, 10);
