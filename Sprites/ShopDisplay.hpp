@@ -14,11 +14,10 @@
 
 const std::map<std::string, std::function<Engine::IObject*()>> SHOP_ITEMS = {
     {"sword", [] { return new SwordWeapon("images/sukuna_sword.png", 1, 20, 1.5); }},
-    {"magic", [] { return new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 20, 3); }},
-    {"lightsaber", [] { return new Lightsaber("images/lightsaber_handle.png", 30); }},    // Lightsaber
-    {"blackhole", [] { return new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 20); }},  // Blackhole weapon
-    {"laser", [] { return new LaserWeapon("images/cheat_gun_mini.png", 15); }},     // Laser Weapon
-    {"awp", [] { return new DefaultWeapon("images/awp_mini.png", "images/fireball.png", 0.4, 500, 5); }}
+    {"magic", [] { return new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 15, 3); }},
+    {"lightsaber", [] { return new Lightsaber("images/lightsaber_handle.png", 20); }},    // Lightsaber
+    {"blackhole", [] { return new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 50); }},  // Blackhole weapon
+    {"laser", [] { return new LaserWeapon("images/cheat_gun_mini.png", 10); }},     // Laser Weapon
 };
 
 

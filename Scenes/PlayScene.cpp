@@ -423,6 +423,21 @@ void PlayScene::DrawMiniMap() const {
         }
     }
 
+    // Draw void
+    /*for (int i = 0; i < mapRows; ++i) {
+        for (int j = 0; j < mapCols; ++j) {
+            if (curRoom->getMap()->isHole(i, j)) {
+                al_draw_filled_rectangle(
+                    Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + j * tileW,
+                    MINIMAP_MARGIN + i * tileH,
+                    Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + (j + 1) * tileW,
+                    MINIMAP_MARGIN + (i + 1) * tileH,
+                    al_map_rgb(150, 75, 75)
+                );
+            }
+        }
+    }*/
+
     // Draw player
     Engine::Point playerPos = player->Position;
     float px = playerPos.x / TILE_SIZE * tileW;
