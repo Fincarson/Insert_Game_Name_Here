@@ -5,6 +5,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 #include "Engine/AnimSprite.hpp"
+#include "Engine/AudioHelper.hpp"
 #include "Engine/IControl.hpp"
 #include "Engine/Collision.hpp"
 #include "Maps/Map.hpp"
@@ -59,7 +60,10 @@ public:
     bool CanTakeDamage() const;
     void ResetDamageCooldown();
     int GetCoin() const { return coins; }
-    void AddCoin(int x = 10) { coins += x; }
+    void AddCoin(int x = 10) {
+        coins += x;
+        if (x > 0) AudioHelper::PlaySample("coin.wav");
+    }
 
     Engine::Point ExternalForce = Engine::Point(0, 0);
 

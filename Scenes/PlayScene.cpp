@@ -37,7 +37,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("1-1.txt", -1);
+    ChangeRoom("shop.txt", -1);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
@@ -91,7 +91,7 @@ void PlayScene::Initialize() {
 
     coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
 
-    UnlockWeapon("sword");
+    // UnlockWeapon("sword");
 
 }
 
@@ -204,7 +204,7 @@ void PlayScene::Update(float deltaTime) {
         return;
     }
 
-    // — Normal game update (unchanged) —
+    // — Normal game update (unchanged) —dw
     player->MinInteractDist = 1E9;
     player->ClosestInteractable = nullptr;
 
@@ -328,7 +328,9 @@ void PlayScene::Draw(const Engine::Point&) const {
         if (playerDeathTimer >= 0) {
             double smoothFadeFac = 1.0 - std::pow(playerDeathTimer / 275.0, 10);
             al_draw_filled_rectangle(0, 0, W, H, al_map_rgba(0, 0, 0, smoothFadeFac * 255));
-            player->Draw(camera);
+            if (playerDeathTimer >= 5) {
+                player->Draw(camera);
+            }
         }
         UIGroup->Draw(Engine::Point{0,0});
         return;
@@ -511,6 +513,7 @@ void PlayScene::UnlockWeapon(std::string weaponId) {
 }
 
 void PlayScene::EquipWeapon(int idx) {
+    AudioHelper::PlaySample("equip.mp3");
     weapon = weapons[idx];
     equipWeaponLabel->Text = weaponNames[idx];
     equipWeaponLabelTimer = 2.0f;

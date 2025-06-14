@@ -55,8 +55,10 @@ void ShopDisplay::Draw(const Engine::Point &camera) const {
 
 void ShopDisplay::BuyItem() {
     if (interactingPlayer->GetCoin() < price) {
+        AudioHelper::PlaySample("broke.mp3");
         return;
     }
+    AudioHelper::PlaySample("buy.mp3");
 
     interactingPlayer->AddCoin(-price);
     sold = true;
