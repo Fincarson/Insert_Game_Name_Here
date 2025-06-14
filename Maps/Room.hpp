@@ -25,11 +25,12 @@ private:
 
     std::unordered_map<Engine::Point, int> posToPassageway;
     std::unordered_map<int, Passageway> passageways;
+    std::string mapName;
 
-    void loadRoom(std::string filename, std::string mapname);
+    void loadRoom(std::string filename);
 
 public:
-    Room(std::string filename, std::string mapname);
+    Room(std::string filename);
     void Update(float deltaTime) override;
     void Draw(const Engine::Point &camera) const override;
 

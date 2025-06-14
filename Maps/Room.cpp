@@ -18,8 +18,9 @@
 #include "Engine/LOG.hpp"
 #include "Sprites/Chest.hpp"
 
-void Room::loadRoom(std::string filename, std::string mapname) {
+void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
+    mapName = "map_packets.png";
     std::ifstream file(filename);
     std::string line;
 
@@ -56,13 +57,9 @@ void Room::loadRoom(std::string filename, std::string mapname) {
                 break;
 
                 case 'Z':
+                    mapName = "map_packets3.png";
                 case 'K':
                 case 'C':
-                    mapVec[i][j] = FLOOR;
-                    entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
-                break;
-
-                case 'H':
                     mapVec[i][j] = FLOOR;
                     entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
                 break;
@@ -80,7 +77,7 @@ void Room::loadRoom(std::string filename, std::string mapname) {
         }
     }
 
-    AddNewObject(map = new DungeonMap(row, col, mapVec, mapname));
+    AddNewObject(map = new DungeonMap(row, col, mapVec, mapName));
     map->generateMapOffset();
 
     /*
@@ -167,8 +164,8 @@ void Room::loadRoom(std::string filename, std::string mapname) {
 }
 
 
-Room::Room(std::string filename, std::string mapname): posToPassageway() {
-    loadRoom(filename, mapname);
+Room::Room(std::string filename): posToPassageway() {
+    loadRoom(filename);
     AddNewObject(EnemyGroup);
     AddNewObject(InteractableGroup);
     AddNewObject(BulletGroup = new Group());

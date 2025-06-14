@@ -407,7 +407,7 @@ void PlayScene::ChangeRoom(std::string roomFile, int passagewayId) {
     if (roomFile == "") return;
 
     if (rooms.count(roomFile) == 0) {
-        rooms[roomFile] = new Room(roomFile, "map_packets3.png");
+        rooms[roomFile] = new Room(roomFile);
     }
 
     curRoom = rooms[roomFile];
