@@ -37,6 +37,7 @@ void SwordSlashEffect::Draw(const Engine::Point& cam) const {
         float t = (-b + std::sqrt(discriminant)) / (2 * a);
         float actualLength = std::min(s.length, t);
 
+
         al_draw_line(
             s.x - cam.x, s.y - cam.y,
             s.x + dx * actualLength - cam.x,

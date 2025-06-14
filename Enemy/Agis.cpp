@@ -14,17 +14,18 @@
 #include "Maps/Room.hpp"
 
 Agis::Agis(float x, float y, float w, float h, int damage, int hp, Map *map, Player *player)
-    : Enemy("DemonLordAgis.png", {
+    : Enemy("DemonLordAgis2.png", {
     {"idle1", Engine::AnimInfo(0, 15, 5)},
     {"idle2", Engine::AnimInfo(1, 17, 5)},
     {"attack", Engine::AnimInfo(2, 24, 5)},
     {"ulti", Engine::AnimInfo(3, 70, 5)},
     {"rope", Engine::AnimInfo(4, 42, 5)},
     {"rope_drop", Engine::AnimInfo(5, 42, 5)},
-    {"tp_in", Engine::AnimInfo(6, 30, 5)},
+    {"tp_in", Engine::AnimInfo(6, 29, 5)},
     {"tp_out", Engine::AnimInfo(7, 25, 5)},
     {"death", Engine::AnimInfo(8, 65, 5)}
-    }, "idle1", 320, 320, x, y, w, h, damage, hp, map, player) {
+    }, "idle1", 240, 240, x, y, w, h, damage, hp, map, player) {
+    SetCoin(false);
     phase = 1;
     bulletTimer = 0;
 }
@@ -32,12 +33,28 @@ Agis::Agis(float x, float y, float w, float h, int damage, int hp, Map *map, Pla
 void Agis::Update(float deltaTime) {
     AnimSprite::Update(deltaTime);
     scene = getPlayScene();
-    bulletTimer += deltaTime;
-    if (bulletTimer >= 1.0f) {
-        bulletTimer = 0;
-        float shootAngle = Angle::Get(Position + Size/2, GetPlayer()->Position + GetPlayer()->Size/2);
-        CreateBullet(shootAngle);
+    if (!domainActivated) {
+        bulletTimer += deltaTime;
+        if (bulletTimer >= 1.0f) {
+            bulletTimer = 0;
+            float shootAngle = Angle::Get(Position + Size/2, GetPlayer()->Position + GetPlayer()->Size/2);
+            CreateBullet(shootAngle);
+        }
     }
+
+    // For Domain Expansion only
+    if (domainActivated) {
+        domainDrainTimer += deltaTime;
+        if (domainDrainTimer >= 1.0f) {
+            domainDrainTimer = 0;
+
+            Player* player = GetPlayer();
+            if (player->GetHP() > 1) {
+                player->SetHP(std::max(1.0f, player->GetHP() * 0.95f));
+            }
+        }
+    }
+
     // Agis functioning
     switch (GetStatus()) {
         case PHASE1:
@@ -65,8 +82,8 @@ void Agis::Update(float deltaTime) {
                 SetStatus(ATTACK2);
                 SetAnimation("rope");
             } else if (patternTick == 60 * 6) {
-                SetStatus(TPIN);
-                SetAnimation("tp_in");
+                SetStatus(TPOUT);
+                SetAnimation("tp_out");
                 patternTick = 0;
             }
             break;
@@ -76,17 +93,6 @@ void Agis::Update(float deltaTime) {
 
             patternTick++;
 
-            // Ryoiki Tenkai draining logic
-            domainDrainTimer += deltaTime;
-            if (domainDrainTimer >= 1.0f) {
-                domainDrainTimer = 0;
-
-                Player* player = GetPlayer();
-                if (player->GetHP() > 1) {
-                    player->SetHP(std::max(1.0f, player->GetHP() * 0.95f));
-                }
-            }
-
             if (patternTick == 60 * 2) {
                 SetStatus(ATTACK1);
                 SetAnimation("attack");
@@ -94,20 +100,20 @@ void Agis::Update(float deltaTime) {
                 SetStatus(ATTACK2);
                 SetAnimation("rope");
             } else if (patternTick == 60 * 6) {
-                SetStatus(TPIN);
-                SetAnimation("tp_in");
+                SetStatus(TPOUT);
+                SetAnimation("tp_out");
                 patternTick = 0;
             }
             break;
 
         case ATTACK1:
             attackAnimTick++;
-            if (attackAnimTick == 14 && !attackCooldown) {
+            if (attackAnimTick == 15 * GetCurAnim().frameDuration && !attackCooldown) {
                 ShootRadialBullets(0.0f);
                 attackCooldown = true;
-            } else if (attackAnimTick == 18 && attackCooldown) {
+            } else if (attackAnimTick == 19 * GetCurAnim().frameDuration && attackCooldown) {
                 ShootRadialBullets(M_PI / 24);
-            } else if (attackAnimTick == 22 && attackCooldown) {
+            } else if (attackAnimTick == 23 * GetCurAnim().frameDuration && attackCooldown) {
                 ShootRadialBullets(2 * M_PI / 24);
             }
             if (attackAnimTick >= GetCurAnim().nFrames * GetCurAnim().frameDuration) {
@@ -120,7 +126,7 @@ void Agis::Update(float deltaTime) {
         case ATTACK2:
             spinningAnimTick++;
             spinningShootTimer += deltaTime;
-            if (spinningShootTimer >= 0.25f && spinningBulletCount < 20) {
+            if (spinningAnimTick >= 30 * GetCurAnim().frameDuration && spinningShootTimer >= 0.1f && spinningBulletCount < 20) {
                 spinningShootTimer = 0;
                 float angleOffset = spinningBulletCount * (M_PI / 20);
                 ShootSpinningBullet(angleOffset);
@@ -134,7 +140,6 @@ void Agis::Update(float deltaTime) {
             if (spinningBulletCount >= 20) {
                 spinningAnimTick = 0;
                 spinningBulletCount = 0;
-                patternTick = 0;
                 SetStatus(phase == 1 ? PHASE1 : phase == 2 ? PHASE2 : RYOIKITENKAI);
             }
 
@@ -143,20 +148,20 @@ void Agis::Update(float deltaTime) {
                 SetAnimation(phase == 1 ? "idle1" : "idle2");
             break;
 
-        case TPIN:
+        case TPOUT:
             tpAnimTick++;
             if (tpAnimTick == GetCurAnim().nFrames * GetCurAnim().frameDuration) {
                 Position = GetPlayer()->Position + GetPlayer()->Size/2 - Size/2;
-                SetStatus(TPOUT);
-                SetAnimation("tp_out");
+                SetStatus(TPIN);
+                SetAnimation("tp_in");
                 tpAnimTick = 0;
             }
             break;
 
-        case TPOUT: {
+        case TPIN: {
             tpAnimTick++;
             float dist = (Position + Size/2 - GetPlayer()->Position + GetPlayer()->Size/2).Magnitude();
-            if (tpAnimTick == 15 && /*dist < 1.5 * TILE_SIZE*/ Collision::IsCollision(this, GetPlayer()))
+            if (tpAnimTick >= 20 * GetCurAnim().frameDuration && /*dist < 1.5 * TILE_SIZE*/ Collision::IsCollision(this, GetPlayer()))
                 GetPlayer()->Hit(GetDamage(), Position);
             if (tpAnimTick >= GetCurAnim().nFrames * GetCurAnim().frameDuration) {
                 tpAnimTick = 0;
@@ -175,6 +180,7 @@ void Agis::Update(float deltaTime) {
                 phase = 3;
                 transformAnimTick = 0;
                 patternTick = 0;
+                domainActivated = true;
             }
             break;
 
@@ -189,15 +195,30 @@ void Agis::Update(float deltaTime) {
             break;
 
         case GONER:
+            getPlayScene()->RemoveObject(objectIterator);
+            // Change win scene here or smth
             break;
     }
 }
 
 void Agis::Draw(const Engine::Point &camera) const {
-    if (GetStatus() == RYOIKITENKAI) {
-        Engine::Point center = Position + Size / 2;
-        al_draw_filled_circle(center.x - camera.x, center.y - camera.y,
-                       DOMAIN_RADIUS, al_map_rgba(255, 0, 0, 180));
+    if (domainActivated) {
+        for (int i = 0; i < 20; ++i) {
+            int x1 = std::rand() % int(1600 * 1.5);
+            int y1 = std::rand() % int(832 * 1.5);
+            float angle = (std::rand() % 2 == 0) ? (M_PI / 3) : (5 * M_PI / 6);
+            float slashLength = std::rand() % 1300 + 300;
+            float x2 = x1 + slashLength * std::cos(angle);
+            float y2 = y1 + slashLength * std::sin(angle);
+            al_draw_line(
+                x1 - camera.x, y1 - camera.y,
+                x2 - camera.x, y2 - camera.y,
+                (std::rand() % 3 == 0) ? al_map_rgb(255, 255, 255) : (std::rand() % 3 == 1) ? al_map_rgb(100, 100, 100) : al_map_rgb(0, 0, 0), 2.0
+            );
+        }
+
+        // Debug circle
+        // al_draw_circle(Position.x - cam.x, Position.y - cam.y, rangeRadius, al_map_rgb(255, 0, 0), 1);
     }
     Enemy::Draw(camera);
 }
@@ -223,5 +244,21 @@ void Agis::ShootSpinningBullet(float offsetAngle) {
         Engine::Point startPos = Engine::Point(Position.x + Size.x/2, Position.y + Size.y/4);
         scene->GetCurRoom()->BulletGroup->AddNewObject(
             new FireballBullet("images/agis_bullet.png", startPos, finalAngle, 300, GetDamage(), 1, this));
+    }
+}
+
+void Agis::Hit(int damage, Engine::Point hitPos) {
+    if (status == OPENDOMAIN || status == CRUMBLING || status == GONER)
+        return;
+    SetHP(GetHP() - damage);
+
+    if (GetHP() <= (GetMaxHP() / 2) && !domainActivated) phase = 2;
+    if (GetHP() <= 0 && !domainActivated) {
+        SetAnimation("ulti");
+        SetStatus(OPENDOMAIN);
+        SetMaxHP(GetMaxHP() / 2);
+        SetHP(GetMaxHP());
+    } else if (GetHP() <= 0 && domainActivated) {
+        SetStatus(CRUMBLING);
     }
 }

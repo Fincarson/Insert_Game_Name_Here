@@ -3,6 +3,7 @@
 
 #include "Enemy.hpp"
 
+
 class Agis : public Enemy {
 public:
     Agis(float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);
@@ -10,6 +11,7 @@ public:
     void Draw(const Engine::Point &camera) const override;
     // void Hit(int damage, Engine::Point hitPos) override;
     void CreateBullet(float shootAngle);
+    void Hit(int damage, Engine::Point hitPos) override;
 
 private:
     PlayScene *scene;
@@ -33,8 +35,10 @@ private:
 
     void ShootRadialBullets(float offset);
     void ShootSpinningBullet(float offsetAngle);
-    AgisStatus GetStatus() const { return static_cast<AgisStatus>(phase); }
-    void SetStatus(AgisStatus s) { phase = s; }
+    bool domainActivated = false;
+    AgisStatus status = PHASE1;
+    AgisStatus GetStatus() const { return status; }
+    void SetStatus(AgisStatus s) { status = s; }
 };
 
 #endif //AGIS_HPP

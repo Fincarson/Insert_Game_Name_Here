@@ -44,6 +44,8 @@ public:
 
     void SetHP(int hp);
     int GetHP() const;
+    void SetMaxHP(int hp);
+    int GetMaxHP() const;
     virtual void Hit(int damage, Engine::Point hitPos);
     bool IsDead() const;
 
