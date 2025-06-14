@@ -16,7 +16,7 @@ BlackholeBullet::BlackholeBullet(std::string imagePath,
                                  int damage,
                                  int ownerType)
     : Bullet(imagePath, startPos, angleRadians, speed, damage, ownerType) {
-    Position = startPos;
+    Position = startPosition = startPos;
     explodeBitmap = al_load_bitmap("images/Blackhole.png");
     exploded = false;
     std::cout << "Spawned blackhole bullet: " << (int)(Position.x / TILE_SIZE) << " " << (int)(Position.y / TILE_SIZE) << std::endl;
@@ -36,6 +36,12 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
         // int j = Position.x / TILE_SIZE;
         // std::cout << "[DEBUG] Bullet at tile (" << i << ", " << j << ")\n";
 
+        // Range limit
+        if ((Position - startPosition).Magnitude() >= 1.5 * explosionRadius) {
+            alive = false;
+            return;
+        }
+
         // Map collision: check the tile at bullet's center
         if ((map.isWall(Position.y / TILE_SIZE, Position.x / TILE_SIZE)) || (Position.x <= 0 || Position.y <= 0 || Position.x >= map.getCol() * TILE_SIZE || Position.y >= map.getRow() * TILE_SIZE)) {       // BE VERY CAREFUL!! i is for Position.y and j is for Position.x
             // std::cout << "[HIT WALL] at (" << position.x / TILE_SIZE << ", " << position.y / TILE_SIZE << ")\n";
@@ -46,7 +52,8 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
 
         for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
             Enemy* enemy = dynamic_cast<Enemy*>(it);
-            if (!enemy || enemy->IsCoin()) continue;
+            if (!enemy) break;
+            if (enemy->IsCoin()) continue;
             if (collider.IsCollision(this, enemy)) {
                 // std::cout << "ENEMY HIT\n";
                 alive = false;

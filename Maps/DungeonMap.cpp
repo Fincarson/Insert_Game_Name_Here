@@ -204,6 +204,6 @@ void DungeonMap::generateMapOffset() {
     }
 }
 
-DungeonMap::DungeonMap(int row, int col, const std::vector<std::vector<Tile>> &mapVec)
-    : Map("map_packets.png", 16, row, col, mapVec) {
+DungeonMap::DungeonMap(int row, int col, const std::vector<std::vector<Tile>> &mapVec, std::string map_name)
+    : Map(map_name, 16, row, col, mapVec) {
 }

@@ -17,7 +17,7 @@ protected:
     Engine::Point getHoleOffset(int i, int j);
 
 public:
-    DungeonMap(int row, int col, const std::vector<std::vector<Tile>> &mapVec);
+    DungeonMap(int row, int col, const std::vector<std::vector<Tile>> &mapVec, std::string map_name);
     void generateMapOffset() override;
 };
 

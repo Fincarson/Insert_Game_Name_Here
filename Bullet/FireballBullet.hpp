@@ -15,7 +15,7 @@ public:
     void Draw() const override;
 
 protected:
-    void OnExplode(Enemy* enemy) override;
+    void OnExplode() override;
 };
 
 

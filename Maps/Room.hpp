@@ -25,6 +25,7 @@ private:
 
     std::unordered_map<Engine::Point, int> posToPassageway;
     std::unordered_map<int, Passageway> passageways;
+    std::string mapName;
 
     void loadRoom(std::string filename);
 

@@ -21,6 +21,7 @@
 
 void Room::loadRoom(std::string filename) {
     filename = "Resource/maps/" + filename;
+    mapName = "map_packets.png";
     std::ifstream file(filename);
     std::string line;
 
@@ -33,7 +34,6 @@ void Room::loadRoom(std::string filename) {
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
     std::vector<std::pair<Engine::Point, char>> entities;
-    std::unordered_map<int, std::vector<Engine::Point>> passagewayTiles;
 
     for (int i = 0; i < row; i++) {
         std::getline(file, line);
@@ -57,7 +57,8 @@ void Room::loadRoom(std::string filename) {
                 Spawn = Engine::Point(j, i);
                 break;
 
-                case 'Z':  // Entities
+                case 'Z':
+                    mapName = "map_packets3.png";
                 case 'K':
                 case 'C':
                     mapVec[i][j] = FLOOR;
@@ -87,7 +88,7 @@ void Room::loadRoom(std::string filename) {
         }
     }
 
-    AddNewObject(map = new DungeonMap(row, col, mapVec));
+    AddNewObject(map = new DungeonMap(row, col, mapVec, mapName));
     map->generateMapOffset();
 
     /*
@@ -190,7 +191,8 @@ void Room::loadRoom(std::string filename) {
     }
 }
 
-Room::Room(std::string filename) {
+
+Room::Room(std::string filename): posToPassageway() {
     loadRoom(filename);
     AddNewObject(EnemyGroup);
     AddNewObject(InteractableGroup);

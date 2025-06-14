@@ -68,7 +68,9 @@ void Bullet::Update(float deltaTime, const Map& map) {
             if (enemy->IsCoin()) continue;
             // std::cout << "ENEMY HIT\n";
             alive = false;
-            OnExplode(enemy);
+            EnemyHit = enemy;
+            OnExplode();
+            EnemyHit = nullptr;
             return;
         }
     }
@@ -82,11 +84,6 @@ void Bullet::Draw() const {
                            Position.x - cam.x, Position.y - cam.y,  // REMEMBER TO SUBTRACT WITH CAMERA POSITION SO THINGS WON'T GO SOUTH
                            angle,
                            0);
-}
-
-void Bullet::OnExplode(Enemy* enemy) {
-    std::cout << "Bullet::OnExplode on " << Position.x/TILE_SIZE << " " << Position.y/TILE_SIZE << std::endl;
-    getPlayScene()->GetCurRoom()->BulletGroup->RemoveObject(objectIterator);
 }
 
 void Bullet::OnExplode() {

@@ -14,6 +14,7 @@ protected:
     bool dealtFinalDamage = false;
     std::unordered_map<Enemy*, float> hitCooldownMap;
     float cooldownPerHit;
+    Engine::Point startPosition;
 
 public:
     BlackholeBullet(std::string imagePath, const Engine::Point& startPos, float angleRadians, float speed, int damage, int ownerType);

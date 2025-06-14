@@ -19,7 +19,8 @@ void SwordWeapon::Update(float deltaTime, const Engine::Point &newPosition) {
     if (al_mouse_button_down(&mstate, 1)) {
         for (auto& obj : scene->GetCurRoom()->EnemyGroup->GetObjects()) {
             Enemy* enemy = dynamic_cast<Enemy*>(obj);
-            if (!enemy) continue;
+            if (!enemy) break;
+            if (enemy->IsCoin()) continue;
             Engine::Point MiddlePosition = Engine::Point(enemy->Position.x + TILE_SIZE/2, enemy->Position.y + TILE_SIZE/2);
             Engine::Point dir = Position - MiddlePosition;
             float len = dir.Magnitude();

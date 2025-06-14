@@ -1,7 +1,5 @@
 #include "Knight.hpp"
-
 #include <iostream>
-
 #include "Sprites/Player.hpp"
 
 Knight::Knight(float x, float y, float w, float h, int damage, int hp, Map *map, Player *player)
