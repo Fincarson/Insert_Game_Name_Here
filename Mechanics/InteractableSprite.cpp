@@ -25,8 +25,12 @@ void InteractableSprite::Update(float deltaTime) {
 
         if (dist < 2 * TILE_SIZE && interactingPlayer->MinInteractDist) {
             playerInRange = true;
-            interactingPlayer->MinInteractDist = dist;
+            if (interactingPlayer->ClosestInteractable)
+                interactingPlayer->ClosestInteractable->playerInRange = false;
+
             interactingPlayer->ClosestInteractable = this;
+            interactingPlayer->MinInteractDist = dist;
+
         } else {
             playerInRange = false;
         }
@@ -35,7 +39,7 @@ void InteractableSprite::Update(float deltaTime) {
     if (playerInRange) {
         indicatorHoverTimer += deltaTime;
         if (indicatorHoverTimer > 1.0f) indicatorHoverTimer -= 1.0f;
-        indicator->Position.y = Position.y - (indicatorHoverTimer > 0.5f ? 30 : 25);
+        indicator->Position.y = Position.y - (indicatorHoverTimer > 0.5f ? 50 : 45);
     }
 }
 

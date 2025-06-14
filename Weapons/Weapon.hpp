@@ -27,7 +27,9 @@ public:
 
     /// Update weapon position & angle; fire on left mouse down when cooldown allows
     virtual void Update(float deltaTime, const Engine::Point& newPosition);
+
     /// Draw weapon rotated to current angle
+    void Draw(const Engine::Point &camera) const override;
     virtual void Draw() const;
 
 protected:

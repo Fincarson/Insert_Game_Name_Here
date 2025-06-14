@@ -36,7 +36,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("1-1.txt", 0);
+    ChangeRoom("shop.txt", 0);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
