@@ -11,6 +11,7 @@
 
 #include "DungeonMap.hpp"
 #include "utility.hpp"
+#include "Enemy/Agis.hpp"
 #include "Enemy/Coins.hpp"
 #include "Enemy/Knight.hpp"
 #include "Enemy/Zombie.hpp"
@@ -56,8 +57,9 @@ void Room::loadRoom(std::string filename) {
                 Spawn = Engine::Point(j, i);
                 break;
 
-                case 'Z':
+                case 'A':
                     mapName = "map_packets3.png";
+                case 'Z':
                 case 'K':
                 case 'C':
                     mapVec[i][j] = FLOOR;
@@ -151,6 +153,12 @@ void Room::loadRoom(std::string filename) {
             case 'C':
                 EnemyGroup->AddNewObject(new Coins(pos.x, pos.y, TILE_SIZE, TILE_SIZE, map, player));
             break;
+
+            case 'A': {
+                float size = TILE_SIZE * 3;
+                EnemyGroup->AddNewObject(new Agis(pos.x - size/2, pos.y - size/2, size, size, 10, 5000, map, player));
+                break;
+            }
 
             case 'H':
                 curChest = (itCurChest != chestContents.end()) ? *(itCurChest++) : DEFAULT_CHEST;

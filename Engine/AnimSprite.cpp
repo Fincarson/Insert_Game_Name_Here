@@ -55,6 +55,7 @@ namespace Engine {
         auto& nextAnim = itNextAnim->second;
         curFrame = 0;
         curFrameTimer = nextAnim.frameDuration;
+        nextAnim.name = anim;
 
         itCurAnim = itNextAnim;
     }

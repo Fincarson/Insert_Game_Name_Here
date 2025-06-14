@@ -8,6 +8,7 @@
 #include "Engine/Point.hpp"
 #include "Maps/Map.hpp"    // for collision checks
 
+class Player;
 class Enemy;
 class PlayScene;
 
@@ -42,6 +43,8 @@ public:
 protected:
     /// Called when bullet hits a map tile (default: deactivate)
     virtual void OnExplode();
+    virtual void OnExplode(Enemy* enemy);
+    virtual void OnExplode(Player* player);
     PlayScene *getPlayScene();
     PlayScene *scene;
     Engine::Point cam;
@@ -53,7 +56,7 @@ protected:
     int ownerType;
     bool alive;
 
-    Enemy *EnemyHit;
+    Enemy* enemyBulletOwner;    // Only if enemy shoots
 };
 
 #endif //BULLET_HPP

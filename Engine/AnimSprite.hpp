@@ -16,6 +16,7 @@ struct AnimInfo {
     int nFrames;
     int frameDuration;
     bool loop;
+    std::string name;
 
     AnimInfo(int yOffset, int nFrames, int frameDelay, bool loop = true)
         : yOffset(yOffset), nFrames(nFrames), frameDuration(frameDelay), loop(loop) {}

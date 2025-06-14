@@ -10,12 +10,8 @@ public:
                                float angleRadians,
                                float speed,
                                int damage,
-                               int ownerType);
-    void Update(float deltaTime, const Map& map) override;
-    void Draw() const override;
-
-protected:
-    void OnExplode() override;
+                               int ownerType,
+                               Enemy* enemyShot);
 };
 
 

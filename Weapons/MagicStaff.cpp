@@ -7,10 +7,9 @@
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
 #include "Engine/IObject.hpp"
-#include "Engine/IScene.hpp"
+
 #include "Engine/Point.hpp"
 #include "Scenes/PlayScene.hpp"
-#include "Bullet/Bullet.hpp"
 #include "Bullet/FireballBullet.hpp"
 #include "Enemy/Enemy.hpp"
 #include "Maps/Room.hpp"
@@ -56,7 +55,7 @@ void MagicStaff::Draw() const {
 void MagicStaff::CreateBullet(float shootAngle, Enemy* enemy) {
     if (hitCooldownMap.find(enemy) == hitCooldownMap.end()) {
         scene->GetCurRoom()->BulletGroup->AddNewObject(
-            new FireballBullet(bulletPath, Position, shootAngle, bulletSpeed, damage, 0));
+            new FireballBullet(bulletPath, Position, shootAngle, bulletSpeed, damage, 0, nullptr));
         hitCooldownMap[enemy] = cooldownPerHit;
     }
 }

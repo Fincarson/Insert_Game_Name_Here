@@ -60,18 +60,23 @@ void Bullet::Update(float deltaTime, const Map& map) {
         OnExplode();
         return;
     }
-
-    for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
-        Enemy* enemy = dynamic_cast<Enemy*>(it);
-        // if (enemy) std::cout << "ENEMY FOUND\n";
-        if (collider.IsCollision(this, enemy)) {
-            if (enemy->IsCoin()) continue;
-            // std::cout << "ENEMY HIT\n";
+    if (ownerType == 0) {
+        for (auto& it : getPlayScene()->GetCurRoom()->EnemyGroup->GetObjects()) {
+            Enemy* enemy = dynamic_cast<Enemy*>(it);
+            // if (enemy) std::cout << "ENEMY FOUND\n";
+            if (collider.IsCollision(this, enemy)) {
+                if (enemy->IsCoin()) continue;
+                // std::cout << "ENEMY HIT\n";
+                alive = false;
+                OnExplode(enemy);
+                return;
+            }
+        }
+    }
+    if (ownerType == 1) {
+        if (collider.IsCollision(this, scene->GetPlayer())) {
             alive = false;
-            EnemyHit = enemy;
-            OnExplode();
-            EnemyHit = nullptr;
-            return;
+            OnExplode(scene->GetPlayer());
         }
     }
 }
@@ -87,8 +92,18 @@ void Bullet::Draw() const {
 }
 
 void Bullet::OnExplode() {
-    std::cout << "Bullet::OnExplode on " << Position.x/TILE_SIZE << " " << Position.y/TILE_SIZE << std::endl;
+    // std::cout << "Bullet::OnExplode on " << Position.x/TILE_SIZE << " " << Position.y/TILE_SIZE << std::endl;
     getPlayScene()->GetCurRoom()->BulletGroup->RemoveObject(objectIterator);
+}
+
+void Bullet::OnExplode(Enemy *enemy) {
+    enemy->Hit(damage, getPlayScene()->GetPlayer()->Position);
+    OnExplode();
+}
+
+void Bullet::OnExplode(Player *player) {
+    player->Hit(damage, enemyBulletOwner->Position);
+    OnExplode();
 }
 
 PlayScene * Bullet::getPlayScene() {

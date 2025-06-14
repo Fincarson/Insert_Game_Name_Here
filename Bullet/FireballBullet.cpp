@@ -8,19 +8,8 @@ FireballBullet::FireballBullet(const std::string& imagePath,
                                float angleRadians,
                                float speed,
                                int damage,
-                               int ownerType)
+                               int ownerType,
+                               Enemy* enemyShot)
     : Bullet(imagePath, startPos, angleRadians, speed, damage, ownerType) {
-}
-
-void FireballBullet::Update(float deltaTime, const Map &map) {
-    Bullet::Update(deltaTime, map);
-}
-
-void FireballBullet::Draw() const {
-    Bullet::Draw();
-}
-
-void FireballBullet::OnExplode() {
-    if (EnemyHit) EnemyHit->Hit(damage, getPlayScene()->GetPlayer()->Position);
-    Bullet::OnExplode();
+    enemyBulletOwner = enemyShot;
 }
