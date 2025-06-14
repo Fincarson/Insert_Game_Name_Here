@@ -1,9 +1,12 @@
 #ifndef LASERWEAPON_HPP
 #define LASERWEAPON_HPP
 
+#include <memory>
+
 #include "Weapon.hpp"
 #include "Engine/Point.hpp"
 #include <unordered_map>
+#include <allegro5/allegro_audio.h>
 
 class Enemy; // Forward declaration
 
@@ -13,6 +16,8 @@ protected:
     float laserLength;                        // How far the laser reaches
     Engine::Point laserStart, laserEnd;       // Beam coordinates
     std::unordered_map<Enemy*, float> hitCooldownMap;  // Per-enemy cooldown tracker
+    bool prevMouseDown;
+    std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> ambienceSound;
 
 public:
     LaserWeapon(std::string weaponImg, float damage);

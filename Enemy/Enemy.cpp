@@ -47,10 +47,12 @@ void Enemy::Update(float deltaTime) {
         knockbackTimer -= deltaTime;
         Velocity = knockbackDirection * knockbackPower * knockbackTimer / MAX_KB_TIME;
         Tint = al_map_rgb(255, 128, 128);
+        Collision(deltaTime);
 
     } else if (IsDead()) {
         Velocity = Engine::Point(0, 0);
         Tint = al_map_rgb(255, 255, 255);
+        Collision(deltaTime);
 
     } else {
         // Target player
@@ -72,8 +74,6 @@ void Enemy::Update(float deltaTime) {
     if (!collider.IsCollision(int(Position.x), int(Position.y + ExternalForce.y), *map))
         Position.y += ExternalForce.y;
     ExternalForce = Engine::Point(0, 0);
-
-    Collision(deltaTime);
 
     if (Collision::IsCollision(player, this) && player->CanTakeDamage() && !IsDead()) {
         player->Hit(GetDamage(), Position);

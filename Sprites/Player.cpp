@@ -85,7 +85,12 @@ void Player::Movement() {
     bool prevMoving = moving;
     moving = up != down || left != right;
 
-    if (!moving) {
+    if (moving) {
+        if (curFrameTimer == 5 && (curFrame == 0 || curFrame == 3)) {
+            AudioHelper::PlaySample("player_step.ogg");
+        }
+
+    } else {
         if (Velocity.Magnitude() <= 10.0f) {
             Velocity.x = 0; Velocity.y = 0;
         }
@@ -143,7 +148,7 @@ void Player::SetHP(int hp) {
 void Player::Hit(int damage, Engine::Point enemyPos) {
     hp -= damage;
     std::cout << "Current health: " << hp << std::endl;
-    // Compute direction away from enemy
+    AudioHelper::PlaySample("player_hurt.wav");
 
     // Knockback
     float speed = 1000; // pixels per second
