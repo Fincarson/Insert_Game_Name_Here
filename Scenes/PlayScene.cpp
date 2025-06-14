@@ -37,7 +37,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("shop.txt", -1);
+    ChangeRoom("1-1.txt", 0);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
@@ -93,6 +93,7 @@ void PlayScene::Initialize() {
 
     UnlockWeapon("awp");
 
+    // curBgm = AudioHelper::PlayBGM("mus_ruins.ogg");
 }
 
 PlayScene::~PlayScene() {
@@ -122,6 +123,7 @@ void PlayScene::Update(float deltaTime) {
     if (player->GetHP() <= 0) {
         if (playerDeathTimer == -1) {
             // Just died
+            // AudioHelper::StopBGM(curBgm);
             playerDeathTimer = 300;
             dialogueLabel->Text = "";
 
