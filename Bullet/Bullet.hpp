@@ -41,8 +41,7 @@ public:
 
 protected:
     /// Called when bullet hits a map tile (default: deactivate)
-    virtual void OnExplode(Enemy* enemy);
-    void OnExplode();
+    virtual void OnExplode();
     PlayScene *getPlayScene();
     PlayScene *scene;
     Engine::Point cam;
@@ -53,6 +52,8 @@ protected:
     int damage;
     int ownerType;
     bool alive;
+
+    Enemy *EnemyHit;
 };
 
 #endif //BULLET_HPP

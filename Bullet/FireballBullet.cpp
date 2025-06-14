@@ -20,7 +20,7 @@ void FireballBullet::Draw() const {
     Bullet::Draw();
 }
 
-void FireballBullet::OnExplode(Enemy *enemy) {
-    enemy->Hit(damage, getPlayScene()->GetPlayer()->Position);
-    Bullet::OnExplode(enemy);
+void FireballBullet::OnExplode() {
+    EnemyHit->Hit(damage, getPlayScene()->GetPlayer()->Position);
+    Bullet::OnExplode();
 }
