@@ -19,10 +19,22 @@ const std::map<std::string, std::function<Engine::IObject*()>> SHOP_ITEMS = {
     {"laser", [] { return new LaserWeapon("images/cheat_gun_mini.png", 10); }},     // Laser Weapon
 };
 
+const std::map<std::string, std::string> SHOP_ITEM_NAMES = {
+    {"sword", "Sukuna Sword"},
+    {"magic", "Magic Staff"},
+    {"lightsaber", "Lightsaber"},
+    {"blackhole", "Black Hole Gun"},
+    {"laser", "Laser Gun"},
+};
+
 
 class ShopDisplay : public InteractableSprite {
     IObject* shopItem;
     int price;
+
+    Engine::Label * nameLabel;
+    Engine::Label * priceLabel;
+    Image * coinIcon;
 
 public:
     ShopDisplay(float x, float y, float w, float h, Player* player, std::string itemId, int price);

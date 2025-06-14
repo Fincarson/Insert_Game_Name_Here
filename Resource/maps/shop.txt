@@ -13,7 +13,8 @@ __________##.P.##__________
 ___________#...#___________
 ___________#000#___________
 
-Say 1 3 Shopkeeper: Ah, another customer! Welcome!
+Say 1 3 Shopkeeper: Ah, a customer! Welcome, welcome.
+Say 0.5 4 Shopkeeper: You don't seem to be from around here.
 
 ShopItem sword 150
 ShopItem magic 250
