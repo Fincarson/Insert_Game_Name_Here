@@ -318,12 +318,11 @@ void PlayScene::Draw(const Engine::Point&) const {
         coinImg->Draw(Engine::Point(0, 0));
         coinLabel->Draw(Engine::Point(0, 0));
 
-        // Coin
-
-
         for (auto obj : curRoom->BulletGroup->GetObjects()) {
             if (auto b = dynamic_cast<Bullet*>(obj)) b->Draw();
         }
+
+        DrawMiniMap();
 
         if (playerDeathTimer >= 0) {
             double smoothFadeFac = 1.0 - std::pow(playerDeathTimer / 275.0, 10);
@@ -390,7 +389,65 @@ void PlayScene::Draw(const Engine::Point&) const {
     }
 }
 
+void PlayScene::DrawMiniMap() const {
+    const int mapRows = curRoom->getMap()->getRow();
+    const int mapCols = curRoom->getMap()->getCol();
 
+    // Draw background of minimap
+    ALLEGRO_COLOR bgColor = al_map_rgba(0, 0, 0, 100);
+    al_draw_filled_rectangle(
+        Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN,
+        MINIMAP_MARGIN,
+        Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_MARGIN,
+        MINIMAP_HEIGHT + MINIMAP_MARGIN,
+        bgColor
+    );
+
+    float tileW = MINIMAP_WIDTH / (float)mapCols;
+    float tileH = MINIMAP_HEIGHT / (float)mapRows;
+
+    // Draw wall tiles
+    for (int i = 0; i < mapRows; ++i) {
+        for (int j = 0; j < mapCols; ++j) {
+            if (curRoom->getMap()->isWall(i, j)) {
+                al_draw_filled_rectangle(
+                    Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + j * tileW,
+                    MINIMAP_MARGIN + i * tileH,
+                    Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + (j + 1) * tileW,
+                    MINIMAP_MARGIN + (i + 1) * tileH,
+                    al_map_rgb(100, 100, 100)
+                );
+            }
+        }
+    }
+
+    // Draw player
+    Engine::Point playerPos = player->Position;
+    float px = playerPos.x / TILE_SIZE * tileW;
+    float py = playerPos.y / TILE_SIZE * tileH;
+    al_draw_filled_circle(
+        Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + px,
+        MINIMAP_MARGIN + py,
+        3,
+        al_map_rgb(0, 255, 0)
+    );
+
+    // Draw enemies
+    for (auto& obj : curRoom->EnemyGroup->GetObjects()) {
+        Enemy* enemy = dynamic_cast<Enemy*>(obj);
+        if (!enemy || enemy->IsCoin()) continue;
+        Engine::Point pos = enemy->Position;
+        if ((pos - playerPos).Magnitude() > 5 * TILE_SIZE) continue;
+        float ex = pos.x / TILE_SIZE * tileW;
+        float ey = pos.y / TILE_SIZE * tileH;
+        al_draw_filled_circle(
+            Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + ex,
+            MINIMAP_MARGIN + ey,
+            2,
+            al_map_rgb(255, 0, 0)
+        );
+    }
+}
 
 
 void PlayScene::DrawDialogueBox(float screenW, float screenH) const {

@@ -74,6 +74,7 @@ public:
 
     void Update(float deltaTime) override;
     void Draw(const Engine::Point & _unused) const override;
+    void DrawMiniMap() const;
     void DrawDialogueBox(float screenW, float screenH) const;
 
     void CheckChangeRoom();
@@ -121,6 +122,10 @@ public:
     static constexpr float RIPPLE_SPEED    = 10.0f;  // how fast the wave animates
 
     static constexpr float SHAKE_INTENSITY = 5.0f;   // max shake in pixels
+
+    const int MINIMAP_WIDTH = 200;
+    const int MINIMAP_HEIGHT = 200;
+    const int MINIMAP_MARGIN = 10; // distance from top-right corner
 
     float overlayTimer   = 0.0f;
     float overlayAlpha   = 0.0f;
