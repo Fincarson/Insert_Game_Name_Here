@@ -125,6 +125,8 @@ void PlayScene::Update(float deltaTime) {
     }
 
     player->MinInteractDist = 1E9;
+    player->ClosestInteractable = nullptr;
+
     IScene::Update(deltaTime);
 
     curRoom->Update(deltaTime);

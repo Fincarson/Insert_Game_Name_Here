@@ -12,31 +12,35 @@ InteractableSprite::InteractableSprite(const std::string &img,
                                        unsigned char g, unsigned char b, unsigned char a)
 
     : AnimSprite(img, animations, initAnim, sw, sh, x, y, w, h, anchorX, anchorY, rotation, vx, vy, r, g, b, a) {
+
+    indicator = new Sprite("press_f.png", x + w/2, y - 40, 80, 80);
 }
 
 void InteractableSprite::Update(float deltaTime) {
     AnimSprite::Update(deltaTime);
 
-    if (interactingPlayer) {
+    if (interactingPlayer && interactionEnabled) {
         Engine::Point dPos = (interactingPlayer->Position + interactingPlayer->Size / 2) - (Position + Size / 2);
         float dist = dPos.Magnitude();
 
         if (dist < 2 * TILE_SIZE && interactingPlayer->MinInteractDist) {
             playerInRange = true;
             interactingPlayer->MinInteractDist = dist;
+            interactingPlayer->ClosestInteractable = this;
         } else {
             playerInRange = false;
         }
     }
+
+    if (playerInRange) {
+        indicatorHoverTimer += deltaTime;
+        if (indicatorHoverTimer > 1.0f) indicatorHoverTimer -= 1.0f;
+        indicator->Position.y = Position.y - (indicatorHoverTimer > 0.5f ? 30 : 25);
+    }
 }
 
 void InteractableSprite::Draw(const Engine::Point &camera) const {
-    if (interactingPlayer && playerInRange) {
-        al_draw_filled_rectangle(
-            Position.x - 10 - camera.x, Position.y - 10 - camera.y,
-            Position.x + Size.x + 10 - camera.x, Position.y + Size.y + 10 - camera.y,
-            al_map_rgb(255,255,255));
-    }
+    if (playerInRange) indicator->Draw(camera);
 
     AnimSprite::Draw(camera);
 }
@@ -47,6 +51,6 @@ void InteractableSprite::AddInteraction(Player * player, std::function<void()> f
 }
 
 void InteractableSprite::Interact() {
-
+    if (interactFunc) interactFunc();
 }
 

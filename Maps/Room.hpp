@@ -42,6 +42,7 @@ public:
 
     Group * EnemyGroup;
     Group * BulletGroup;
+    Group * InteractableGroup;
 
     int GetRows() { return map->row; }
     int GetCols() { return map->col; };

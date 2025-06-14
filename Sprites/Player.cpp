@@ -10,6 +10,7 @@
 
 #include "Engine/Collision.hpp"
 #include "Mechanics/Buffable.hpp"
+#include "Mechanics/InteractableSprite.hpp"
 
 template class Buffable<float>;
 // template Buffable<float>::Buffable(float);
@@ -125,6 +126,10 @@ void Player::Collision(float deltaTime) {
 
 void Player::OnKeyDown(int keyCode) {
     keyDown[keyCode] = true;
+
+    if (keyCode == ALLEGRO_KEY_F && ClosestInteractable) {
+        ClosestInteractable->Interact();
+    }
 }
 
 void Player::OnKeyUp(int keyCode) {
