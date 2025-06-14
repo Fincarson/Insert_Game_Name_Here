@@ -13,6 +13,7 @@
 
 #include "utility.hpp"
 #include "Enemy/Zombie.hpp"
+#include "Engine/AudioHelper.hpp"
 #include "Engine/AnimSprite.hpp"
 #include "Engine/GameEngine.hpp"
 #include "Engine/Group.hpp"
@@ -24,6 +25,7 @@
 #include "Weapons/LaserWeapon.hpp"
 #include "Engine/Resources.hpp"
 #include "Weapons/Lightsaber.hpp"
+#include "Weapons/MagicStaff.hpp"
 #include "Weapons/SwordWeapon.hpp"
 
 
@@ -41,9 +43,9 @@ void PlayScene::Initialize() {
     player->SetCollisionMap(curRoom->getMap());
     // AddNewObject(weapon = new SwordWeapon("images/sukuna_sword.png", 1, 20, 1.5));
     // AddNewObject(weapon = new MagicStaff("images/magic_staff.png", "images/fireball.png", 1, 500, 10, 3));
-    // AddNewObject(weapon = new Lightsaber("images/lightsaber_handle.png", 10));    // Lightsaber
-    // AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
-    AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", 10));     // Laser Weapon
+    //AddNewObject(weapon = new Lightsaber("images/lightsaber_handle.png", 10));    // Lightsaber
+    AddNewObject(weapon = new BlackholeWeapon("images/blackhole_gun_mini.png", "images/blackhole_bullet.png", 1, 500, 10));  // Blackhole weapon
+    // AddNewObject(weapon = new LaserWeapon("images/cheat_gun_mini.png", 10));     // Laser Weapon
     // AddNewObject(weapon = new Weapon("images/awp_mini.png", "images/fireball.png", 1, 500, 10));     // Parent class (No longer functioning)
 
     playerDeathTimer = -1;
@@ -123,154 +125,244 @@ void PlayScene::Update(float deltaTime) {
 
         return;
     }
+    if (pauseState != PauseState::None) {
+        if (pauseState == PauseState::ZoomOut ||
+            pauseState == PauseState::Hold   ||
+            pauseState == PauseState::ZoomIn) {
+            ripplePhase += RIPPLE_SPEED * deltaTime;
+            }
 
+        // 1) Advance the pause timeline
+        switch (pauseState) {
+            case PauseState::ZoomOut: {
+                effectTimer += deltaTime;
+                float t = std::min(effectTimer / ZOOM_OUT_TIME, 1.0f);
+                cameraZoom = 1.0f + (MIN_ZOOM - 1.0f) * t;
+                if (effectTimer >= ZOOM_OUT_TIME) {
+                    pauseState = PauseState::Hold;
+                    holdTimer  = 0.0f;
+                }
+                break;
+            }
+            case PauseState::Hold: {
+                holdTimer += deltaTime;
+                cameraZoom = MIN_ZOOM;
+                if (holdTimer >= HOLD_TIME) {
+                    pauseState  = PauseState::ZoomIn;
+                    effectTimer = 0.0f;
+                }
+                break;
+            }
+            case PauseState::ZoomIn: {
+                effectTimer += deltaTime;
+                float t = std::min(effectTimer / ZOOM_IN_TIME, 1.0f);
+                cameraZoom = MIN_ZOOM + (1.0f - MIN_ZOOM) * t;
+                if (effectTimer >= ZOOM_IN_TIME) {
+                    pauseState = PauseState::Paused;
+                }
+                break;
+            }
+            case PauseState::Paused:
+                // fully paused—nothing changes until ESC again
+                break;
+            case PauseState::Resume:
+                effectTimer += deltaTime;
+                if (effectTimer >= RESUME_TIME) {
+                    pauseState = PauseState::None;
+                    if (pauseBitmap) {
+                        al_destroy_bitmap(pauseBitmap);
+                        pauseBitmap = nullptr;
+                    }
+                }
+                break;
+        }
+
+        // 2) Drive our overlayTimer up/down
+        if (pauseState != PauseState::Resume) {
+            // fade‐in until paused
+            overlayTimer = std::min(overlayTimer + deltaTime, OVERLAY_FADE_DURATION);
+        } else {
+            // fade‐out on resume
+            overlayTimer = std::max(overlayTimer - deltaTime, 0.0f);
+        }
+        overlayAlpha = (overlayTimer / OVERLAY_FADE_DURATION) * OVERLAY_TARGET;
+
+        // 3) Skip all normal game logic while paused/resuming
+        return;
+    }
+
+    // — Normal game update (unchanged) —
     player->MinInteractDist = 1E9;
     player->ClosestInteractable = nullptr;
 
     IScene::Update(deltaTime);
-
     curRoom->Update(deltaTime);
-    weapon->Update(deltaTime, Engine::Point{player->Position.x + (TILE_SIZE / 2), player->Position.y + (TILE_SIZE * 2/3)});
-
+    weapon->Update(deltaTime, Engine::Point{
+        player->Position.x + TILE_SIZE/2,
+        player->Position.y + TILE_SIZE*2/3
+    });
     curRoom->getMap()->UpdateDistMap(player->Position);
     CheckChangeRoom();
+    for (auto& obj : curRoom->BulletGroup->GetObjects())
+        if (auto b = dynamic_cast<Bullet*>(obj))
+            b->Update(deltaTime, *curRoom->getMap());
 
-    for (auto& obj : curRoom->BulletGroup->GetObjects()) {   // Important note: Using Group::Update (BulletGroup->Update();) here will cause in CATASTROPHIC CHAOS as they have different calls
-        Bullet* bullet = dynamic_cast<Bullet*>(obj);
-        if (bullet) bullet->Update(deltaTime, *curRoom->getMap());
-    }
-
+    // HP bar logic...
     float currHP = float(player->GetHP());
-
-    // only start/reset the delay if we just took damage
     if (currHP < prevHP) {
         hpDelayTimer = HP_DELAY_DURATION;
         shrinkRate   = (delayedHP - currHP) / SHRINK_DURATION;
     }
-    // remember for next frame
     prevHP = currHP;
-
-    // tick down the delay
-    if (hpDelayTimer > 0.0f) {
+    if (hpDelayTimer > 0) {
         hpDelayTimer -= deltaTime;
-        if (hpDelayTimer < 0.0f) hpDelayTimer = 0.0f;
-    }
-    // once the delay is done, shrink the red bar smoothly
-    else if (delayedHP > currHP) {
+        if (hpDelayTimer < 0) hpDelayTimer = 0;
+    } else if (delayedHP > currHP) {
         delayedHP -= shrinkRate * deltaTime;
         if (delayedHP < currHP) delayedHP = currHP;
     }
 
-    // Dialogue stuff
+    // Dialogue queue logic...
     if (dialogueDelayTimer > 0) {
         dialogueDelayTimer -= deltaTime;
-
     } else if (dialogueTimer > 0) {
         dialogueTimer -= deltaTime;
-
-        static const float FADE_DURATION = 0.2f;
-        float dialogueAlpha = std::max(std::min(
-            std::min(1.0f, dialogueTimer / FADE_DURATION),
-            std::min(1.0f, (dialogueDuration - dialogueTimer) / FADE_DURATION)), 0.0f);  // 0.0 to 1.0
-
-        dialogueLabel->Color = al_map_rgba(255, 255, 255, dialogueAlpha * 255);
-
+        const float F = 0.2f;
+        float alpha = std::clamp(dialogueTimer / F, 0.0f, 1.0f);
+        dialogueLabel->Color = al_map_rgba(255,255,255,(unsigned char)(alpha*255));
     } else if (!dialogueQueue.empty()) {
-        dialogueLabel->Text = dialogueQueue.front().text;
-        dialogueLabel->Color = al_map_rgba(255, 255, 255, 0);
-
-        dialogueDuration = dialogueQueue.front().duration;
-        dialogueTimer = dialogueQueue.front().duration;
-        dialogueDelayTimer = dialogueQueue.front().delay;
-        dialogueQueue.pop();
+        auto d = dialogueQueue.front(); dialogueQueue.pop();
+        dialogueLabel->Text = d.text;
+        dialogueDuration    = d.duration;
+        dialogueTimer       = d.duration;
+        dialogueDelayTimer  = d.delay;
+        dialogueLabel->Color = al_map_rgba(255,255,255,0);
     }
 
-    // Camera should be updated last.
+    // finally move camera
     UpdateCamera();
 }
 
-void PlayScene::Draw(const Engine::Point & _unused) const {
-    int w = Engine::GameEngine::GetInstance().GetScreenSize().x;
-    int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
 
-    al_clear_to_color(al_map_rgb(24, 20, 37));
-    curRoom->Draw(camera);
-    Group::Draw(camera);
-    weapon->Draw();
+void PlayScene::Draw(const Engine::Point&) const {
+    int W = al_get_display_width(al_get_current_display());
+    int H = al_get_display_height(al_get_current_display());
 
-    const float marginX = 30;
-    const float marginY = 30;
-    const float spacing = 5;
-    const float barW    = 300;
-    const float barH    = 30;
+    // 1) Normal play
+    if (pauseState == PauseState::None) {
+        al_clear_to_color(al_map_rgb(24,20,37));
+        curRoom->Draw(camera);
+        Group::Draw(camera);
+        weapon->Draw();
 
-    // ─── Re-measure the icon (or cache iconW/iconH in members) ───
-    auto bmp = Engine::Resources::GetInstance().GetBitmap("heart.png");
-    float iconW = al_get_bitmap_width (bmp.get());
+        const float marginX = 30;
+        const float marginY = 30;
+        const float spacing = 5;
+        const float barW    = 300;
+        const float barH    = 30;
 
-    // compute positions
-    float barX = marginX + iconW + spacing;
-    float barY = marginY;
-    float maxHP = float(player->GetMaxHP());
-    float curHP = float(player->GetHP());
+        // ─── Re-measure the icon (or cache iconW/iconH in members) ───
+        auto bmp = Engine::Resources::GetInstance().GetBitmap("heart.png");
+        float iconW = al_get_bitmap_width (bmp.get());
 
-    // 1) black background full‐width
-    al_draw_filled_rectangle(barX, barY,barX + barW, barY + barH,al_map_rgb(0, 0, 0));
+        // compute positions
+        float barX = marginX + iconW + spacing;
+        float barY = marginY;
+        float maxHP = float(player->GetMaxHP());
+        float curHP = float(player->GetHP());
 
-    // 2) red layer (delayedHP)
-    al_draw_filled_rectangle(barX, barY,barX + barW * (delayedHP / maxHP), barY + barH,al_map_rgb(255, 0, 0));
+        // 1) black background full‐width
+        al_draw_filled_rectangle(barX, barY,barX + barW, barY + barH,al_map_rgb(0, 0, 0));
 
-    // 3) green layer (current HP)
-    al_draw_filled_rectangle(barX, barY, barX + barW * (curHP    / maxHP), barY + barH, al_map_rgb(0, 255, 0));
+        // 2) red layer (delayedHP)
+        al_draw_filled_rectangle(barX, barY,barX + barW * (delayedHP / maxHP), barY + barH,al_map_rgb(255, 0, 0));
 
-    // 4) white border
-    al_draw_rectangle(barX, barY, barX + barW, barY + barH, al_map_rgb(255, 255, 255), 2.0f);
-    float hpRatio = curHP / maxHP;
-    Engine::Image* heartIcon = nullptr;
-    if      (hpRatio > 0.75f) heartIcon = heartFull;
-    else if (hpRatio > 0.50f) heartIcon = heart75;
-    else if (hpRatio > 0.25f) heartIcon = heart50;
-    else                      heartIcon = heart25;
+        // 3) green layer (current HP)
+        al_draw_filled_rectangle(barX, barY, barX + barW * (curHP    / maxHP), barY + barH, al_map_rgb(0, 255, 0));
 
-    // Draw at the x=marginX, y=marginY+(barH-iconH)/2 you set in Initialize
-    heartIcon->Draw(Engine::Point(0, 0));
+        // 4) white border
+        al_draw_rectangle(barX, barY, barX + barW, barY + barH, al_map_rgb(255, 255, 255), 2.0f);
+        float hpRatio = curHP / maxHP;
+        Engine::Image* heartIcon = nullptr;
+        if      (hpRatio > 0.75f) heartIcon = heartFull;
+        else if (hpRatio > 0.50f) heartIcon = heart75;
+        else if (hpRatio > 0.25f) heartIcon = heart50;
+        else                      heartIcon = heart25;
 
-    // ─── Finally draw the rest of your UI ───
-    UIGroup->Draw(Engine::Point(0, 0));
+        // Draw at the x=marginX, y=marginY+(barH-iconH)/2 you set in Initialize
+        heartIcon->Draw(Engine::Point(0, 0));
 
-    if (playerDeathTimer >= 0) {
-        double smoothFadeFac = 1.0 - std::pow(playerDeathTimer / 275.0, 10);
+        for (auto obj : curRoom->BulletGroup->GetObjects()) {
+            if (auto b = dynamic_cast<Bullet*>(obj)) b->Draw();
+        }
 
-        al_draw_filled_rectangle(0, 0, w, h, al_map_rgba(0, 0, 0, smoothFadeFac * 255));
-
-        player->Draw(camera);
+        if (playerDeathTimer >= 0) {
+            double smoothFadeFac = 1.0 - std::pow(playerDeathTimer / 275.0, 10);
+            al_draw_filled_rectangle(0, 0, W, H, al_map_rgba(0, 0, 0, smoothFadeFac * 255));
+            player->Draw(camera);
+        }
+        UIGroup->Draw(Engine::Point{0,0});
+        return;
     }
 
-    for (auto obj : curRoom->BulletGroup->GetObjects()) {    // Same problem; different calls from Group::Draw();
-        Bullet* bullet = dynamic_cast<Bullet*>(obj);
-        if (bullet) {
-            bullet->Draw();
-            // std::cout << "Drawing bullet...\n";
+    // 2) Clear and compute scale + optional shake
+    al_clear_to_color(al_map_rgb(24,20,37));
+    float newW = W * cameraZoom;
+    float newH = H * cameraZoom;
+    float shakeX = 0, shakeY = 0;
+    if (pauseState == PauseState::ZoomOut ||
+        pauseState == PauseState::Hold   ||
+        pauseState == PauseState::ZoomIn) {
+        shakeX = ((rand()/(float)RAND_MAX)*2 - 1) * SHAKE_INTENSITY;
+        shakeY = ((rand()/(float)RAND_MAX)*2 - 1) * SHAKE_INTENSITY;
+    }
+    float ox0 = (W - newW)/2.0f + shakeX;
+    float oy  = (H - newH)/2.0f + shakeY;
+
+    // 3) Ripple+scale during zoom phases
+    if (pauseState == PauseState::ZoomOut ||
+        pauseState == PauseState::Hold   ||
+        pauseState == PauseState::ZoomIn) {
+        for (int sy = 0; sy < H; sy += 2) {
+            float shift = RIPPLE_AMPL * sinf((sy / RIPPLE_WAVE) + ripplePhase);
+            float dx    = ox0 + shift * cameraZoom;
+            float dy    = oy  + sy * cameraZoom;
+            float dH    = 2 * cameraZoom;
+            al_draw_scaled_bitmap(
+                pauseBitmap,
+                0, sy,     W, 2,
+                dx, dy,    newW, dH,
+                0
+            );
         }
     }
-    // Wall debug
-#ifdef DRAW_HITBOX
-    for (int i = 0; i < curRoom->GetRows(); i++){
-        for (int j = 0; j < curRoom->GetCols(); j++) {
-            int dy = i * TILE_SIZE - camera.y; // destiny y axis
-            int dx = j * TILE_SIZE - camera.x; // destiny x axis
-            if (curRoom->getMap()->isWall(i, j)) al_draw_rectangle(
-                dx, dy, dx + TILE_SIZE, dy + TILE_SIZE,
-                al_map_rgb(255, 0, 0), 2);
-        }
+    // 4) Plain scale once fully paused or resuming
+    else {
+        al_draw_scaled_bitmap(
+            pauseBitmap,
+            0, 0, W, H,
+            ox0, oy, newW, newH,
+            0
+        );
     }
-#endif
 
+    // 5) Overlay gray with dynamic alpha
+    if (overlayAlpha > 0.0f) {
+        al_draw_filled_rectangle(
+            0, 0, W, H,
+            al_map_rgba_f(0.2f, 0.2f, 0.2f, overlayAlpha)
+        );
+    }
 
-    // Elements of the UI group are not relative to the camera.
-    // DrawDialogueBox(w, h);
-    UIGroup->Draw(Engine::Point(0, 0));
+    // 6) Finally draw your pause-menu UI only when fully paused or during resume
+    if (pauseState == PauseState::Paused ||
+        pauseState == PauseState::Resume) {
+        UIGroup->Draw(Engine::Point{0,0});
+    }
 }
+
+
+
 
 void PlayScene::DrawDialogueBox(float screenW, float screenH) const {
     float dialogueW = 2000;
@@ -325,4 +417,47 @@ void PlayScene::ChangeRoom(std::string roomFile, int passagewayId) {
 
 void PlayScene::AddSubtitle(const float delay, const float duration, const std::string &text) {
     dialogueQueue.push(Dialogue(delay, duration, text));
+}
+
+void PlayScene::OnKeyUp(int keyCode) {
+    if (keyCode == ALLEGRO_KEY_ESCAPE) {
+        switch (pauseState) {
+            case PauseState::None: {
+                // ESC #1: snapshot & zoom out
+                int W = al_get_display_width(al_get_current_display());
+                int H = al_get_display_height(al_get_current_display());
+                pauseBitmap = al_create_bitmap(W, H);
+                al_set_target_bitmap(pauseBitmap);
+                al_clear_to_color(al_map_rgb(24,20,37));
+                curRoom->Draw(camera);
+                Group::Draw(camera);
+                weapon->Draw();
+                UIGroup->Draw(Engine::Point{0,0});
+                al_set_target_backbuffer(al_get_current_display());
+
+                // **play pause sound #1**
+                AudioHelper::PlaySample("paused1.mp3");
+
+                pauseState  = PauseState::ZoomOut;
+                effectTimer = 0;
+                cameraZoom  = 1.0f;
+                break;
+            }
+
+            case PauseState::Paused:
+                // ESC #2: begin resume delay
+                // **play resume sound #2**
+                AudioHelper::PlaySample("paused2.mp3");
+
+                pauseState  = PauseState::Resume;
+                effectTimer = 0;
+                break;
+
+            default:
+                // ignore during ZoomOut, Hold, ZoomIn
+                break;
+        }
+        return;
+    }
+    IScene::OnKeyUp(keyCode);
 }

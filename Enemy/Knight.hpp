@@ -8,6 +8,7 @@ public:
     Knight(float x, float y, float w, float h, int damage, int hp, Map * map, Player * player);
     void Update(float deltaTime) override;
     void Draw(const Engine::Point &camera) const override;
+    void Hit(int damage, Engine::Point hitPos) override;
 private:
     bool charging, dashing;
     float AttackRange = TILE_SIZE * 3;

@@ -19,6 +19,7 @@ private:
     Collision collider;
     int damage;
     int hp;
+    int MaxHP;
     bool isCoin;
 
     Engine::Point knockbackDirection = Engine::Point(0, 0);

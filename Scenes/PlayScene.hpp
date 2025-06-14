@@ -84,6 +84,48 @@ public:
     }
 
     void AddSubtitle(float delay, float duration, const std::string & text);
+
+
+    enum class PauseState {
+        None,      // normal play
+        ZoomOut,   // ESC #1: animating out
+        Hold,      // 2s hold at MIN_ZOOM
+        ZoomIn,    // animating back in
+        Paused,    // zoomed in & paused, waiting for ESC #2
+        Resume     // ESC #2: animating resume delay
+    };
+
+    PauseState      pauseState   = PauseState::None;
+    ALLEGRO_BITMAP* pauseBitmap  = nullptr;
+    float            cameraZoom   = 1.0f;
+    float            effectTimer  = 0.0f;
+    float            holdTimer    = 0.0f;
+
+    static constexpr float MIN_ZOOM        = 0.8f;  // 80%
+    static constexpr float ZOOM_OUT_TIME   = 0.1f;  // seconds
+    static constexpr float HOLD_TIME       = 2.0f;  // seconds
+    static constexpr float ZOOM_IN_TIME    = 0.1f;  // seconds
+    static constexpr float RESUME_TIME     = 1.5f;  // seconds
+
+    float ripplePhase    = 0.0f;
+    static constexpr float RIPPLE_AMPL     = 8.0f;   // max pixels shift
+    static constexpr float RIPPLE_WAVE     = 20.0f;  // wavelength
+    static constexpr float RIPPLE_SPEED    = 10.0f;  // how fast the wave animates
+
+    static constexpr float SHAKE_INTENSITY = 5.0f;   // max shake in pixels
+
+    float overlayTimer   = 0.0f;
+    float overlayAlpha   = 0.0f;
+    static constexpr float OVERLAY_TARGET       = 0.6f;                                 // 60% max
+    static constexpr float OVERLAY_FADE_DURATION = ZOOM_OUT_TIME + HOLD_TIME + ZOOM_IN_TIME;
+
+    // new helpers:
+    void startPauseEffect();
+    void updatePauseEffect(float dt);
+    void drawPauseEffect() const;
+
+    // override input so we can catch ESC:
+    void OnKeyUp(int keyCode) override;
 };
 
 

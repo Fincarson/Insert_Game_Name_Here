@@ -13,6 +13,7 @@ Knight::Knight(float x, float y, float w, float h, int damage, int hp, Map *map,
     }, "walk", 64, 64, x, y, w, h, damage, hp, map, player) {
     charging = false;
     dashing = false;
+    SetCoin(false);
 }
 
 void Knight::Update(float deltaTime) {
@@ -73,6 +74,11 @@ void Knight::Draw(const Engine::Point &camera) const {
         al_draw_line(Position.x + TILE_SIZE/2 - camera.x, Position.y + TILE_SIZE/2 - camera.y, TargetPosition.x + (dist.x * 0.5) + TILE_SIZE/2 - camera.x, TargetPosition.y + (dist.y * 0.5) + TILE_SIZE/2 - camera.y, al_map_rgba(255, 0, 0, 50), TILE_SIZE / 2);
     }
     Enemy::Draw(camera);
+}
+
+void Knight::Hit(int damage, Engine::Point hitPos) {
+    if (charging || dashing) return;
+    Enemy::Hit(damage, hitPos);
 }
 
 void Knight::OnCharging() {
