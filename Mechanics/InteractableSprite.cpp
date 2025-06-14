@@ -40,7 +40,7 @@ void InteractableSprite::Update(float deltaTime) {
 }
 
 void InteractableSprite::Draw(const Engine::Point &camera) const {
-    if (playerInRange) indicator->Draw(camera);
+    if (playerInRange && interactionEnabled) indicator->Draw(camera);
 
     AnimSprite::Draw(camera);
 }

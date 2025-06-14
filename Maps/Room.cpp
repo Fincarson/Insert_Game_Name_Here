@@ -32,6 +32,7 @@ void Room::loadRoom(std::string filename) {
 
     std::vector<std::vector<Tile>> mapVec(row, std::vector<Tile>(col));
     std::vector<std::pair<Engine::Point, char>> entities;
+    std::unordered_map<int, std::vector<Engine::Point>> passagewayTiles;
 
     for (int i = 0; i < row; i++) {
         std::getline(file, line);
@@ -63,15 +64,19 @@ void Room::loadRoom(std::string filename) {
                 break;
 
                 case 'H':
-                    mapVec[i][j] = FLOOR;
+                    mapVec[i][j] = BARRIER;
                     entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
                 break;
 
                 default:
                     if (isdigit(line[j])) {
                         mapVec[i][j] = FLOOR;
-                        posToPassageway[Engine::Point(j, i)] = line[j] - '0';
-                        passageways[line[j] - '0'].pos = Engine::Point(j, i);
+                        int passagewayId = line[j] - '0';
+
+                        posToPassageway[Engine::Point(j, i)] = passagewayId;
+                        passagewayTiles[passagewayId].push_back(Engine::Point(j, i));
+                        passageways[passagewayId].pos = passagewayTiles[passagewayId][passagewayTiles[passagewayId].size() / 2];
+                        // If there are multiple passageway tiles, take the median.
 
                     } else {
                         mapVec[i][j] = FLOOR;

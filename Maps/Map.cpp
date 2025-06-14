@@ -114,7 +114,7 @@ bool Map::isWall(int i, int j) const {
 
 bool Map::isFloor(int i, int j) const {
     if(i < 0 || j < 0 || i >= row || j >= col) return false;
-    if(mapVec[i][j] == FLOOR) return true;
+    if(mapVec[i][j] == FLOOR || mapVec[i][j] == BARRIER) return true;
     return false;
 }
 
@@ -124,9 +124,15 @@ bool Map::isNothing(int i, int j) const {
     return false;
 }
 
-bool Map::isWalkable(int i, int j) const {
+bool Map::isHole(int i, int j) const {
     if(i < 0 || j < 0 || i >= row || j >= col) return false;
-    return isFloor(i, j);
+    if(mapVec[i][j] == HOLE) return true;
+    return false;
+}
+
+bool Map::isWalkable(int i, int j, bool isBorderWalkable) const {
+    if (i < 0 || j < 0 || i >= row || j >= col) return isBorderWalkable;
+    return mapVec[i][j] != BARRIER && isFloor(i, j);
 }
 
 bool Map::isBorderTile(int i, int j) const {

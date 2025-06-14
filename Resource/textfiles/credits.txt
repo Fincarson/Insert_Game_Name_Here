@@ -7,11 +7,12 @@ Vincent Jefferson – UI/UX Designer
 
 == Programming & Engineering ==
 Albert Jonathan – Gameplay Programmer
-Patrick Kosasih – Tools & Engine Programmer
+Patrick Kosasih – Tools & Game Engine Programmer
 Vincent Jefferson – UI Programmer
 
 == Art & Animation ==
 Albert Jonathan – Animation Artist
+Patrick Kosasih - Motion Designer
 Vincent Jefferson – Concept Artist
 Vincent Jefferson – UI Artist
 
@@ -19,7 +20,7 @@ Vincent Jefferson – UI Artist
 Patrick Kosasih – Sound Effects Designer
 Vincent Jefferson – Sound Designer
 Vincent Jefferson – Sound Effects Designer
-Vincent Jefferson – Composers
+Vincent Jefferson – Composer
 
 == Special Thanks ==
 ChatGPT
