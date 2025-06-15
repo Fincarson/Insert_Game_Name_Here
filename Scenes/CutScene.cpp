@@ -16,6 +16,9 @@
 #include <iomanip>
 
 void Cutscene::Initialize() {
+    fadeState = FADE_IN;
+    fadeAlpha = 1.0f;
+
     inputText.clear();
     // make sure "BebasNeue.ttf" is loaded via your Resources system
     font = Engine::Resources::GetInstance().GetFont("BebasNeue.ttf", 36);

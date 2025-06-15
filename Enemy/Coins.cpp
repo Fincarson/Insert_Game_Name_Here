@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "Sprites/Player.hpp"
+#include "Engine/GameEngine.hpp"
 
 Coins::Coins(float x, float y, float w, float h, Map *map, Player *player)
     : Enemy("coins.png", {
@@ -16,6 +17,7 @@ void Coins::Update(float deltaTime) {
     // std::cout << "DeathTimer: " << GetDeathTimer() << std::endl;
     if (!IsDead() && Collision::IsCollision(GetPlayer(), this)) {
         // Add coin++ here or smth
+        Engine::GameEngine::GetInstance().addScore(10);
         GetPlayer()->AddCoin();
         std::cout << "Player's coin: " << GetPlayer()->GetCoin() << std::endl;
         SetHP(-1);

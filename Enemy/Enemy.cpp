@@ -14,6 +14,7 @@
 #include "Zombie.hpp"
 #include "Maps/Map.hpp"
 #include "Sprites/Player.hpp"
+#include "Engine/GameEngine.hpp"
 
 Enemy::Enemy(const std::string &img, const std::map<std::string, Engine::AnimInfo> &animations,
              const std::string &initAnim, int sw, int sh, float x, float y, float w, float h, int damage, int hp, Map * map, Player * player)
@@ -34,6 +35,7 @@ void Enemy::Update(float deltaTime) {
         deathTimer--;
         if (deathTimer <= 0) {
             // Summon coin after death
+            Engine::GameEngine::GetInstance().addScore(10);
             if (!IsCoin()) getPlayScene()->AddNewObject(new Coins(Position.x, Position.y, TILE_SIZE, TILE_SIZE, map, player));
             getPlayScene()->RemoveObject(objectIterator);  // Remove from scene (moveable to after finishing dead animation)
         }

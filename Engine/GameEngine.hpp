@@ -76,13 +76,13 @@ namespace Engine {
         /// <param name="name">The name of the scene you want to change to.</param>
         void changeScene(const std::string &name);
         std::string playerName = "Kuo";
-        float score = 0;
+        int score = 0;
 
     public:
         void SetPlayerName(const std::string& name) { playerName = name; }
         const std::string& GetPlayerName() const { return playerName; }
 
-        void addScore(float x) {score += x;}
+        void addScore(int x) {score += x;}
         float showScore() const { return score; }
         // Note: We'll ignore C++11's move constructor, move assignment operator in this project for simplicity.
         /// <summary>

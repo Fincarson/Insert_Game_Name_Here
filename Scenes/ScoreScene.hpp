@@ -43,7 +43,7 @@ private:
 
     std::shared_ptr<ALLEGRO_FONT> font;
     std::string currentName;
-    float       currentScore;
+    int         currentScore;
     std::string currentDate;
 
     // add label pointers

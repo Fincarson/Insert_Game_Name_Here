@@ -197,6 +197,7 @@ void Agis::Update(float deltaTime) {
         case GONER:
             getPlayScene()->RemoveObject(objectIterator);
             // Change win scene here or smth
+            Engine::GameEngine::GetInstance().ChangeScene("cutscene3");
             break;
     }
 }

@@ -29,7 +29,7 @@ void Cutscene2::Initialize() {
         playerName + ": Bruh.",
         "Friend: Anyway, wanna go to Lin Ji? I'm hungry",
         playerName + ": You know what? Yeah, let's go!",
-        "Pedestrian: HEY! WHATCH OUT!",
+        "Pedestrian: HEY! WATCH OUT!",
         "A truck crashed into " + playerName + " and got isekaid"
     };
     currentIndex = 0;
