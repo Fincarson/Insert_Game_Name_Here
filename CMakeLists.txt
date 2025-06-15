@@ -142,6 +142,8 @@ add_executable(Insert_Game_Name_Here
         Enemy/Agis.hpp
         Sprites/ShopDisplay.cpp
         Sprites/ShopDisplay.hpp
+        Sprites/FakePanda.cpp
+        Sprites/FakePanda.hpp
 )
 
 

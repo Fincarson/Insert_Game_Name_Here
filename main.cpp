@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     game.AddNewScene("cutscene3", new Cutscene3());
     game.AddNewScene("scorescene", new ScoreScene());
 
-    game.Start("menu", 60, 1600, 832);  // Change to "intro" later
+    game.Start("play", 60, 1600, 832);  // Change to "intro" later
     return 0;
 }
 
