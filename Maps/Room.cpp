@@ -18,6 +18,7 @@
 #include "Engine/GameEngine.hpp"
 #include "Engine/LOG.hpp"
 #include "Sprites/Chest.hpp"
+#include "Sprites/FakePanda.hpp"
 #include "Sprites/ShopDisplay.hpp"
 
 void Room::loadRoom(std::string filename) {
@@ -64,6 +65,7 @@ void Room::loadRoom(std::string filename) {
                 case 'Z':
                 case 'K':
                 case 'C':
+                case 'F':
                     mapVec[i][j] = FLOOR;
                     entities.push_back({Engine::Point(j * TILE_SIZE, i * TILE_SIZE), line[j]});
                 break;
@@ -184,6 +186,10 @@ void Room::loadRoom(std::string filename) {
             case 'H':
                 curChest = (itCurChest != chestContents.end()) ? *(itCurChest++) : DEFAULT_CHEST;
                 InteractableGroup->AddNewObject(new Chest(pos.x, pos.y, TILE_SIZE, TILE_SIZE, player, curChest));
+            break;
+
+            case 'F':
+                EnemyGroup->AddNewObject(new FakePanda(pos.x, pos.y, TILE_SIZE, TILE_SIZE));
             break;
 
             case 'S':
