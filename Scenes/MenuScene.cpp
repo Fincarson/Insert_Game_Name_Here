@@ -742,9 +742,7 @@ void MenuScene::Update(float deltaTime) {
                 AudioHelper::StopSample(menuBGM);
                 AudioHelper::StopSample(rain);
                 exitState = EXIT_IDLE;
-
-                Engine::GameEngine::GetInstance().FullResetScene("play", new PlayScene());
-                Engine::GameEngine::GetInstance().ChangeScene("play");
+                Engine::GameEngine::GetInstance().ChangeScene("cutscene");
             }
             else {
                 AudioHelper::StopSample(menuBGM);
