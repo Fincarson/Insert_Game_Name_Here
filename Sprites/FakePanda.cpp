@@ -21,7 +21,7 @@ void FakePanda::Update(float deltaTime) {
 
     if (!walkIdfk && (player->Position - Position).Magnitude() < 300) {
         walkIdfk = true;
-        Velocity.y = -500;
+        Velocity.y = -750;
         SetAnimation("walk");
         playScene->AddSubtitle(0, 3, "Wait, where are you going?");
     }

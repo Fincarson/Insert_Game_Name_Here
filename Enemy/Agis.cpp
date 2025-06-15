@@ -174,6 +174,8 @@ void Agis::Update(float deltaTime) {
         case OPENDOMAIN:
             if (GetCurAnim().name != "ulti")
                 SetAnimation("ulti");
+                getPlayScene()->ChangeMainBGM("final_battle.mp3");
+
             transformAnimTick++;
             if (transformAnimTick >= GetCurAnim().nFrames * GetCurAnim().frameDuration) {
                 SetStatus(RYOIKITENKAI);
@@ -186,6 +188,7 @@ void Agis::Update(float deltaTime) {
 
         case CRUMBLING:
             if (GetCurAnim().name != "death")
+                getPlayScene()->ChangeMainBGM("");
                 SetAnimation("death");
             deathAnimTick++;
             if (deathAnimTick >= GetCurAnim().nFrames * GetCurAnim().frameDuration) {

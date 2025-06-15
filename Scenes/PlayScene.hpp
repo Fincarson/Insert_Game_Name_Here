@@ -64,6 +64,7 @@ private:
     float hpDelayTimer = 0.0f;
     float shrinkRate   = 0.0f;
     ALLEGRO_SAMPLE_ID curBgm;
+    std::string curBgmName;
 
     static constexpr float HP_DELAY_DURATION  = 2.0f;  // wait 2 s
     static constexpr float SHRINK_DURATION    = 1.0f;
@@ -80,6 +81,9 @@ public:
     void DrawDialogueBox(float screenW, float screenH) const;
 
     void CheckChangeRoom();
+
+    void ChangeMainBGM(const std::string & string);
+
     void ChangeRoom(std::string roomFile, int passagewayId);
 
     Engine::Point GetCamera() const {

@@ -18,7 +18,7 @@ ConnectRooms 0 1-3.txt 1
 Say 1 3 Shopkeeper: Ah, a customer! Welcome, welcome.
 Say 0.5 4 Shopkeeper: You don't seem to be from around here.
 
-ShopItem sword 150
+ShopItem sword 350
 ShopItem magic 250
 ShopItem lightsaber 100
 ShopItem blackhole 300

@@ -37,7 +37,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("1-6.txt", 0);
+    ChangeRoom("1-1.txt", -1);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
@@ -92,8 +92,6 @@ void PlayScene::Initialize() {
     coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
 
     UnlockWeapon("awp");
-
-    // curBgm = AudioHelper::PlayBGM("mus_ruins.ogg");
 }
 
 PlayScene::~PlayScene() {
@@ -123,7 +121,7 @@ void PlayScene::Update(float deltaTime) {
     if (player->GetHP() <= 0) {
         if (playerDeathTimer == -1) {
             // Just died
-            // AudioHelper::StopBGM(curBgm);
+            AudioHelper::StopBGM(curBgm);
             playerDeathTimer = 300;
             dialogueLabel->Text = "";
 
@@ -508,8 +506,30 @@ void PlayScene::CheckChangeRoom() {
     }
 }
 
+void PlayScene::ChangeMainBGM(const std::string &newBgmName) {
+    if (newBgmName == curBgmName) return;
+
+    curBgmName = newBgmName;
+    AudioHelper::StopBGM(curBgm);
+
+    if (newBgmName != "")
+        curBgm = AudioHelper::PlayBGM(newBgmName);
+}
+
 void PlayScene::ChangeRoom(std::string roomFile, int passagewayId) {
     if (roomFile == "") return;
+
+    std::string newBgmName;
+
+    if (roomFile == "shop.txt") {
+        newBgmName = "mus_hotel.ogg";
+    } else if (roomFile == "final_boss.txt") {
+        newBgmName = "final_boss_full.mp3";
+    } else {
+        newBgmName = "dungeon_ambience.mp3";
+    }
+
+    ChangeMainBGM(newBgmName);
 
     if (rooms.count(roomFile) == 0) {
         rooms[roomFile] = new Room(roomFile);
@@ -564,6 +584,13 @@ void PlayScene::OnKeyUp(int keyCode) {
         }
         return;
     }
+
+    if (keyCode == ALLEGRO_KEY_SCROLLLOCK) {
+        player->AddCoin(10000);
+        player->SetHP(1000);
+        UnlockWeapon("cheat");
+    }
+
     IScene::OnKeyUp(keyCode);
 }
 
