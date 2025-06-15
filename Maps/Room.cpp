@@ -201,7 +201,7 @@ void Room::loadRoom(std::string filename) {
 }
 
 
-Room::Room(std::string filename): posToPassageway() {
+Room::Room(std::string filename) {
     loadRoom(filename);
     AddNewObject(EnemyGroup);
     AddNewObject(InteractableGroup);

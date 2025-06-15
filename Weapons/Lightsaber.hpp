@@ -12,6 +12,8 @@ protected:
     Engine::Point laserStart, laserEnd;       // Beam coordinates
     std::unordered_map<Enemy*, float> hitCooldownMap;  // Per-enemy cooldown tracker
     bool lightsaberOn;
+    bool prevLightsaberOn;
+    std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> ambientSound;
 
 public:
     Lightsaber(std::string weaponImg, float damage);

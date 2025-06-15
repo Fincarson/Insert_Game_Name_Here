@@ -61,12 +61,12 @@ void Weapon::Update(float deltaTime, const Engine::Point& newPosition) {
     al_get_mouse_state(&mstate);
 
     // handle firing (For gun weapon later)
-    /*double now = al_get_time();
-    if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
-        SpawnBullet(Position, angle);
-        lastShotTime = now;
-        // std::cout << "Shooting...\n";
-    }*/
+    // double now = al_get_time();
+    // if (al_mouse_button_down(&mstate, 1) && (now - lastShotTime) >= cooldownTime) {
+    //     CreateBullet();
+    //     lastShotTime = now;
+    //     // std::cout << "Shooting...\n";
+    // }
 }
 
 void Weapon::Draw(const Engine::Point& camera) const {

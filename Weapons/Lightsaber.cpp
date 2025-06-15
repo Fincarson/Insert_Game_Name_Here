@@ -49,6 +49,18 @@ void Lightsaber::Update(float deltaTime, const Engine::Point &newPosition) {
         lastShotTime = now;
     }
     if (lightsaberOn) CheckLaserHits();
+
+    if (lightsaberOn != prevLightsaberOn) {
+        if (lightsaberOn) {
+            AudioHelper::PlaySample("lightsaber_on.wav");
+            ambientSound = AudioHelper::PlaySample("lightsaber_ambience.wav", true);
+
+        } else if (ambientSound) {
+            AudioHelper::PlaySample("lasergun_stop.wav");
+            AudioHelper::StopSample(ambientSound);
+        }
+    }
+    prevLightsaberOn = lightsaberOn;
 }
 
 void Lightsaber::Draw() const {

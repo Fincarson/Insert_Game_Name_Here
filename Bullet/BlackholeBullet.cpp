@@ -69,6 +69,7 @@ void BlackholeBullet::Update(float deltaTime, const Map& map) {
     if (!exploded) {
         exploded = true;
         elapsed = 0;
+        AudioHelper::PlayAudio("blackhole_explode.wav");
         std::cout << "[BLACKHOLE] Explosion begins at (" << Position.x << ", " << Position.y << ")\n";
     }
     elapsed += deltaTime;

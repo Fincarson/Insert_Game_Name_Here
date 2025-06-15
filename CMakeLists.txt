@@ -140,14 +140,6 @@ add_executable(Insert_Game_Name_Here
         Enemy/Agis.hpp
         Sprites/ShopDisplay.cpp
         Sprites/ShopDisplay.hpp
-        Scenes/CutScene.cpp
-        Scenes/CutScene.hpp
-        Scenes/CutScene2.cpp
-        Scenes/CutScene2.hpp
-        Scenes/CutScene3.cpp
-        Scenes/CutScene3.hpp
-        Scenes/ScoreScene.cpp
-        Scenes/ScoreScene.hpp
 )
 
 

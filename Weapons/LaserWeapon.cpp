@@ -41,7 +41,20 @@ void LaserWeapon::Update(float deltaTime, const Engine::Point& newPosition) {
             ++it;
     }
 
-    if (al_mouse_button_down(&mstate, 1)) CheckLaserHits();
+    bool mouseDown = al_mouse_button_down(&mstate, 1);
+    if (mouseDown) CheckLaserHits();
+
+    if (prevMouseDown != mouseDown) {
+        if (mouseDown) {
+            AudioHelper::PlaySample("lasergun_shoot.wav");
+            ambienceSound = AudioHelper::PlaySample("lasergun_ambience.wav", true);
+        } else if (ambienceSound) {
+            AudioHelper::PlaySample("lasergun_stop.wav");
+            AudioHelper::StopSample(ambienceSound);
+        }
+    }
+    prevMouseDown = mouseDown;
+
 }
 
 void LaserWeapon::Draw() const {

@@ -37,7 +37,7 @@ void PlayScene::Initialize() {
     int halfH = h / 2;
 
     player = new Player(0, 0, TILE_SIZE, TILE_SIZE, 100);
-    ChangeRoom("shop.txt", -1);
+    ChangeRoom("1-1.txt", 0);
 
     AddNewControlObject(player);
     player->Position = Engine::Point(curRoom->Spawn.x * TILE_SIZE, curRoom->Spawn.y * TILE_SIZE);
@@ -91,8 +91,9 @@ void PlayScene::Initialize() {
 
     coinImg = new Engine::Image("coin_icon.png", iconX, iconY + iconH, iconW, iconH, 0, 0);
 
-    // UnlockWeapon("sword");
+    UnlockWeapon("awp");
 
+    // curBgm = AudioHelper::PlayBGM("mus_ruins.ogg");
 }
 
 PlayScene::~PlayScene() {
@@ -122,6 +123,7 @@ void PlayScene::Update(float deltaTime) {
     if (player->GetHP() <= 0) {
         if (playerDeathTimer == -1) {
             // Just died
+            // AudioHelper::StopBGM(curBgm);
             playerDeathTimer = 300;
             dialogueLabel->Text = "";
 
@@ -422,6 +424,21 @@ void PlayScene::DrawMiniMap() const {
             }
         }
     }
+
+    // Draw void
+    /*for (int i = 0; i < mapRows; ++i) {
+        for (int j = 0; j < mapCols; ++j) {
+            if (curRoom->getMap()->isHole(i, j)) {
+                al_draw_filled_rectangle(
+                    Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + j * tileW,
+                    MINIMAP_MARGIN + i * tileH,
+                    Engine::GameEngine::GetInstance().GetScreenWidth() - MINIMAP_WIDTH - MINIMAP_MARGIN + (j + 1) * tileW,
+                    MINIMAP_MARGIN + (i + 1) * tileH,
+                    al_map_rgb(150, 75, 75)
+                );
+            }
+        }
+    }*/
 
     // Draw player
     Engine::Point playerPos = player->Position;

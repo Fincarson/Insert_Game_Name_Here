@@ -57,11 +57,10 @@ void Knight::Update(float deltaTime) {
             return;
         }
     }
-    Enemy::Update(deltaTime);
     Engine::Point dir = GetPlayer()->Position - Position;
     float len = dir.Magnitude();
     if (len > AttackRange || !GetValidThickLine()) {
-        // std::cout << "Normal Walking\n";
+        Enemy::Update(deltaTime);
     }
     else OnCharging();
 }
