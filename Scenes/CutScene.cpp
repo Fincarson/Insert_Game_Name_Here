@@ -224,7 +224,7 @@ void Cutscene::Update(float deltaTime) {
             if (fadeAlpha >= 1.0f) {
                 fadeState = DONE;
                 Engine::GameEngine::GetInstance().SetPlayerName(inputText);
-                Engine::GameEngine::GetInstance().ChangeScene("scorescene");
+                Engine::GameEngine::GetInstance().ChangeScene("cutscene2");
             }
             break;
 

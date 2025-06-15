@@ -64,7 +64,7 @@ void Cutscene3::Update(float dt) {
         case FadeOut:
             rectAlpha = std::min(fadeTimer / fadeDuration, 1.0f);
             if (fadeTimer >= fadeDuration) {
-                Engine::GameEngine::GetInstance().ChangeScene("play");
+                Engine::GameEngine::GetInstance().ChangeScene("scorescene");
             }
             break;
 

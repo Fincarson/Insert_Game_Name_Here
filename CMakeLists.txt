@@ -58,7 +58,7 @@ add_executable(Insert_Game_Name_Here
         Scenes/SettingsScene.hpp
         Scenes/ScoreboardScene.cpp
         Scenes/ScoreboardScene.hpp
-        Scenes/ScoreScene.hpp
+        Scenes/ScoreScene.cpp
         Scenes/ScoreScene.hpp
 
         UI/Image.cpp
@@ -86,6 +86,8 @@ add_executable(Insert_Game_Name_Here
         Maps/Room.hpp
         Maps/DungeonMap.cpp
         Maps/DungeonMap.hpp
+        Weapons/DefaultWeapon.cpp
+        Weapons/DefaultWeapon.hpp
 
         utility.cpp
         utility.hpp
