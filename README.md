@@ -7,7 +7,7 @@
 
 ## 📖 Introduction
 <i>Insert Game Name Here</i> is a small game project that we decided to make for fun. <br>
-The title is actually the name for the game, we decided to name our game <i>Insert Game Name Here<i> as a joke. <br>
+The title is actually the name for the game, we decided to name our game <i>Insert Game Name Here</i> as a joke. <br>
 
 This game is a 2.5D Game, your goal is to fight the enemies, get coins, buy weapons, and defeat the boss.
 <br>
