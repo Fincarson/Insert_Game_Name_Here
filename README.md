@@ -40,20 +40,20 @@ If you are a rights holder and would like something removed or credited differen
 
 ## 🪛 Tools
 - Programming Language C++
-- CLion <[Link](https://www.jetbrains.com/toolbox-app/)>
-- Allegro5 <[Link](https://github.com/liballeg/allegro5/releases/download/5.2.9.1/allegro-x86_64-w64-mingw32-gcc-13.2.0-posix-seh-static-5.2.9.0.zip)>
-- CMake x86 <[Link](https://github.com/Kitware/CMake/releases/download/v3.29.2/cmake-3.29.2-windows-x86_64.msi)>
-- CMake Arm64 <[Link](https://github.com/Kitware/CMake/releases/download/v3.29.2/cmake-3.29.2-windows-arm64.msi)>
-- LLVM MinGW <[Link](https://github.com/mstorsjo/llvm-mingw/releases/download/20240417/llvm-mingw-20240417-msvcrt-x86_64.zip)>
+- <[Link](https://www.jetbrains.com/toolbox-app/)> CLion 
+- <[Link](https://github.com/liballeg/allegro5/releases/download/5.2.9.1/allegro-x86_64-w64-mingw32-gcc-13.2.0-posix-seh-static-5.2.9.0.zip)> Allegro5
+- <[Link](https://github.com/Kitware/CMake/releases/download/v3.29.2/cmake-3.29.2-windows-x86_64.msi)> CMake x86
+- <[Link](https://github.com/Kitware/CMake/releases/download/v3.29.2/cmake-3.29.2-windows-arm64.msi)> CMake Arm64
+- <[Link](https://github.com/mstorsjo/llvm-mingw/releases/download/20240417/llvm-mingw-20240417-msvcrt-x86_64.zip)> LLVM MinGW
 <br>
 
 ## 💡 Inspirations
-- Guardian Tales <[Link](https://www.guardiantales.com/)>
-- Jujutsu Kaisen <[Link](https://en.wikipedia.org/wiki/Jujutsu_Kaisen)>
+- <[Link](https://www.guardiantales.com/)> Guardian Tales 
+- <[Link](https://en.wikipedia.org/wiki/Jujutsu_Kaisen)> Jujutsu Kaisen
 <br>
 
 ## 👥 Project Members
-- Albert Jonathan [(GitHub)](https://github.com/Cookie-1412)
-- Patrick Kosasih [(GitHub)](https://github.com/patrickkosasih)
-- Vincent Jefferson [(GitHub)](https://github.com/Fincarson)
+- [(GitHub)](https://github.com/Cookie-1412) Albert Jonathan
+- [(GitHub)](https://github.com/patrickkosasih) Patrick Kosasih
+- [(GitHub)](https://github.com/Fincarson)Vincent Jefferson
 <br>
