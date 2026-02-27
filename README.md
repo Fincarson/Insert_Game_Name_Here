@@ -55,5 +55,5 @@ If you are a rights holder and would like something removed or credited differen
 ## 👥 Project Members
 - [(GitHub)](https://github.com/Cookie-1412) Albert Jonathan
 - [(GitHub)](https://github.com/patrickkosasih) Patrick Kosasih
-- [(GitHub)](https://github.com/Fincarson)Vincent Jefferson
+- [(GitHub)](https://github.com/Fincarson) Vincent Jefferson
 <br>
