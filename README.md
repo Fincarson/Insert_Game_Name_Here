@@ -15,6 +15,14 @@ This game is a 2.5D Game, your goal is to fight the enemies, get coins, buy weap
 Trailer: [YouTube](https://youtu.be/EKWCecYS4os?si=Q21lvSB9oAQnTZ1g) <br>
 <br>
 
+## 📝 Note / Disclaimer
+This project is a **public, non-commercial** game made for fun and learning purposes. <br>
+It is not affiliated with or endorsed by any company or franchise referenced in the project. <br>
+<br>
+If any third-party assets (art, audio, fonts, etc.) are used, they remain the property of their respective owners and are used for educational/demo purposes only. <br>
+If you are a rights holder and would like something removed or credited differently, please open an issue or contact us. <br>
+<br>
+
 ## 🛠️ How to Install
 1. Install the IDE CLion
 2. Install the library Allegro5 (Make sure it's installed on C: Drive)
