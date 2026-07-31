@@ -1,7 +1,7 @@
 # 🎮 Insert Your Game Name Here
 <p>
   <a href="https://youtu.be/EKWCecYS4os?si=Q21lvSB9oAQnTZ1g">
-    <img src="Misc/Main_Menu.png" width="850" alt="insert_video_title_here">
+    <img src="_Misc/Main_Menu.png" width="850" alt="insert_video_title_here">
   </a>
 </p>
 
@@ -56,4 +56,9 @@ If you are a rights holder and would like something removed or credited differen
 - [(GitHub)](https://github.com/Cookie-1412) Albert Jonathan
 - [(GitHub)](https://github.com/patrickkosasih) Patrick Kosasih
 - [(GitHub)](https://github.com/Fincarson) Vincent Jefferson
+<br>
+
+## 📄 License
+The original source code is released under the MIT License. See [LICENSE](LICENSE). <br>
+The bundled assets under <code>Resource/</code> (art, audio, fonts) are not covered by that license and remain the property of their respective owners. <br>
 <br>

@@ -1,6 +1,18 @@
-# My thingy
-cmake-build-debug
-.idea
+# Build output
+cmake-build-*/
+build/
+out/
+.cmake/
+
+# Editor / IDE
+.idea/
+.vs/
+.vscode/
+.claude/settings.local.json
+
+# OS junk
+.DS_Store
+Thumbs.db
 
 # Prerequisites
 *.d
